@@ -29,7 +29,19 @@ spring:
   h2:
     console:
       enabled: true
+      path: /h2
 
 jwt:
-  issuer: surfer@gmail.com
-  secret_key: qwerasfdqwerasxdkjsadfijo1234124
+  issuer: surfer.com
+  secret: qwerasfdqwerasxdkjsadfijo1234124
+#  1시간: 3600000
+  access-token-validity-in-second: 3600000
+  refresh-token-validity-in-second: 3600000
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy: DEBUG

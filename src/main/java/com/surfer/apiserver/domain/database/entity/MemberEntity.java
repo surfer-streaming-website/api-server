@@ -1,22 +1,23 @@
 package com.surfer.apiserver.domain.database.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Entity
-public class MemberEntity implements UserDetails {
+public class MemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_id_seq")
@@ -30,44 +31,38 @@ public class MemberEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "nickname", nullable = false, unique = true)
+    private String nickname;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "role")
+    private String role;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "refresh_token_expired_at")
+    private Long refreshTokenExpiredAt;
+
+    @Column(name = "registered_at")
+    @CreationTimestamp
+    private Date registerAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Date updatedAt;
+
     @Builder
-    public MemberEntity(String email, String password, String auth) {
+    public MemberEntity(Long memberSeq, String email, String password, String nickname, String name, String role, String refreshToken, Long refreshTokenExpiredAt) {
+        this.memberSeq = memberSeq;
         this.email = email;
         this.password = password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public String getPassword(){
-        return password;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+        this.nickname = nickname;
+        this.name = name;
+        this.role = role;
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiredAt = refreshTokenExpiredAt;
     }
 }

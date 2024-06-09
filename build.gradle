@@ -24,6 +24,8 @@ repositories {
 dependencies {
     //spring web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -38,7 +40,11 @@ dependencies {
     //spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     //jwt
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
+
+
     //xml 문사와 java 객체 매핑 api
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
