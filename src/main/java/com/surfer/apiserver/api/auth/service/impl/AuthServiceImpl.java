@@ -5,10 +5,12 @@ import com.surfer.apiserver.api.auth.service.AuthService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -29,6 +31,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Base64;
 
 
 @Service("AuthService")
@@ -65,29 +68,26 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
-    public TokenInfo signIn(SignInRequest signInRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtTokenProvider.createToken(authentication);
+    public TokenInfo signInByEmailAndPassword(SignInRequest signInRequest) {
+        MemberEntity memberEntity = memberRepository.findByEmail(signInRequest.getEmail())
+                .orElseThrow(() -> new BusinessException(ApiResponseCode.FAILED_SIGN_IN_USER, HttpStatus.BAD_REQUEST));
+        return jwtTokenProvider.createToken(memberEntity);
     }
 
 
     @Override
-    public TokenInfo signIn(String refreshToken) {
+    public TokenInfo signInByRefreshToken(String refreshToken) {
         MemberEntity memberEntity = memberRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_API_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED));
         return jwtTokenProvider.createToken(memberEntity);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        MemberEntity memberEntity = memberRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String seq) throws UsernameNotFoundException {
+        MemberEntity memberEntity = memberRepository.findByMemberSeq(Long.parseLong(seq))
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_USER_ID, HttpStatus.BAD_REQUEST));
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority(memberEntity.getRole()));
-        return new User(memberEntity.getEmail(), memberEntity.getPassword(),
-                grantedAuthorities);
+        return new User(AES256Util.encrypt(seq) , memberEntity.getPassword(), grantedAuthorities);
     }
 }

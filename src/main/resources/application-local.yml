@@ -32,6 +32,8 @@ spring:
       path: /h2
 
 jwt:
+  access-token-header: Authorization
+  refresh-token-header: refresh-token
   issuer: surfer.com
   secret: qwerasfdqwerasxdkjsadfijo1234124
 #  1시간: 3600000

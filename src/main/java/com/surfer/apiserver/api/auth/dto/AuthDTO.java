@@ -28,6 +28,7 @@ public class AuthDTO {
     }
 
     @Data
+    @Builder
     public static class SignInRequest{
         @NotBlank(message = "email 필수값입니다.")
         private String email;

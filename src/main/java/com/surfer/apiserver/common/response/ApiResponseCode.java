@@ -10,6 +10,7 @@ public enum ApiResponseCode {
     ACCESS_TOKEN_EXPIRED("ACCESS_TOKEN_EXPIRED", "access token expired"),
     INVALID_CLIENT_ID_OR_CLIENT_SECRET("INVALID_CLIENT_ID_OR_CLIENT_SECRET", "invalid client-id or client-secret"),
     INVALID_PARAMETER_ERR("INVALID_PARAMETER_ERR", "invalid parameter error"),
+    UNAUTHORIZED_ACCESS("UNAUTHORIZED_ACCESS", "not authorized user"),
     //auth
     UNIQUE_PARAMETER_VIOLATION_EMAIL("UNIQUE_PARAMETER_VIOLATION_EMAIL", "unique parameter email is violation"),
     UNIQUE_PARAMETER_VIOLATION_NICKNAME("UNIQUE_PARAMETER_VIOLATION_NICKNAME", "unique parameter nickname is violation"),

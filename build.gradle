@@ -49,6 +49,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 
+    //테스트
     //spring test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //security test

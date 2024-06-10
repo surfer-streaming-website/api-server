@@ -4,6 +4,7 @@ import com.surfer.apiserver.api.auth.dto.AuthDTO;
 import com.surfer.apiserver.api.auth.dto.AuthDTO.TokenInfo;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import io.jsonwebtoken.*;
@@ -44,6 +45,8 @@ public class JwtTokenProvider implements InitializingBean {
     private long refreshTokenValidityInSecond;
     @Value("${jwt.issuer}")
     private String issuer;
+    @Value("${jwt.access-token-header}")
+    private String accessTokenHeader;
     private SecretKey key;
 
     @Override
@@ -51,13 +54,13 @@ public class JwtTokenProvider implements InitializingBean {
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public TokenInfo createToken(Authentication authentication) {
+    /*public TokenInfo createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream().findFirst().get().toString();
 
         String accessToken = Jwts.builder()
                 .issuer(issuer)
                 .subject("authentication.getName()")
-                .claim("username", authentication.getName())
+                .claim("user", authentication.getName())
                 .claim("authorities", authorities)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + accessTokenValidityInSecond))
@@ -68,27 +71,41 @@ public class JwtTokenProvider implements InitializingBean {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
+    }*/
 
     public TokenInfo createToken(MemberEntity member) {
         String accessToken = Jwts.builder()
-                .issuer(issuer)
-                .subject("authentication.getName()")
-                .claim("username", member.getEmail())
-                .claim("authorities", member.getRole())
-                .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime() + accessTokenValidityInSecond))
-                .signWith(key)
-                .compact();
-        String refreshToken = getRefreshToken(member.getEmail());
+                    .issuer(issuer)
+                    .subject("authentication.getName()")
+                    .claim("user",  AES256Util.encrypt(String.valueOf(member.getMemberSeq())))
+                    .claim("authorities", member.getRole())
+                    .issuedAt(new Date())
+                    .expiration(new Date(new Date().getTime() + accessTokenValidityInSecond))
+                    .signWith(key)
+                    .compact();
+
+        String refreshToken = getRefreshToken(member.getMemberSeq());
         return TokenInfo.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    public String getRefreshToken(String userName) {
-        MemberEntity memberEntity = memberRepository.findByEmail(userName).orElseThrow(
+    public Claims validateToken(String token) throws Exception{
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String getAccessTokenByRequestHeader(HttpServletRequest request) throws Exception{
+        return request.getHeader(accessTokenHeader).split(" ")[1];
+    }
+
+
+    private String getRefreshToken(Long memberSeq) {
+        MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq).orElseThrow(
                 () -> new BusinessException(ApiResponseCode.INVALID_USER_ID, HttpStatus.BAD_REQUEST));
         if (memberEntity.getRefreshTokenExpiredAt() == null
                 || memberEntity.getRefreshTokenExpiredAt() >= new Date().getTime() + refreshTokenValidityInSecond

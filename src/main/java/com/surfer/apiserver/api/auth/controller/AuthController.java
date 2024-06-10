@@ -1,29 +1,26 @@
 package com.surfer.apiserver.api.auth.controller;
 
 import com.surfer.apiserver.api.auth.service.AuthService;
-import com.surfer.apiserver.common.exception.BusinessException;
-import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
+import com.surfer.apiserver.common.util.AES256Util;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -71,9 +68,9 @@ public class AuthController {
     })
     public ResponseEntity<?> signIn(@Valid @RequestBody(required = false) SignInRequest signInRequest,
                                     @RequestHeader Map<String, String> headers) {
-        TokenInfo token = headers.containsKey("refresh_token") ?
-                authService.signIn(headers.get("refresh_token")) :
-                authService.signIn(signInRequest);
+        TokenInfo token = headers.containsKey("refresh-token") ?
+                authService.signInByRefreshToken(headers.get("refresh-token")) :
+                authService.signInByEmailAndPassword(signInRequest);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), token);
@@ -81,11 +78,11 @@ public class AuthController {
     }
 
     @GetMapping(value = "/test")
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> test() {
         RestApiResponse restApiResponse = new RestApiResponse();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), auth.getName());
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), AES256Util.decrypt(auth.getName()));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 }
