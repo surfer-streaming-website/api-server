@@ -1,7 +1,9 @@
 package com.surfer.apiserver.config;
 
-import com.surfer.apiserver.common.jwt.JwtAuthenticationEntryPoint;
 import com.surfer.apiserver.common.filter.JwtTokenValidatorFilter;
+import com.surfer.apiserver.common.jwt.JwtAccessDeniedHandler;
+import com.surfer.apiserver.common.jwt.JwtAuthenticationEntryPoint;
+import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -31,7 +33,9 @@ import java.util.Collections;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -62,9 +66,14 @@ public class WebSecurityConfig {
                             .anyRequest().authenticated()
                     ;
                 })
-                .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {httpSecurityExceptionHandlingConfigurer
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint);})
+                .addFilterBefore(new JwtTokenValidatorFilter(jwtTokenProvider), BasicAuthenticationFilter.class)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+                    httpSecurityExceptionHandlingConfigurer
+                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                            .accessDeniedHandler(jwtAccessDeniedHandler);
+                })
                 .build();
     }
 

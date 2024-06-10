@@ -11,6 +11,7 @@ public class BaseResponse {
     public BaseResponse() {
 
     }
+
     public BaseResponse(ApiResponseCode response) {
         this.code = response.getCode();
         this.message = response.getMessage();

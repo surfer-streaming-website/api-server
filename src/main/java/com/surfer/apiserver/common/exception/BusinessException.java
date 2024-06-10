@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class BusinessException extends RuntimeException{
+@EqualsAndHashCode(callSuper = false)
+public class BusinessException extends RuntimeException {
     private static final long serialVersionUID = -362265179561207306L;
 
     private ApiResponseCode responseCode;

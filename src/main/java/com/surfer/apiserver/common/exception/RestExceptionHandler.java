@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(annotations= RestController.class)
+@RestControllerAdvice(annotations = RestController.class)
 @Slf4j
 public class RestExceptionHandler {
     @ExceptionHandler(value = BusinessException.class)
-    public ResponseEntity<?> handleBusinessException(HttpServletRequest request, BusinessException e){
+    public ResponseEntity<?> handleBusinessException(HttpServletRequest request, BusinessException e) {
         RestApiResponse responseDTO = new RestApiResponse();
         responseDTO.setResult(new BaseResponse(e.getResponseCode(), e.getDetail()));
         return new ResponseEntity<RestApiResponse>(responseDTO, e.getStatus());
