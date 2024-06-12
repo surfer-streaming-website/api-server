@@ -1,14 +1,15 @@
 package com.surfer.apiserver.config;
 
+import com.surfer.apiserver.common.filter.JwtTokenValidatorFilter;
 import com.surfer.apiserver.common.jwt.JwtAccessDeniedHandler;
 import com.surfer.apiserver.common.jwt.JwtAuthenticationEntryPoint;
-import com.surfer.apiserver.common.filter.JwtTokenValidatorFilter;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,6 +29,11 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.*;
+
+
+import static com.surfer.apiserver.common.constant.Constant.*;
 
 @Configuration
 @EnableWebSecurity
@@ -60,18 +66,23 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                            .requestMatchers("/favicon.ico", "/auth/sign-up", "/auth/sign-in",
-                                    "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html",
-                                    "/webjars/**", "/swagger/**", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
-                            .anyRequest().authenticated()
-                    ;
+                            .requestMatchers(HttpMethod.GET, urlMapper(permitGetMethodUrl, permitGetMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.POST, urlMapper(permitPostMethodUrl, permitPostMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.DELETE, urlMapper(permitDeleteMethodUrl, permitDeleteMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.PUT, urlMapper(permitPutMethodUrl, permitPutMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.HEAD, urlMapper(permitHeadMethodUrl, permitHeadMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.PATCH, urlMapper(permitPatchMethodUrl, permitPatchMethodUrlAntPattern)).permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, urlMapper(permitOptionsMethodUrl, permitOptionsMethodUrlAntPattern)).permitAll()
+                            .anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtTokenValidatorFilter(jwtTokenProvider), BasicAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {httpSecurityExceptionHandlingConfigurer
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                        .accessDeniedHandler(jwtAccessDeniedHandler);})
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+                    httpSecurityExceptionHandlingConfigurer
+                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                            .accessDeniedHandler(jwtAccessDeniedHandler);
+                })
                 .build();
     }
 
@@ -91,7 +102,7 @@ public class WebSecurityConfig {
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(Collections.singletonList("*"));
-                config.setAllowedMethods(Collections.singletonList("*"));
+                config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "HEAD", "PATCH", "OPTIONS"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
                 config.setExposedHeaders(Arrays.asList("Authorization"));
@@ -99,6 +110,17 @@ public class WebSecurityConfig {
                 return config;
             }
         };
+    }
+    /*
+                "/favicon.ico",
+                                    "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html",
+                                    "/webjars/**", "/swagger/**", "/v3/api-docs/swagger-config", "/v3/api-docs"
+                * */
+
+    private String[] urlMapper(String[] url1, String[] url2){
+        int totalSize = url1.length + url2.length;
+        return Stream.concat(Arrays.stream(url1), Arrays.stream(url2))
+                .toArray(String[]::new);
     }
 
 }

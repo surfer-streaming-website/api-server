@@ -14,8 +14,8 @@ public class AES256Util {
     public static final String ENCRYPT_KEY = "01234567899254321111012345678901";
     public static final String ENCRYPT_IV = ENCRYPT_KEY.substring(0, 16);
 
-    public static String encrypt(String text){
-        try{
+    public static String encrypt(String text) {
+        try {
             Cipher cipher = Cipher.getInstance(ENCRYPT_ALG);
             SecretKeySpec keySpec = new SecretKeySpec(ENCRYPT_IV.getBytes(), "AES");
             IvParameterSpec ivParamSpec = new IvParameterSpec(ENCRYPT_IV.getBytes());
@@ -23,13 +23,13 @@ public class AES256Util {
 
             byte[] encrypted = cipher.doFinal(text.getBytes("UTF-8"));
             return Base64.getEncoder().encodeToString(encrypted);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new BusinessException(ApiResponseCode.FAILED_SIGN_IN_USER, HttpStatus.BAD_REQUEST);
         }
     }
 
     public static String decrypt(String cipherText) {
-        try{
+        try {
             Cipher cipher = Cipher.getInstance(ENCRYPT_ALG);
             SecretKeySpec keySpec = new SecretKeySpec(ENCRYPT_IV.getBytes(), "AES");
             IvParameterSpec ivParamSpec = new IvParameterSpec(ENCRYPT_IV.getBytes());
@@ -38,7 +38,7 @@ public class AES256Util {
             byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
             byte[] decrypted = cipher.doFinal(decodedBytes);
             return new String(decrypted, "UTF-8");
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new BusinessException(ApiResponseCode.FAILED_SIGN_IN_USER, HttpStatus.BAD_REQUEST);
 
         }

@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 @RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper mapper;
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
@@ -26,14 +27,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF8");
         RestApiResponse apiResponse = new RestApiResponse();
         String exception = (String) request.getAttribute("exception");
-        if(exception == null) {
+        if (exception == null) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET));
-        }else if( exception.equals("invalid")){
+        } else if (exception.equals("invalid")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_API_ACCESS_TOKEN));
-        }else if(exception.equals("expire")){
+        } else if (exception.equals("expire")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.ACCESS_TOKEN_EXPIRED));
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }else{
+        } else {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.UNKNWON));
         }
         PrintWriter writer = response.getWriter();

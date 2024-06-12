@@ -15,12 +15,11 @@ public enum ApiResponseCode {
     UNIQUE_PARAMETER_VIOLATION_EMAIL("UNIQUE_PARAMETER_VIOLATION_EMAIL", "unique parameter email is violation"),
     UNIQUE_PARAMETER_VIOLATION_NICKNAME("UNIQUE_PARAMETER_VIOLATION_NICKNAME", "unique parameter nickname is violation"),
     REGISTER_SUCCESS("REGISTER_SUCCESS", "register success"),
+    UNIQUE_CONSTRAINT_VIOLATED("UNIQUE_CONSTRAINT_VIOLATED", "unique value is duplicated"),
     //COMMON
-
     FAILED_SIGN_UP_USER("ERR_SIGN_UP", "failed to add new user"),
     FAILED_SIGN_IN_USER("ERR_SIGN_IN", "failed to login because userid not exist"),
-    INVALID_USER_ID("INVALID_USER_ID", "failed to load user because email is not exist")
-    ;
+    INVALID_USER_ID("INVALID_USER_ID", "failed to load user because email is not exist");
 
     private String code;
     private String message;
@@ -29,6 +28,7 @@ public enum ApiResponseCode {
     public String getCode() {
         return this.code;
     }
+
     public String getMessage() {
         return this.message;
     }
