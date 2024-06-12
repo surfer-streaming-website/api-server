@@ -15,18 +15,20 @@ public enum ApiResponseCode {
     UNIQUE_PARAMETER_VIOLATION_EMAIL("UNIQUE_PARAMETER_VIOLATION_EMAIL", "unique parameter email is violation"),
     UNIQUE_PARAMETER_VIOLATION_NICKNAME("UNIQUE_PARAMETER_VIOLATION_NICKNAME", "unique parameter nickname is violation"),
     REGISTER_SUCCESS("REGISTER_SUCCESS", "register success"),
+    UNIQUE_CONSTRAINT_VIOLATED("UNIQUE_CONSTRAINT_VIOLATED", "unique value is duplicated"),
     //COMMON
-
     FAILED_SIGN_UP_USER("ERR_SIGN_UP", "failed to add new user"),
     FAILED_SIGN_IN_USER("ERR_SIGN_IN", "failed to login because userid not exist"),
     INVALID_USER_ID("INVALID_USER_ID", "failed to load user because email is not exist"),
-
+    //song
     INVALID_SONG_ID("INVALID_SONG_ID","failed to load song because seq is not exist"),
     INVALID_ALBUM_ID("INVALID_ALBUM_ID", "failed to load album because seq is not exist"),
     INVALID_ALBUM_STATE("INVALID_ALBUM_STATE","invalid album state"),
     INVALID_REPLY_ID("INVALID_REPLY_ID","failed to load reply because seq is not exist"),
     FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized")
+    
     ;
+
 
     private String code;
     private String message;
@@ -35,6 +37,7 @@ public enum ApiResponseCode {
     public String getCode() {
         return this.code;
     }
+
     public String getMessage() {
         return this.message;
     }

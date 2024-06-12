@@ -12,7 +12,9 @@ public class RestApiResponse {
     Object data;
     private Long timestamp;
 
-    public RestApiResponse() {};
+    public RestApiResponse() {
+    }
+
     public RestApiResponse(BaseResponse baseResponse, Object data) {
         //this.result = baseResponse;
         this.code = baseResponse.getCode();

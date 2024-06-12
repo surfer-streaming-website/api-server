@@ -8,13 +8,13 @@ import lombok.Data;
 public class AuthDTO {
     @Data
     @Builder
-    public static class TokenInfo{
+    public static class TokenInfo {
         private String accessToken;
         private String refreshToken;
     }
 
     @Data
-    public static class SignUpRequest{
+    public static class SignUpRequest {
         @NotEmpty(message = "email 필수값입니다.")
         @NotBlank(message = "email 공백을 허용하지 않습니다.")
         private String email;
@@ -29,7 +29,7 @@ public class AuthDTO {
 
     @Data
     @Builder
-    public static class SignInRequest{
+    public static class SignInRequest {
         @NotBlank(message = "email 필수값입니다.")
         private String email;
         @NotBlank(message = "password 필수값입니다.")

@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +27,7 @@ import java.util.Map;
 import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Auth API")
@@ -49,10 +48,10 @@ public class AuthController {
             @Parameter(name = "name", description = "이름", example = "test name"),
     })
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-            authService.signUp(signUpRequest);
-            RestApiResponse restApiResponse = new RestApiResponse();
-            restApiResponse.setResult(new BaseResponse(ApiResponseCode.REGISTER_SUCCESS));
-            return new ResponseEntity<>(restApiResponse, HttpStatus.CREATED);
+        authService.signUp(signUpRequest);
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.REGISTER_SUCCESS));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/sign-in", consumes = "application/json", produces = "application/json")
@@ -78,11 +77,18 @@ public class AuthController {
     }
 
     @GetMapping(value = "/test")
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> test() {
         RestApiResponse restApiResponse = new RestApiResponse();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), AES256Util.decrypt(auth.getName()));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(value ="/hi/{test}/bye")
+    public ResponseEntity<?> test1(@PathVariable String test){
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), test);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 }

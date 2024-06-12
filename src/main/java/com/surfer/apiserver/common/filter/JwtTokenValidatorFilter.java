@@ -1,46 +1,32 @@
 package com.surfer.apiserver.common.filter;
 
-import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
-import com.surfer.apiserver.common.response.ApiResponseCode;
-import com.surfer.apiserver.common.response.BaseResponse;
-import com.surfer.apiserver.common.response.RestApiResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+
+import static com.surfer.apiserver.common.constant.Constant.*;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenValidatorFilter extends OncePerRequestFilter {
-
-    private static final List<String> EXCLUDE_URL =
-            List.of("/auth/sign-up", "/auth/sign-in", "/api-docs");
-
     private final JwtTokenProvider jwtTokenProvider;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -63,21 +49,21 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        if(request.getMethod().equals(HttpMethod.GET) ||
-                request.getServletPath().contains("/song/detail/")
-        )return true;
-
-        if(request.getMethod().equals(HttpMethod.GET) ||
-                request.getServletPath().contains("/album/detail/")
-        ) return true;
-
-        boolean excludeUri = EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-        if (request.getServletPath().contains("actuator")
-                || request.getServletPath().contains("swagger")
-                || request.getServletPath().contains("docs")
-        ) {
-            return true;
-        }
+        boolean excludeUri = switch (request.getMethod().toUpperCase()) {
+            case "GET" -> checkUrlPatternMatch(permitGetMethodUrl, permitGetMethodUrlPattern, request);
+            case "POST" -> checkUrlPatternMatch(permitPostMethodUrl, permitPostMethodUrlPattern, request);
+            case "DELETE" -> checkUrlPatternMatch(permitDeleteMethodUrl, permitDeleteMethodUrlPattern, request);
+            case "PUT" -> checkUrlPatternMatch(permitPutMethodUrl, permitPutMethodUrlPattern, request);
+            case "HEAD" -> checkUrlPatternMatch(permitHeadMethodUrl, permitHeadMethodUrlPattern, request);
+            case "PATCH" -> checkUrlPatternMatch(permitPatchMethodUrl, permitPatchMethodUrlPattern, request);
+            case "OPTIONS" -> checkUrlPatternMatch(permitOptionsMethodUrl, permitOptionsMethodUrlPattern, request);
+            default -> false;
+        };
         return excludeUri;
+    }
+
+    private boolean checkUrlPatternMatch(String[] urls, String[] patterns, HttpServletRequest request) {
+        return (boolean) Arrays.stream(urls).anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()))
+                || (boolean) Arrays.stream(patterns).anyMatch(urlPattern -> Pattern.matches(urlPattern, request.getServletPath()));
     }
 }
