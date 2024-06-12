@@ -29,7 +29,7 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2
+      path: /h2-console
 
 jwt:
   access-token-header: Authorization
