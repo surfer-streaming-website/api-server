@@ -52,7 +52,7 @@ class SongBoardControllerTest {
 
         private void init(){
             memberRepository.save(MemberEntity.builder()
-                            
+
                     .build());
         }
 

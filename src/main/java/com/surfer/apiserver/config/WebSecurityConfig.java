@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -63,6 +64,8 @@ public class WebSecurityConfig {
                             .requestMatchers("/favicon.ico", "/auth/sign-up", "/auth/sign-in",
                                     "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html",
                                     "/webjars/**", "/swagger/**", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/song/detail/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/album/detail/**").permitAll()
                             .anyRequest().authenticated()
                     ;
                 })

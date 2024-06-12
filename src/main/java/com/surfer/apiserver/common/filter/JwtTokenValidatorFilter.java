@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,8 +63,19 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
+        if(request.getMethod().equals(HttpMethod.GET) ||
+                request.getServletPath().contains("/song/detail/")
+        )return true;
+
+        if(request.getMethod().equals(HttpMethod.GET) ||
+                request.getServletPath().contains("/album/detail/")
+        ) return true;
+
         boolean excludeUri = EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-        if (request.getServletPath().contains("actuator") || request.getServletPath().contains("swagger") || request.getServletPath().contains("docs")) {
+        if (request.getServletPath().contains("actuator")
+                || request.getServletPath().contains("swagger")
+                || request.getServletPath().contains("docs")
+        ) {
             return true;
         }
         return excludeUri;
