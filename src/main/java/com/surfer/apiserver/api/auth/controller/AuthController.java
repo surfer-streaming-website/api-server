@@ -27,7 +27,7 @@ import java.util.Map;
 import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "Auth API")
@@ -77,11 +77,18 @@ public class AuthController {
     }
 
     @GetMapping(value = "/test")
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> test() {
         RestApiResponse restApiResponse = new RestApiResponse();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), AES256Util.decrypt(auth.getName()));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(value ="/hi/{test}/bye")
+    public ResponseEntity<?> test1(@PathVariable String test){
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), test);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 }

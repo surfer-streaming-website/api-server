@@ -35,6 +35,8 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     //jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // oracle jdbc
+    implementation group: 'com.oracle.database.jdbc', name: 'ojdbc11', version: '23.4.0.24.05'
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     //spring security
@@ -45,8 +47,6 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
 
 
-    //xml 문사와 java 객체 매핑 api
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 
     //spring test
@@ -60,3 +60,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//sourceSets {
+//    test {
+//        java {
+//            exclude '**/*.java' // 모든 테스트 소스 파일을 제외합니다.
+//        }
+//    }
+//}

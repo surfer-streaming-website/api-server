@@ -13,20 +13,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+
+import static com.surfer.apiserver.common.constant.Constant.*;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenValidatorFilter extends OncePerRequestFilter {
-
-    private static final List<String> EXCLUDE_URL =
-            List.of("/auth/sign-up", "/auth/sign-in", "/api-docs");
-
     private final JwtTokenProvider jwtTokenProvider;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -49,10 +49,21 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        boolean excludeUri = EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-        if (request.getServletPath().contains("actuator") || request.getServletPath().contains("swagger") || request.getServletPath().contains("docs")) {
-            return true;
-        }
+        boolean excludeUri = switch (request.getMethod().toUpperCase()) {
+            case "GET" -> checkUrlPatternMatch(permitGetMethodUrl, permitGetMethodUrlPattern, request);
+            case "POST" -> checkUrlPatternMatch(permitPostMethodUrl, permitPostMethodUrlPattern, request);
+            case "DELETE" -> checkUrlPatternMatch(permitDeleteMethodUrl, permitDeleteMethodUrlPattern, request);
+            case "PUT" -> checkUrlPatternMatch(permitPutMethodUrl, permitPutMethodUrlPattern, request);
+            case "HEAD" -> checkUrlPatternMatch(permitHeadMethodUrl, permitHeadMethodUrlPattern, request);
+            case "PATCH" -> checkUrlPatternMatch(permitPatchMethodUrl, permitPatchMethodUrlPattern, request);
+            case "OPTIONS" -> checkUrlPatternMatch(permitOptionsMethodUrl, permitOptionsMethodUrlPattern, request);
+            default -> false;
+        };
         return excludeUri;
+    }
+
+    private boolean checkUrlPatternMatch(String[] urls, String[] patterns, HttpServletRequest request) {
+        return (boolean) Arrays.stream(urls).anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()))
+                || (boolean) Arrays.stream(patterns).anyMatch(urlPattern -> Pattern.matches(urlPattern, request.getServletPath()));
     }
 }
