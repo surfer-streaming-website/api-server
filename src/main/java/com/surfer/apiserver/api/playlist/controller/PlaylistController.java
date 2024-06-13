@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/playlist")
 @RequiredArgsConstructor
-public class PlaylistContoller {
+public class PlaylistController {
     private final PlaylistService playlistService;
 
     /**
@@ -25,6 +25,8 @@ public class PlaylistContoller {
      */
     @PostMapping("/newPlaylist")
     public ResponseEntity<?> createNewPlaylist(@RequestBody PlaylistDTO.PlaylistGroupRequestDTO request) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        request.setAuthentication(authentication);
         int result = playlistService.createNewPlaylist(request);
 
         RestApiResponse restApiResponse = new RestApiResponse();

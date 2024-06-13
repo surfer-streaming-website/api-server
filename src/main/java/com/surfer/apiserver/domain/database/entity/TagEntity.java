@@ -3,7 +3,7 @@ package com.surfer.apiserver.domain.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+@Entity(name = "tag")
 @Getter
 @Setter
 @Builder

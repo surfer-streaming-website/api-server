@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "song_test")
 @Getter
 @Setter
 @Builder

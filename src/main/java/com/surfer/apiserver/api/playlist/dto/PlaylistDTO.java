@@ -4,6 +4,7 @@ import com.surfer.apiserver.domain.database.entity.PlaylistGroupEntity;
 import com.surfer.apiserver.domain.database.entity.PlaylistTagEntity;
 import com.surfer.apiserver.domain.database.entity.TagEntity;
 import lombok.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,22 @@ public class PlaylistDTO {
         private String playlistName;
         private int isOpen;
         private PlaylistTagRequestDTO tag;
+//        private Authentication authentication;
 
         public PlaylistGroupEntity toPlaylistGroupEntity(PlaylistGroupRequestDTO playlistGroupRequest) {
-            return PlaylistGroupEntity.builder()
-                    .playlistName(playlistGroupRequest.getPlaylistName())
+        return playlistGroupRequest.getTag() == null ?
+                PlaylistGroupEntity.builder()
+                        .playlistName(playlistGroupRequest.getPlaylistName())
+                        .isOpen(playlistGroupRequest.getIsOpen())
+                        .build() :
+                PlaylistGroupEntity.builder()
+                        .playlistName(playlistGroupRequest.getPlaylistName())
                     .isOpen(playlistGroupRequest.getIsOpen())
                     .playlistTagEntities(playlistGroupRequest.getTag()
                             .toPlaylistTagEntityList(playlistGroupRequest.getTag()))
                     .build();
+
+
         }
     }
 

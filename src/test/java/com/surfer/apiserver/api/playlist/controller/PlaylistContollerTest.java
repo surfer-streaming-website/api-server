@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.playlist.controller;
 
+import java.util.regex.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.auth.dto.AuthDTO;
@@ -14,11 +15,15 @@ import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.PlaylistGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,7 +37,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(properties = {"spring.config.location=classpath:application-local.yml"})
+//@TestPropertySource(locations = "classpath:application.yml")
 @SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 class PlaylistContollerTest {
     @Autowired
@@ -50,6 +59,19 @@ class PlaylistContollerTest {
     @Autowired
     PlaylistService playlistService;
 
+    public static String extractToken(String input) {
+        // 정규표현식 패턴
+        String patternString = "accessToken=(.*?), refreshToken";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(input);
+
+        // 패턴 일치하는 부분 추출
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        } else {
+            return null; // 일치하는 부분이 없을 경우 null 반환
+        }
+    }
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders
@@ -94,20 +116,11 @@ class PlaylistContollerTest {
         );
         MvcResult mvcResult = resultActions.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        /*System.out.println(contentAsString);
-        String[] split = contentAsString.split(":");
-        for (int i = 0; i < split.length; i++) {
-            System.out.println("split["+i+"] = " + split[i]);
-        }
-//        objectMapper.convertValue(contentAsString, ResponseEntity);
-        AuthDTO.TokenInfo tokenInfo = objectMapper.convertValue(contentAsString, AuthDTO.TokenInfo.class);
-        System.out.println("tokenInfo.getRefreshToken() = " + tokenInfo.getRefreshToken());*/
-
         Map<String, Object> stringObjectMap = objectMapper.readValue(contentAsString, new TypeReference<Map<String, Object>>() {});
-//        Map<String, Object> dataObjectMap = objectMapper.readValue(stringObjectMap.get("data").toString(), new TypeReference<Map<String, Object>>() {});
-        String data = stringObjectMap.get("data").toString();
-        System.out.println(data);
-        req.setIsOpen(0);
+        String accessToken = extractToken(stringObjectMap.get("data").toString());
+        System.out.println("!!!");
+        System.out.println(accessToken);
+
 
         //when
         final ResultActions resultAction = mockMvc.perform(
@@ -115,6 +128,7 @@ class PlaylistContollerTest {
                         .post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + accessToken)
                         .content(objectMapper.writeValueAsString(req)));
         Integer result = playlistService.createNewPlaylist(req);
 
@@ -122,4 +136,5 @@ class PlaylistContollerTest {
         resultAction
                 .andExpect(MockMvcResultMatchers.status().isCreated());
     }
+
 }

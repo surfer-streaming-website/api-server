@@ -30,6 +30,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     @Transactional
     public int createNewPlaylist(PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO) {
+//        Authentication authentication = playlistGroupRequestDTO.getAuthentication();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         MemberEntity member = memberRepository.findByMemberId(
                 Long.parseLong(AES256Util.decrypt(authentication.getName()))
