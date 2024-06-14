@@ -4,9 +4,7 @@ package com.surfer.apiserver.common.constant;
 public class Constant {
     public static final String[] permitGetMethodUrl = {
             //swagger
-            "/v3/api-docs", "/v3/api-docs/swagger-config",
-            //auth
-            "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
+            "/v3/api-docs", "/v3/api-docs/swagger-config"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
@@ -17,6 +15,7 @@ public class Constant {
             "/api/album/detail/*"
     };
     public static final String[] permitPostMethodUrl = {
+            //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
