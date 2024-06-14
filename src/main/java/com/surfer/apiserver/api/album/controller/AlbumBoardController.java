@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/album")
+@RequestMapping("/api/album")
 public class AlbumBoardController {
 
     @Autowired

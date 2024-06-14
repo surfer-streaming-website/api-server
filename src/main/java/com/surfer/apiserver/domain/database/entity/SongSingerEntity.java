@@ -15,7 +15,7 @@ public class SongSingerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "song_singer_seq")
     @SequenceGenerator(name = "song_singer_seq", sequenceName = "song_singer_seq", allocationSize = 1)
-    private String songSingerSeq;
+    private Long songSingerSeq;
 
     @Column(name = "song_singer_name")
     private String songSingerName;

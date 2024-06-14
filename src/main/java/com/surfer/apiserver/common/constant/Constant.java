@@ -10,9 +10,14 @@ public class Constant {
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
-            "/api/v1/auth/hi/*/bye"
+            "/api/v1/auth/hi/*/bye",
+            //song
+            "/api/song/detail/*",
+            //album
+            "/api/album/detail/*"
     };
     public static final String[] permitPostMethodUrl = {
+            "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };
@@ -40,7 +45,7 @@ public class Constant {
         int antUrlSize = antUrl.length;
         String[] result = new String[antUrlSize];
         for(int i = 0; i < antUrlSize; i++){
-            String regexStr = antUrl[i].replaceAll("/\\*/", "/[^/]+/");
+            String regexStr = antUrl[i].replaceAll("/\\*", "/[^/]");
             regexStr = "^" + regexStr + "$";
             result[i] = regexStr;
         }

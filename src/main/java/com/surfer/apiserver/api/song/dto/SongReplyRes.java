@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Getter
@@ -31,7 +34,7 @@ public class SongReplyRes {
         this.songReplyCordate = songReplyEntity.getSongReplyCordate();
         this.songReplyCorrect = songReplyEntity.getSongReplyCorrect();
 
-        this.memberSeq = songReplyEntity.getMemberEntity().getMemberSeq();
+        this.memberSeq = songReplyEntity.getMemberEntity().getMemberId();
         this.nickname = songReplyEntity.getMemberEntity().getNickname();
     }
 }

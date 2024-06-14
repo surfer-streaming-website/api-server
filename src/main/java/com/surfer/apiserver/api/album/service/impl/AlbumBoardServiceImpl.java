@@ -103,7 +103,7 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
         MemberEntity member = memberEntity.get();
 
         //댓글 작성자와 수정하려는 사람이 일치하는지 확인
-        if(!member.getMemberSeq().equals(replyEntity.getMemberEntity().getMemberSeq())){
+        if(!member.getMemberId().equals(replyEntity.getMemberEntity().getMemberId())){
             throw new BusinessException(ApiResponseCode.FAILED_UPDATE_REPLY, HttpStatus.BAD_REQUEST);
         }
 
@@ -133,7 +133,7 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
         MemberEntity member = memberEntity.get();
 
         //댓글 작성자와 삭제하려는 사람이 일치하는지 확인
-        if(!member.getMemberSeq().equals(replyEntity.getMemberEntity().getMemberSeq())){
+        if(!member.getMemberId().equals(replyEntity.getMemberEntity().getMemberId())){
             throw new BusinessException(ApiResponseCode.FAILED_UPDATE_REPLY, HttpStatus.BAD_REQUEST);
         }
 

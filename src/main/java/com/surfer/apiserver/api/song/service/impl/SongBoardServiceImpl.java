@@ -111,7 +111,7 @@ public class SongBoardServiceImpl implements SongBoardService {
         MemberEntity member = memberEntity.get();
 
         //댓글 작성자와 수정하려는 사람이 일치하는지 확인
-        if(!member.getMemberSeq().equals(songReplyEntity.getMemberEntity().getMemberSeq())){
+        if(!member.getMemberId().equals(songReplyEntity.getMemberEntity().getMemberId())){
             throw new BusinessException(ApiResponseCode.FAILED_UPDATE_REPLY, HttpStatus.BAD_REQUEST);
         }
 
@@ -141,7 +141,7 @@ public class SongBoardServiceImpl implements SongBoardService {
         MemberEntity member = memberEntity.get();
 
         //댓글 작성자와 삭제하려는 사람이 일치하는지 확인
-        if(!member.getMemberSeq().equals(replyEntity.getMemberEntity().getMemberSeq())){
+        if(!member.getMemberId().equals(replyEntity.getMemberEntity().getMemberId())){
             throw new BusinessException(ApiResponseCode.FAILED_UPDATE_REPLY, HttpStatus.BAD_REQUEST);
         }
 
@@ -172,22 +172,28 @@ public class SongBoardServiceImpl implements SongBoardService {
 
     @Override
     public ProducerDTO getProducer(String producer) {
-        String[] producerArray = producer.split("/");
-        String composerList = producerArray[0];
-        String lyricistList = producerArray[1];
-        String arrangerList = producerArray[2];
-
-        String[] composerArray = composerList.split(",");
         List<String> composers = new ArrayList<>();
-        for(int i=0; i<composerArray.length; i++){composers.add(composerArray[i]);}
-
-        String[] lyricistArray = lyricistList.split(",");
         List<String> lyricists = new ArrayList<>();
-        for(int i=0; i<lyricistArray.length; i++){lyricists.add(lyricistArray[i]);}
-
-        String[] arrangerArray = arrangerList.split(",");
         List<String> arrangers = new ArrayList<>();
-        for(int i=0; i<arrangerArray.length; i++){arrangers.add(arrangerArray[i]);}
+
+        if(producer != null && !producer.isEmpty()){
+            String[] producerArray = producer.split("/");
+            String composerList = producerArray[0];
+            String lyricistList = producerArray[1];
+            String arrangerList = producerArray[2];
+
+            String[] composerArray = composerList.split(",");
+            composers = new ArrayList<>();
+            for(int i=0; i<composerArray.length; i++){composers.add(composerArray[i]);}
+
+            String[] lyricistArray = lyricistList.split(",");
+            lyricists = new ArrayList<>();
+            for(int i=0; i<lyricistArray.length; i++){lyricists.add(lyricistArray[i]);}
+
+            String[] arrangerArray = arrangerList.split(",");
+            arrangers = new ArrayList<>();
+            for(int i=0; i<arrangerArray.length; i++){arrangers.add(arrangerArray[i]);}
+        }
 
         return ProducerDTO.builder().composerList(composers).lyricistList(lyricists).arrangerList(arrangers).build();
     }

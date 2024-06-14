@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/song")
+@RequestMapping("/api/song")
 public class SongBoardController {
 
     //페이지 처리를 위해 추가
@@ -95,6 +95,7 @@ public class SongBoardController {
         //sercurity에 저장된 member 정보 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
+
 
         songBoardService.songReplyInsert(songReply, Long.parseLong(memberSeq), seq);
 
