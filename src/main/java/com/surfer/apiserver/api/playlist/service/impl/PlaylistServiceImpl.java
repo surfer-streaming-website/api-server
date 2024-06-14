@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,24 +33,26 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Transactional
     public int createNewPlaylist(PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO, Long songSeq) {
 //        Authentication authentication = playlistGroupRequestDTO.getAuthentication();
-        MemberEntity member = getCurrentMember();
-
         PlaylistGroupEntity playlistGroupEntity =
-                playlistGroupRequestDTO.toPlaylistGroupEntity(playlistGroupRequestDTO);
-        playlistGroupEntity.setMemberEntity(member);
+                playlistGroupRequestDTO.toPlaylistGroupEntityWithOutTag(playlistGroupRequestDTO);
+        playlistGroupEntity.setMemberEntity(getCurrentMember());
 
-        if(playlistGroupEntity.getPlaylistTagEntities() != null) {
-            for(PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {}
+        PlaylistGroupEntity playlistGroup = playlistGroupRepository.save(playlistGroupEntity);
+
+        for (String tag : playlistGroupRequestDTO.getTagList()) {
+            playlistTagRepository.save(
+                    PlaylistTagEntity.builder()
+                            .tagEntity(tagRepository.findByTagName(tag)
+                                    .orElseThrow(() -> new BusinessException(ApiResponseCode.FAILED_LOAD_PLAYLIST_LIKE, HttpStatus.BAD_REQUEST)))
+                            .playlistGroupEntity(playlistGroup)
+                            .build()
+            );
         }
 
-        playlistGroupRepository.save(playlistGroupEntity);
         playlistTrackRepository.save(PlaylistTrackEntity.builder()
-                .playlistGroupEntity(playlistGroupEntity)
+                .playlistGroupEntity(playlistGroup)
                 .songTestEntity(findSongTest(songSeq))
                 .build());
-        playlistTagRepository.save(PlaylistTagEntity.builder()
-                .playlistGroupEntity(playlistGroupEntity)
-                .tagEntity().build());
 
         return 1;
     }

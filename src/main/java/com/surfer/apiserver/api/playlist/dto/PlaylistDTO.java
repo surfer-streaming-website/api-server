@@ -15,23 +15,15 @@ public class PlaylistDTO {
     public static class PlaylistGroupRequestDTO {
         private String playlistName;
         private int isOpen;
-        private PlaylistTagRequestDTO tag;
-//        private Authentication authentication;
-
-        public PlaylistGroupEntity toPlaylistGroupEntity(PlaylistGroupRequestDTO playlistGroupRequest) {
-        return playlistGroupRequest.getTag() == null ?
-                PlaylistGroupEntity.builder()
-                        .playlistName(playlistGroupRequest.getPlaylistName())
-                        .isOpen(playlistGroupRequest.getIsOpen())
-                        .build() :
-                PlaylistGroupEntity.builder()
-                        .playlistName(playlistGroupRequest.getPlaylistName())
-                        .isOpen(playlistGroupRequest.getIsOpen())
-                        .playlistTagEntities(playlistGroupRequest.getTag()
-                                .toPlaylistTagEntityList(playlistGroupRequest.getTag()))
-                        .build();
+        private List<String> tagList;
 
 
+        public PlaylistGroupEntity toPlaylistGroupEntityWithOutTag(PlaylistGroupRequestDTO playlistGroupRequest) {
+
+            return new PlaylistGroupEntity().builder()
+                    .isOpen(playlistGroupRequest.getIsOpen())
+                    .playlistName(playlistGroupRequest.getPlaylistName())
+                    .build();
         }
     }
 
@@ -73,47 +65,12 @@ public class PlaylistDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PlaylistTagRequestDTO {
-        private TagRequestDTO tag;
-
-        //리스트로 만들어주기
-        public List<PlaylistTagEntity> toPlaylistTagEntityList(PlaylistTagRequestDTO playlistTagRequest) {
-            List<PlaylistTagEntity> playlistTagEntities = new ArrayList<>();
-
-            PlaylistTagEntity build = PlaylistTagEntity.builder()
-                    .tagEntity(playlistTagRequest.getTag()
-                            .toTagEntity(playlistTagRequest.getTag()))
-                    .build();
-            playlistTagEntities.add(build);
-
-            return playlistTagEntities;
-        }
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     @ToString
     public static class PlaylistTagResponseDTO {
         private TagResponseDTO tag;
 
         public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
             this.tag = new TagResponseDTO(playlistTagEntity.getTagEntity());
-        }
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TagRequestDTO {
-        private String tagName;
-
-        public TagEntity toTagEntity(TagRequestDTO tagRequest) {
-            return TagEntity.builder().tagName(tagRequest.getTagName()).build();
         }
     }
 
