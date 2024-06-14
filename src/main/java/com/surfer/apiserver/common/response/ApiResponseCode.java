@@ -19,7 +19,16 @@ public enum ApiResponseCode {
     //COMMON
     FAILED_SIGN_UP_USER("ERR_SIGN_UP", "failed to add new user"),
     FAILED_SIGN_IN_USER("ERR_SIGN_IN", "failed to login because userid not exist"),
-    INVALID_USER_ID("INVALID_USER_ID", "failed to load user because email is not exist");
+    INVALID_USER_ID("INVALID_USER_ID", "failed to load user because email is not exist"),
+    //song
+    INVALID_SONG_ID("INVALID_SONG_ID","failed to load song because seq is not exist"),
+    INVALID_ALBUM_ID("INVALID_ALBUM_ID", "failed to load album because seq is not exist"),
+    INVALID_ALBUM_STATE("INVALID_ALBUM_STATE","invalid album state"),
+    INVALID_REPLY_ID("INVALID_REPLY_ID","failed to load reply because seq is not exist"),
+    FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized")
+    
+    ;
+
 
     private String code;
     private String message;
