@@ -36,10 +36,20 @@ public class AlbumReplyEntity {
     @UpdateTimestamp
     private Date albumReplyCordate;
 
+
     @Column(name = "album_reply_correct")
     @Builder.Default
-    @ColumnDefault("false")
     private Boolean albumReplyCorrect = false;
+
+
+/*
+
+    @Column(columnDefinition = "number(1,0) default 0")
+    private Boolean albumReplyCorrect = false;
+*/
+
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_seq")

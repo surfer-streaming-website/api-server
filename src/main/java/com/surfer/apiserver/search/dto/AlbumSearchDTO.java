@@ -1,0 +1,20 @@
+package com.surfer.apiserver.search.dto;
+
+import lombok.Getter;
+
+@Getter
+public class AlbumSearchDTO {
+
+    private String albumImage;
+    private String albumTitle;
+    private String albumSingerName;
+
+
+    //앨범 2
+    public AlbumSearchDTO(String albumImage,String albumTitle,String albumSingerName) {
+        this.albumImage =albumImage;
+        this.albumTitle = albumTitle;
+        this.albumSingerName = albumSingerName;
+
+    }
+}

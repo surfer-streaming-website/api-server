@@ -2,10 +2,7 @@ package com.surfer.apiserver.domain.database.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -17,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@Setter
 public class AlbumEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "album_id_seq")

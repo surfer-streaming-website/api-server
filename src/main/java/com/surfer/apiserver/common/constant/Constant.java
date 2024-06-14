@@ -17,6 +17,8 @@ public class Constant {
     public static final String[] permitPostMethodUrl = {
             //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
+            //test
+            ,"/file/upload","/song/*"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };
