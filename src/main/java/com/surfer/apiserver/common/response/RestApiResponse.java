@@ -1,5 +1,6 @@
 package com.surfer.apiserver.common.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
