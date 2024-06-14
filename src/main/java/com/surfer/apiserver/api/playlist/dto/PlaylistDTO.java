@@ -1,10 +1,7 @@
 package com.surfer.apiserver.api.playlist.dto;
 
-import com.surfer.apiserver.domain.database.entity.PlaylistGroupEntity;
-import com.surfer.apiserver.domain.database.entity.PlaylistTagEntity;
-import com.surfer.apiserver.domain.database.entity.TagEntity;
+import com.surfer.apiserver.domain.database.entity.*;
 import lombok.*;
-import org.springframework.security.core.Authentication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +26,10 @@ public class PlaylistDTO {
                         .build() :
                 PlaylistGroupEntity.builder()
                         .playlistName(playlistGroupRequest.getPlaylistName())
-                    .isOpen(playlistGroupRequest.getIsOpen())
-                    .playlistTagEntities(playlistGroupRequest.getTag()
-                            .toPlaylistTagEntityList(playlistGroupRequest.getTag()))
-                    .build();
+                        .isOpen(playlistGroupRequest.getIsOpen())
+                        .playlistTagEntities(playlistGroupRequest.getTag()
+                                .toPlaylistTagEntityList(playlistGroupRequest.getTag()))
+                        .build();
 
 
         }
@@ -49,6 +46,26 @@ public class PlaylistDTO {
         private MemberResponseDTO nickname;
         private List<PlaylistTagResponseDTO> tag;
         private List<PlaylistTrackResponseDTO> track;
+
+        public PlaylistGroupResponseDTO(PlaylistGroupEntity playlistGroupEntity) {
+            this.playlistName = playlistGroupEntity.getPlaylistName();
+            this.isOpen = playlistGroupEntity.getIsOpen();
+            this.nickname = new MemberResponseDTO(playlistGroupEntity.getMemberEntity().getNickname());
+
+            List<PlaylistTagResponseDTO> playlistTagResponseDTOList = new ArrayList<>();
+            for (PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {
+                PlaylistTagResponseDTO playlistTagResponseDTO = new PlaylistTagResponseDTO(playlistTagEntity);
+                playlistTagResponseDTOList.add(playlistTagResponseDTO);
+            }
+            this.tag = playlistTagResponseDTOList;
+
+            List<PlaylistTrackResponseDTO> playlistTrackResponseDTOList = new ArrayList<>();
+            for (PlaylistTrackEntity playlistTrackEntity : playlistGroupEntity.getPlaylistTrackEntities()) {
+                PlaylistTrackResponseDTO playlistTrackResponseDTO = new PlaylistTrackResponseDTO(playlistTrackEntity);
+                playlistTrackResponseDTOList.add(playlistTrackResponseDTO);
+            }
+            this.track = playlistTrackResponseDTOList;
+        }
     }
 
     @Getter
@@ -81,6 +98,10 @@ public class PlaylistDTO {
     @ToString
     public static class PlaylistTagResponseDTO {
         private TagResponseDTO tag;
+
+        public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
+            this.tag = new TagResponseDTO(playlistTagEntity.getTagEntity());
+        }
     }
 
     @Getter
@@ -118,6 +139,10 @@ public class PlaylistDTO {
     public static class PlaylistTrackResponseDTO {
         private SongTestResponseDTO song;
         private String regDate;
+
+        public PlaylistTrackResponseDTO(PlaylistTrackEntity playlistTrackEntity) {
+            this.song = new SongTestResponseDTO(playlistTrackEntity.getSongTestEntity());
+        }
     }
 
     @Getter
@@ -128,6 +153,11 @@ public class PlaylistDTO {
     public static class SongTestResponseDTO {
         private String songName;
         private String artistName;
+
+        public SongTestResponseDTO(SongTestEntity songTestEntity) {
+            this.songName = songTestEntity.getSongName();
+            this.artistName = songTestEntity.getSinger();
+        }
     }
 
     @Getter
@@ -137,5 +167,18 @@ public class PlaylistDTO {
     @AllArgsConstructor
     public static class MemberResponseDTO {
         private String Nickname;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PlaylistLikeResponseDTO {
+        private PlaylistGroupResponseDTO playlistGroup;
+
+        public PlaylistLikeResponseDTO(PlaylistLikeEntity playlistLikeEntity) {
+            this.playlistGroup = new PlaylistGroupResponseDTO(playlistLikeEntity.getPlaylistGroupEntity());
+        }
     }
 }

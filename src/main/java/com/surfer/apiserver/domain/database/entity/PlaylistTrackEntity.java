@@ -20,7 +20,7 @@ public class PlaylistTrackEntity {
     @Column(name = "playlist_track_seq", nullable = false)
     private Long playlistTrackSeq;
     @CreationTimestamp
-    @Column(name = "reg_name", nullable = false)
+    @Column(name = "reg_date", nullable = false)
     private LocalDateTime regDate;
     @UpdateTimestamp
     @Column(name = "update_date", nullable = false)
@@ -28,9 +28,9 @@ public class PlaylistTrackEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playlist_group_seq", referencedColumnName = "playlist_group_seq", nullable = false)
-    private PlaylistGroupEntity playlistGroup;
+    private PlaylistGroupEntity playlistGroupEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_seq", referencedColumnName = "song_seq", nullable = false)
-    private SongTestEntity songEntity;
+    private SongTestEntity songTestEntity;
 }

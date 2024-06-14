@@ -35,7 +35,7 @@ public class PlaylistGroupEntity {
     @JoinColumn(name = "member_id", referencedColumnName = "member_id", nullable = false)
     private MemberEntity memberEntity;
 
-    @OneToMany(mappedBy = "playlistGroup", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "playlistGroupEntity", cascade = CascadeType.ALL)
     private List<PlaylistTrackEntity> playlistTrackEntities;
 
     @OneToMany(mappedBy = "playlistGroupEntity", cascade = CascadeType.ALL)
