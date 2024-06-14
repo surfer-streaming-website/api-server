@@ -25,8 +25,12 @@ public enum ApiResponseCode {
     INVALID_ALBUM_ID("INVALID_ALBUM_ID", "failed to load album because seq is not exist"),
     INVALID_ALBUM_STATE("INVALID_ALBUM_STATE","invalid album state"),
     INVALID_REPLY_ID("INVALID_REPLY_ID","failed to load reply because seq is not exist"),
-    FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized")
-    
+    FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized"),
+    //playlist
+    FAILED_LOAD_PLAYLIST("ERR_LOAD_PLAYLIST", "failed to load playlist because playlist does not exist"), // 존재하는 플레이리스트가 없음
+    FAILED_ACCESS_PLAYLIST("FAILED_ACCESS_PLAYLIST", "failed to access playlist because playlist does not exist"), // 해당하는 플레이리스트가 없음
+    FAILED_LOAD_PLAYLIST_LIKE("FAILED_LOAD_PLAYLIST_LIKE", "failed to load playlistLike because playlistLike does not exist"), // 존재하는 좋아요가 없음
+    FAILED_ACCESS_PLAYLIST_LIKE("FAILD_ACCESS_PLAYLIST_LIKE", "failed to access playlistLike because playlistLike does not exist") // 해당하는 좋아요가 없음
     ;
 
 
