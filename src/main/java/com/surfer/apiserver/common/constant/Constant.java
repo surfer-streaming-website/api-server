@@ -8,7 +8,11 @@ public class Constant {
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
-            "/api/v1/auth/hi/*/bye"
+            "/api/v1/auth/hi/*/bye",
+            //song
+            "/api/song/detail/*",
+            //album
+            "/api/album/detail/*"
     };
     public static final String[] permitPostMethodUrl = {
             //auth
