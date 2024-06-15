@@ -26,8 +26,9 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistTagRepository playlistTagRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
     private final PlaylistLikeRepository playlistLikeRepository;
-    private final SongTestRepository songTestRepository;
+//    private final SongTestRepository songTestRepository;
     private final TagRepository tagRepository;
+    private final SongRepository songRepository;
 
     @Override
     @Transactional
@@ -51,7 +52,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         playlistTrackRepository.save(PlaylistTrackEntity.builder()
                 .playlistGroupEntity(playlistGroup)
-                .songTestEntity(findSongTest(songSeq))
+                .songEntity(findSong(songSeq))
                 .build());
 
         return 1;
@@ -60,7 +61,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public int insertSongIntoPlaylist(Long songSeq, Long playlistGroupSeq) {
         playlistTrackRepository.save(PlaylistTrackEntity.builder()
-                .songTestEntity(findSongTest(songSeq))
+                .songEntity(findSong(songSeq))
                 .playlistGroupEntity(findPlaylistGroup(playlistGroupSeq))
                 .build());
 
@@ -104,11 +105,11 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public int deleteSongFromPlaylistById(Long playlistGroupSeq, Long songSeq) {
         PlaylistGroupEntity playlistGroupEntity = findPlaylistGroup(playlistGroupSeq);
-        SongTestEntity songTestEntity = findSongTest(songSeq);
+        SongEntity songEntity = findSong(songSeq);
 
         PlaylistTrackEntity playlistTrackEntity = playlistTrackRepository
-                .findByPlaylistGroupSeqAndSongSeq(playlistGroupEntity, songTestEntity)
-                        .orElseThrow(()->new BusinessException(ApiResponseCode.FAILED_ACCESS_PLAYLIST, HttpStatus.BAD_REQUEST));
+                .findByPlaylistGroupSeqAndSongSeq(playlistGroupEntity, songEntity)
+                        .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_PLAYLIST_ID, HttpStatus.BAD_REQUEST));
 
         playlistTrackRepository.delete(playlistTrackEntity);
 
@@ -145,7 +146,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         PlaylistGroupEntity playlistGroupEntity = findPlaylistGroup(playlistGroupSeq);
 
         PlaylistLikeEntity playlistLikeEntity = playlistLikeRepository.liked(memberEntity, playlistGroupEntity)
-                .orElseThrow(()->new BusinessException(ApiResponseCode.FAILED_ACCESS_PLAYLIST_LIKE, HttpStatus.BAD_REQUEST));
+                .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_PLAYLIST_LIKE_ID, HttpStatus.BAD_REQUEST));
 
         playlistLikeRepository.delete(playlistLikeEntity);
 
@@ -172,10 +173,18 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     /**
-     * songSeq 를 기준으로 SongTestEntity 를 찾아주는 메소드
+     * songTestSeq 를 기준으로 SongTestEntity 를 찾아주는 메소드
      */
-    private SongTestEntity findSongTest(Long songTestSeq) {
+    /*private SongTestEntity findSongTest(Long songTestSeq) {
         return songTestRepository.findById(songTestSeq)
                 .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_PARAMETER_ERR, HttpStatus.BAD_REQUEST));
+    }*/
+
+    /**
+     * songSeq 를 기준으로 SongEntity 를 찾아주는 메소드
+     */
+    private SongEntity findSong(Long songSeq) {
+        return songRepository.findById(songSeq)
+                .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_SONG_ID, HttpStatus.BAD_REQUEST));
     }
 }

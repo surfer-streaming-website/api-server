@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PlaylistLikeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_like_seq")
-    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_like_seq" , name = "playlist_like_seq")
-    @Column(name = "playlist_like_seq", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_like_id_seq")
+    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_like_id_seq" , name = "playlist_like_id_seq")
+    @Column(name = "playlist_like_id", nullable = false)
     private Long playlistLikeSeq;
     @CreationTimestamp
     @Column(name = "reg_date", nullable = false)
@@ -27,7 +27,7 @@ public class PlaylistLikeEntity {
     private LocalDateTime updateDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playlist_group_seq", referencedColumnName = "playlist_group_seq", nullable = false)
+    @JoinColumn(name = "playlist_group_id", referencedColumnName = "playlist_group_id", nullable = false)
     private PlaylistGroupEntity playlistGroupEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)

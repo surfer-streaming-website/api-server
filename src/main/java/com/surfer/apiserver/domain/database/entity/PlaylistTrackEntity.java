@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PlaylistTrackEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_track_seq")
-    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_track_seq" , name = "playlist_track_seq")
-    @Column(name = "playlist_track_seq", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_track_id_seq")
+    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_track_id_seq" , name = "playlist_track_id_seq")
+    @Column(name = "playlist_track_id", nullable = false)
     private Long playlistTrackSeq;
     @CreationTimestamp
     @Column(name = "reg_date", nullable = false)

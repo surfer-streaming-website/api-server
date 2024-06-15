@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class PlaylistGroupEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_group_seq")
-    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_group_seq" , name = "playlist_group_seq")
-    @Column(name = "playlist_group_seq", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator = "playlist_group_id_seq")
+    @SequenceGenerator(allocationSize = 1, sequenceName = "playlist_group_id_seq" , name = "playlist_group_id_seq")
+    @Column(name = "playlist_group_id", nullable = false)
     private Long playlistGroupSeq;
     @Column(name = "is_open", nullable = false)
     private int isOpen;
