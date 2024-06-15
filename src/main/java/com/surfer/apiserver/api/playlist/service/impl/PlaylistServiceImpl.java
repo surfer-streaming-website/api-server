@@ -44,7 +44,7 @@ public class PlaylistServiceImpl implements PlaylistService {
             playlistTagRepository.save(
                     PlaylistTagEntity.builder()
                             .tagEntity(tagRepository.findByTagName(tag)
-                                    .orElseThrow(() -> new BusinessException(ApiResponseCode.FAILED_LOAD_PLAYLIST_LIKE, HttpStatus.BAD_REQUEST)))
+                                    .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST)))
                             .playlistGroupEntity(playlistGroup)
                             .build()
             );
