@@ -1,4 +1,4 @@
-package com.surfer.apiserver.search.dto;
+package com.surfer.apiserver.api.search.dto;
 
 import lombok.Getter;
 import lombok.Setter;

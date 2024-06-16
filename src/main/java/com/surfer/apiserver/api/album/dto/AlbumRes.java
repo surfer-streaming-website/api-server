@@ -1,6 +1,7 @@
 package com.surfer.apiserver.api.album.dto;
 
 import com.surfer.apiserver.api.song.dto.SongReq;
+import com.surfer.apiserver.api.song.dto.SongRes;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,8 @@ public class AlbumRes {
 
     private List<AlbumSingerEntity> singers;
 
+    private List<SongRes> songList;
+
     public AlbumRes(AlbumEntity albumEntity, Page<AlbumReplyRes> replies, List<AlbumSingerEntity> singers){
         this.albumSeq = albumEntity.getAlbumSeq();
         this.albumTitle = albumEntity.getAlbumTitle();
@@ -54,4 +57,34 @@ public class AlbumRes {
         this.replies = replies;
         this.singers = singers;
     }
+
+
+
+
+    //마이페이지 앨범 상세보기
+    public AlbumRes(AlbumEntity albumEntity, List<AlbumSingerEntity> singers){
+        this.albumSeq = albumEntity.getAlbumSeq();
+        this.albumTitle = albumEntity.getAlbumTitle();
+        this.releaseDate = albumEntity.getReleaseDate();
+        this.agency = albumEntity.getAgency();
+        this.albumContent = albumEntity.getAlbumContent();
+        this.albumImage = albumEntity.getAlbumImage();
+        this.albumState = albumEntity.getAlbumState();
+
+        //song에 관련해서 필요한 정보만 담았다.
+        List<SongRes> songList = new ArrayList<>();
+        albumEntity.getSongEntityList().forEach(
+                song -> {
+                    SongRes songRes = new SongRes(song);
+                    songList.add(songRes);
+                }
+        );
+        this.songList = songList;
+        this.singers = singers;
+    }
+
+
+
+
+
 }

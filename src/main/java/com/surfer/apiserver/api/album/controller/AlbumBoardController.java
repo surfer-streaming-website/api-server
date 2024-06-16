@@ -1,15 +1,18 @@
 package com.surfer.apiserver.api.album.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
 import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
+import com.surfer.apiserver.file.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -35,6 +38,13 @@ public class AlbumBoardController {
 
     //페이지 처리를 위해 추가
     private final static int BLOCK_COUNT=5;
+
+    private S3Service s3Service;
+
+    private ObjectMapper objectMapper;
+
+    private AlbumService albumService;
+
 
     /**
      * 앨범 상세정보 조회
@@ -122,4 +132,9 @@ public class AlbumBoardController {
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
+
+
+
+
+
 }

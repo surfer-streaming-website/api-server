@@ -32,6 +32,6 @@ public class AlbumReplyRes {
         this.albumReplyCorrect = albumReplyEntity.getAlbumReplyCorrect();
 
         this.memberSeq = albumReplyEntity.getMemberEntity().getMemberId();
-        this.nickname = albumReplyEntity.getMemberEntity().getNickname();
+//        this.nickname = albumReplyEntity.getMemberEntity().getNickname();
     }
 }

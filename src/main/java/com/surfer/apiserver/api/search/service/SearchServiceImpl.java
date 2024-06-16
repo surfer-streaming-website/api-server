@@ -1,8 +1,7 @@
-package com.surfer.apiserver.search.service;
+package com.surfer.apiserver.api.search.service;
 
-import com.surfer.apiserver.domain.database.entity.SongEntity;
+import com.surfer.apiserver.api.search.dto.*;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
-import com.surfer.apiserver.search.dto.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public SearchRes findKeyword(String keyword) {
-        System.out.println("여기까지? = " + keyword);
         List<SongSearchDTO> song = songRepository.findKeywordSong(keyword);
         List<AlbumSearchDTO> album = songRepository.findKeywordAlbum(keyword);
         List<PlayListSearchDTO> playList = songRepository.findKeywordPlayList(keyword);

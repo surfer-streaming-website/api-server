@@ -41,6 +41,7 @@ public class AlbumEntity {
     private int albumState;
 
     @Column(name="album_reg_date")
+    @Temporal(TemporalType.DATE)
     @CreationTimestamp
     private Date albumRegDate;
 
@@ -49,7 +50,7 @@ public class AlbumEntity {
     private List<SongEntity> songEntityList;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_seq")
+    @JoinColumn(name = "member_id")
     @JsonIgnore
     private MemberEntity memberEntity;
 
@@ -61,4 +62,4 @@ public class AlbumEntity {
     @JsonIgnore
     private List<AlbumSingerEntity> albumSingerEntities;
 
-}
+    }

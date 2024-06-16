@@ -1,18 +1,20 @@
-package com.surfer.apiserver.search.controller;
+package com.surfer.apiserver.api.search.controller;
 
 
-import com.surfer.apiserver.search.dto.SearchRes;
-import com.surfer.apiserver.search.service.SearchService;
+import com.surfer.apiserver.api.search.dto.SearchRes;
+import com.surfer.apiserver.api.search.service.SearchService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/song")
+@RequestMapping("/api/song")
 public class SearchController {
 
+    @Autowired
     private SearchService searchService;
 
 
@@ -26,15 +28,5 @@ public class SearchController {
     }
 
 
-
-
-    @PostMapping("/list")
-
-    public String list(){
-
-//        songService.findKeyword();
-
-        return "list ok";
-    }
 
 }

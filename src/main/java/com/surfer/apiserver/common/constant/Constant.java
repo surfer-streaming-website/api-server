@@ -4,21 +4,21 @@ package com.surfer.apiserver.common.constant;
 public class Constant {
     public static final String[] permitGetMethodUrl = {
             //swagger
-            "/v3/api-docs", "/v3/api-docs/swagger-config"
+            "/v3/api-docs", "/v3/api-docs/swagger-config","/album/*","/api/album/status/*"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
             "/api/v1/auth/hi/*/bye",
             //song
-            "/api/song/detail/*",
+            "/api/song/detail/*","/api/song/*",
             //album
-            "/api/album/detail/*"
+            "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*"
     };
     public static final String[] permitPostMethodUrl = {
             //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
             //test
-            ,"/file/upload","/song/*"
+            ,"/file/upload","/song/*","album/save"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };

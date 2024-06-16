@@ -1,18 +1,17 @@
-package com.surfer.apiserver.album.service;
+package com.surfer.apiserver.api.album.service.impl;
 
-import com.surfer.apiserver.album.dto.AlbumDTO;
-import com.surfer.apiserver.album.dto.AlbumReq;
-import com.surfer.apiserver.album.dto.SongDTO;
+import com.surfer.apiserver.api.album.service.AlbumService;
+import com.surfer.apiserver.common.exception.BusinessException;
+import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
-import com.surfer.apiserver.domain.database.entity.SongEntity;
-import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
 import com.surfer.apiserver.domain.database.repository.AlbumRepository;
 import com.surfer.apiserver.domain.database.repository.AlbumSingerRepository;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
 import com.surfer.apiserver.domain.database.repository.SongSingerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,8 +35,81 @@ public class AlbumServiceImpl implements AlbumService {
         this.albumSingerRepository = albumSingerRepository;
     }
 
+    @Override
+    public void saveAlbum(AlbumEntity albumEntity) {
+        albumRepository.save(albumEntity);
+
+    }
 
 
+    //등록 신청 앨범 리스트 찾기
+    @Override
+    public List<AlbumEntity> findAllByMemberEntityId(Long memberId) {
+
+        List<AlbumEntity> albumEntities= albumRepository.findAllAlbum(memberId);
+
+        return albumEntities;
+    }
+
+    //마이페이지 앨범 상세보기
+    @Override
+    public AlbumEntity findAlbum(Long albumSeq) {
+
+        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(
+                () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID,HttpStatus.BAD_REQUEST));
+
+        return albumEntity;
+    }
+    
+    //앨범 가수 리스트
+    @Override
+    public List<AlbumSingerEntity> findAlbumSingerList(AlbumEntity albumEntity) {
+
+        List<AlbumSingerEntity> list = albumSingerRepository.findAllByAlbum(albumEntity);
+
+        return list;
+    }
+
+    //신청한 앨범 삭제
+    @Override
+    public void deleteAlbum(Long albumSeq) {
+
+        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElse(null);
+
+        if(!albumEntity.getAlbumSeq().equals(albumSeq)) {
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
+        }
+        albumRepository.deleteById(albumSeq);
+
+    }
+
+
+
+ /*   @Override
+    public List<AlbumEntity> findAllByMemberEntityId(Long memberId) {
+
+        List<AlbumEntity> albumEntities= albumRepository.findAllAlbum(memberId);
+
+        return albumEntities;
+    }
+
+    //마이페이지 앨범 상세보기
+    @Override
+    public AlbumEntity findAlbum(Long albumSeq) {
+
+        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElse(null);
+
+        return albumEntity;
+    }
+
+
+
+*/
+
+
+
+
+/*
     @Override
     public void saveAlbum(AlbumReq albumReq) {
         AlbumDTO albumDTO = albumReq.getAlbumDTO();
@@ -88,6 +160,6 @@ public class AlbumServiceImpl implements AlbumService {
             }
 
         }
-    }
+    }*/
 
 }
