@@ -16,6 +16,7 @@ public class PlaylistDTO {
         private String playlistName;
         private int isOpen;
         private List<String> tagList;
+        private List<String> deleteTagList;
 
 
         public PlaylistGroupEntity toPlaylistGroupEntityWithOutTag(PlaylistGroupRequestDTO playlistGroupRequest) {
@@ -94,11 +95,11 @@ public class PlaylistDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PlaylistTrackResponseDTO {
-        private SongTestResponseDTO song;
+        private SongResponseDTO song;
         private String regDate;
 
         public PlaylistTrackResponseDTO(PlaylistTrackEntity playlistTrackEntity) {
-            this.song = new SongTestResponseDTO(playlistTrackEntity.getSongTestEntity());
+            this.song = new SongResponseDTO(playlistTrackEntity.getSongEntity());
         }
     }
 
@@ -107,13 +108,13 @@ public class PlaylistDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SongTestResponseDTO {
+    public static class SongResponseDTO {
         private String songName;
-        private String artistName;
+        private List<SongSingerEntity> artist;
 
-        public SongTestResponseDTO(SongTestEntity songTestEntity) {
-            this.songName = songTestEntity.getSongName();
-            this.artistName = songTestEntity.getSinger();
+        public SongResponseDTO(SongEntity songEntity) {
+            this.songName = songEntity.getSongTitle();
+            this.artist = songEntity.getSongSingerEntityList();
         }
     }
 

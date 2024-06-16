@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.playlist.service;
 
 import com.surfer.apiserver.api.playlist.dto.PlaylistDTO;
 import com.surfer.apiserver.domain.database.entity.PlaylistLikeEntity;
+import com.surfer.apiserver.domain.database.entity.TagEntity;
 
 import java.util.List;
 
@@ -28,9 +29,14 @@ public interface PlaylistService {
     PlaylistDTO.PlaylistGroupResponseDTO getPlaylistById(Long playlistGroupSeq);
 
     /**
-     * 플레이리스트 이름, 공개여부 변경
+     * 플레이리스트 이름, 공개여부 변경, 태그 추가/수정
      */
-    int changePlaylistNameAndIsOpen(Long playlistGroupSeq, PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO);
+    int changePlaylist(Long playlistGroupSeq, PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO);
+
+    /**
+     * 플레이리스트의 태그 삭제
+     */
+    int deleteTag(Long playlistGroupSeq, TagEntity tagEntity);
 
     /**
      * 플레이리스트 삭제
@@ -41,18 +47,6 @@ public interface PlaylistService {
      * 플레이리스트에서 노래 삭제
      */
     int deleteSongFromPlaylistById(Long playlistGroupSeq, Long songSeq);
-
-    /**
-     * 플레이리스트에 태그 추가
-     */
-
-    /**
-     * 플레이리스트의 태그 수정
-     */
-
-    /**
-     * 플레이리스트의 태그 삭제
-     */
 
     /**
      * 플레이리스트에 좋아요가 존재하는지 체크하고 있다면 전부 반환

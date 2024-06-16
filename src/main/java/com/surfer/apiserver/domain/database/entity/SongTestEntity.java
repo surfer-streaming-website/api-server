@@ -22,6 +22,6 @@ public class SongTestEntity {
     @Column(name = "singer", nullable = false)
     private String singer;
 
-    @OneToMany(mappedBy = "songTestEntity" , cascade = CascadeType.ALL)
-    private List<PlaylistTrackEntity> playlistTrackEntities;
+//    @OneToMany(mappedBy = "songTestEntity" , cascade = CascadeType.ALL)
+//    private List<PlaylistTrackEntity> playlistTrackEntities;
 }

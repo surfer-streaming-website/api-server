@@ -27,7 +27,7 @@ public class PlaylistTrackEntity {
     private LocalDateTime updateDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playlist_group_seq", referencedColumnName = "playlist_group_seq", nullable = false)
+    @JoinColumn(name = "playlist_group_id", referencedColumnName = "playlist_group_id", nullable = false)
     private PlaylistGroupEntity playlistGroupEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)

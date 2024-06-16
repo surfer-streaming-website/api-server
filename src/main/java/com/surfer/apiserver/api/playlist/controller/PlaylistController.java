@@ -74,11 +74,11 @@ public class PlaylistController {
     }
 
     /**
-     * 플레이리스트의 이름, 공개여부 변경
+     * 플레이리스트의 이름, 공개여부 변경, 태그 추가/수정/삭제
      */
     @PutMapping("/myPlaylists/{playlistSeq}")
     public ResponseEntity<?> changePlaylistNameAndIsOpen(@PathVariable Long playlistSeq, @RequestBody PlaylistDTO.PlaylistGroupRequestDTO request) {
-        int result = playlistService.changePlaylistNameAndIsOpen(playlistSeq, request);
+        int result = playlistService.changePlaylist(playlistSeq, request);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.ACCEPTED));
