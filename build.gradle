@@ -62,9 +62,15 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 
+
     //오라클 db
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'com.oracle.database.jdbc:ojdbc8'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'com.oracle.database.security:osdt_cert:21.3.0.0'
+    implementation 'com.oracle.database.security:oraclepki:21.3.0.0'
+    implementation 'com.oracle.database.security:osdt_core:21.3.0.0'
 
     // queryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

@@ -1,6 +1,7 @@
 package com.surfer.apiserver.file.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.surfer.apiserver.api.album.dto.AlbumReq;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.file.dto.LogCreateRequest;
@@ -32,21 +33,26 @@ public class FileController{
     }
     @PostMapping
     public String saveAlbum(@Valid @ModelAttribute LogCreateRequest request,
-                            @RequestPart("album") String albumEntity)  throws Exception  {
+                            @RequestPart("album") String albumReq)  throws Exception  {
 
         // 파일 있는지 검사
         if (request.getFiles() == null) {
 //            throw new BusinessException(ErrorCode.EMPTY_FILES);
         }
 
+        System.out.println("albumReq = "+albumReq);
 
-        AlbumEntity album = objectMapper.readValue(albumEntity, AlbumEntity.class);
+
+        //AlbumEntity album = objectMapper.readValue(albumEntity, AlbumEntity.class);
+        AlbumReq album = objectMapper.readValue(albumReq, AlbumReq.class);
+        System.out.println("album = "+album);
         //return albumService.save(album);
 
         List<String> files = s3Service.uploadFile(request.getFiles());
-        albumService.saveAlbum(album);
+
+        //albumService.saveAlbum(album);
         System.out.println("Files: " + files);
-        System.out.println("album: " + album);
+        System.out.println("album2: " + album);
 
         //return ResponseEntity.ok(ResultResponse.of(ResultCode.CREATE_LOG_SUCCESS, ""));
         return "ok";

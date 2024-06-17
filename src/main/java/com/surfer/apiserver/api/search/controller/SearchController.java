@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/song")
+@RequestMapping("/api/search")
 public class SearchController {
 
     @Autowired
