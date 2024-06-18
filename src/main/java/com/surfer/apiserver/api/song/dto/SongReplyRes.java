@@ -17,10 +17,10 @@ import java.util.Date;
 @Builder
 public class SongReplyRes {
     private Long songReplySeq;
-    private Date songReplyRegDate;
+    private String songReplyRegDate;
     private String songReplyContent;
     private int songReplyLike;
-    private Date songReplyCordate;
+    private String songReplyCordate;
     private Boolean songReplyCorrect;
 
     private Long memberSeq;
@@ -28,10 +28,12 @@ public class SongReplyRes {
 
     public SongReplyRes(SongReplyEntity songReplyEntity){
         this.songReplySeq = songReplyEntity.getSongReplySeq();
-        this.songReplyRegDate = songReplyEntity.getSongReplyRegdate();
+        //원하는 날짜 형태 문자열로 변환
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        this.songReplyRegDate = formatter.format(songReplyEntity.getSongReplyRegdate());
         this.songReplyContent = songReplyEntity.getSongReplyContent();
         this.songReplyLike = songReplyEntity.getSongReplyLike();
-        this.songReplyCordate = songReplyEntity.getSongReplyCordate();
+        this.songReplyCordate = formatter.format(songReplyEntity.getSongReplyCordate());
         this.songReplyCorrect = songReplyEntity.getSongReplyCorrect();
 
         this.memberSeq = songReplyEntity.getMemberEntity().getMemberId();
