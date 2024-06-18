@@ -20,6 +20,7 @@ public class SongReq {
     private String soundSourceName;
     private Boolean songState;
     private List<SongSingerEntity> singers;
+    private int totalPlayedCount;
 
     public SongReq(SongEntity songEntity){
         this.songSeq = songEntity.getSongSeq();
@@ -28,5 +29,6 @@ public class SongReq {
         this.soundSourceName = songEntity.getSoundSourceName();
         this.songState = songEntity.getSongState();
         this.singers = songEntity.getSongSingerEntityList();
+        this.totalPlayedCount = songEntity.getTotalPlayedCount();
     }
 }

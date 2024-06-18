@@ -32,6 +32,7 @@ public class SongRes {
 
     private Long albumSeq;
     private String albumTitle;
+    private String albumImage;
 
     private ProducerDTO producerDTO;
 
@@ -52,5 +53,6 @@ public class SongRes {
 
         this.albumSeq = songEntity.getAlbumEntity().getAlbumSeq();
         this.albumTitle = songEntity.getAlbumEntity().getAlbumTitle();
+        this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
     }
 }
