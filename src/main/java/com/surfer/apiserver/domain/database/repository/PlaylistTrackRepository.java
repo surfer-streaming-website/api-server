@@ -18,6 +18,6 @@ public interface PlaylistTrackRepository extends JpaRepository<PlaylistTrackEnti
     /**
      * playlistGroupSeq 를 기준으로 해당하는 playlistTrack 전부 조회
      */
-    @Query("SELECT pt FROM playlist_track pt WHERE pt.playlistGroupEntity = :playlist")
+    @Query("SELECT pt FROM playlist_track pt WHERE pt.playlistGroupEntity = :playlist ORDER BY pt.regDate")
     List<PlaylistTrackEntity> findByPlaylistGroupSeq(@Param("playlist") PlaylistGroupEntity playlist);
 }

@@ -18,7 +18,7 @@ public interface PlaylistLikeRepository extends JpaRepository<PlaylistLikeEntity
     List<PlaylistLikeEntity> findByMember(@Param("member") MemberEntity member);
 
     /**
-     * 현재 로그인 중인 사용자가 누른 플레이리스트 조회
+     * 현재 로그인 중인 사용자가 좋아요를 누른 플레이리스트 상세 조회
      */
     @Query("SELECT pl FROM playlist_like pl WHERE pl.memberEntity = :member AND pl.playlistGroupEntity = :playlistGroup")
     Optional<PlaylistLikeEntity> liked(@Param("member") MemberEntity member, @Param("playlistGroup") PlaylistGroupEntity playlistGroup);
