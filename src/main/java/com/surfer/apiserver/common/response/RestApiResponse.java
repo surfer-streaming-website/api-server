@@ -19,6 +19,7 @@ public class RestApiResponse {
     public RestApiResponse(BaseResponse baseResponse, Object data) {
         //this.result = baseResponse;
         this.code = baseResponse.getCode();
+        this.detail = baseResponse.getDetail();
         this.message = baseResponse.getMessage();
         this.data = data;
         this.timestamp = System.currentTimeMillis();
@@ -26,6 +27,7 @@ public class RestApiResponse {
 
     public void setResult(BaseResponse baseResponse) {
         this.code = baseResponse.getCode();
+        this.detail = baseResponse.getDetail();
         this.message = baseResponse.getMessage();
         this.timestamp = System.currentTimeMillis();
     }
@@ -34,6 +36,7 @@ public class RestApiResponse {
         this.code = baseResponse.getCode();
         this.message = baseResponse.getMessage();
         this.data = data;
+        this.detail = baseResponse.getDetail();
         this.timestamp = System.currentTimeMillis();
     }
 }

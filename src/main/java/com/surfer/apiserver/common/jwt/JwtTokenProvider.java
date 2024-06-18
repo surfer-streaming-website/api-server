@@ -58,6 +58,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .issuer(issuer)
                 .subject("authentication.getName()")
                 .claim("user", AES256Util.encrypt(String.valueOf(member.getMemberId())))
+                .claim("nickname", member.getNickname())
                 .claim("authorities", authorities)
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + accessTokenValidityInSecond))
