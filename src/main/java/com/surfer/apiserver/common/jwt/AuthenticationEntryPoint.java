@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.io.PrintWriter;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class AuthenticationEntryPoint implements org.springframework.security.web.AuthenticationEntryPoint {
     private final ObjectMapper mapper;
 
     @Override
@@ -28,14 +27,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         RestApiResponse apiResponse = new RestApiResponse();
         String exception = (String) request.getAttribute("exception");
         if (exception == null) {
-            apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET));
+            apiResponse.setResult(new BaseResponse(ApiResponseCode.UNKNWON));
         } else if (exception.equals("invalid")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_API_ACCESS_TOKEN));
         } else if (exception.equals("expire")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.ACCESS_TOKEN_EXPIRED));
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
-            apiResponse.setResult(new BaseResponse(ApiResponseCode.UNKNWON));
+            apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET));
         }
         PrintWriter writer = response.getWriter();
         String reponseString = mapper.writeValueAsString(apiResponse);
