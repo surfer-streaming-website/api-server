@@ -2,7 +2,7 @@ package com.surfer.apiserver.config;
 
 import com.surfer.apiserver.common.filter.JwtTokenValidatorFilter;
 import com.surfer.apiserver.common.jwt.JwtAccessDeniedHandler;
-import com.surfer.apiserver.common.jwt.JwtAuthenticationEntryPoint;
+import com.surfer.apiserver.common.jwt.AuthenticationEntryPoint;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ import static com.surfer.apiserver.common.constant.Constant.*;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
@@ -80,7 +80,7 @@ public class WebSecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
                     httpSecurityExceptionHandlingConfigurer
-                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                            .authenticationEntryPoint(authenticationEntryPoint)
                             .accessDeniedHandler(jwtAccessDeniedHandler);
                 })
                 .build();
@@ -89,7 +89,7 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
                                                        PasswordEncoder passwordEncoder,
-                                                       UserDetailsService userDetailService) throws Exception {
+                                                       UserDetailsService userDetailService) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -101,21 +101,16 @@ public class WebSecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("*"));
+                config.setAllowedOriginPatterns(Collections.singletonList("*"));
                 config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "HEAD", "PATCH", "OPTIONS"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
-                config.setExposedHeaders(Arrays.asList("Authorization"));
+                config.setExposedHeaders(Arrays.asList("Authorization", "refresh-token"));
                 config.setMaxAge(3600L);
                 return config;
             }
         };
     }
-    /*
-                "/favicon.ico",
-                                    "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html",
-                                    "/webjars/**", "/swagger/**", "/v3/api-docs/swagger-config", "/v3/api-docs"
-                * */
 
     private String[] urlMapper(String[] url1, String[] url2){
         int totalSize = url1.length + url2.length;

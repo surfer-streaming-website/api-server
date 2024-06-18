@@ -85,8 +85,8 @@ public class AuthController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
-    @GetMapping(value ="/hi/{test}/bye")
-    public ResponseEntity<?> test1(@PathVariable String test){
+    @GetMapping(value = "/hi/{test}/bye")
+    public ResponseEntity<?> test1(@PathVariable String test) {
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), test);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);

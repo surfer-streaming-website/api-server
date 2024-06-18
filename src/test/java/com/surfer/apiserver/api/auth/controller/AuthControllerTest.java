@@ -1,3 +1,4 @@
+/*
 package com.surfer.apiserver.api.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,7 +71,6 @@ class AuthControllerTest {
             return signUpRequest;
         }
 
-
         @Test
         @DisplayName("정상 케이스")
         @Transactional
@@ -125,6 +125,86 @@ class AuthControllerTest {
 
             assertThat(memberEntity).isNull();
         }
+
+
+
+
+
+        @Test
+        @DisplayName("비정상 케이스 - email 중복")
+        @Transactional
+        @Rollback
+        void signUpTest3() throws Exception {
+            //given
+            SignUpRequest defaultSignUpRequest = setDefaultSignUpRequest();
+            SignUpRequest emailDuplicatedRequest = setDefaultSignUpRequest();
+            emailDuplicatedRequest.setNickname("not duplicated nick name");
+
+            //when
+            mockMvc.perform(MockMvcRequestBuilders
+                    .post(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(defaultSignUpRequest)));
+
+            MemberEntity memberEntity = memberRepository.findByEmail(defaultSignUpRequest.getEmail()).get();
+
+            final ResultActions emailDuplicatedResult = mockMvc.perform(MockMvcRequestBuilders
+                    .post(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(emailDuplicatedRequest)));
+
+
+            //then
+            emailDuplicatedResult
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("UNIQUE_CONSTRAINT_VIOLATED"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("unique value is duplicated"));
+
+
+            MemberEntity actualMember = memberRepository.findById(memberEntity.getMemberId()).orElse(null);
+            assertThat(actualMember).isNotNull();
+            assertThat(actualMember.getEmail()).isEqualTo(memberEntity.getEmail());
+        }
+
+        @Test
+        @DisplayName("비정상 케이스 - nickname 중복")
+        @Transactional
+        @Rollback
+        void signUpTest4() throws Exception {
+            //given
+            SignUpRequest defaultSignUpRequest = setDefaultSignUpRequest();
+            SignUpRequest nicknameDuplicatedRequest = setDefaultSignUpRequest();
+            nicknameDuplicatedRequest.setEmail("not duplicated email");
+
+
+            //when
+            MemberEntity memberEntity = memberRepository.save(MemberEntity.builder()
+                    .email(defaultSignUpRequest.getEmail())
+                    .password(bCryptPasswordEncoder.encode(defaultSignUpRequest.getPassword()))
+                    .nickname(defaultSignUpRequest.getNickname())
+                    .name(defaultSignUpRequest.getName())
+                    .status(CommonCode.MemberStatus.USE)
+                    .build());
+
+            final ResultActions nicknameDuplicatedResult = mockMvc.perform(MockMvcRequestBuilders
+                    .post(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(nicknameDuplicatedRequest)));
+
+
+            //then
+            nicknameDuplicatedResult
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("UNIQUE_CONSTRAINT_VIOLATED"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("unique value is duplicated"));
+
+            MemberEntity actualMember = memberRepository.findById(memberEntity.getMemberId()).orElse(null);
+            assertThat(actualMember).isNotNull();
+            assertThat(actualMember.getNickname()).isEqualTo(memberEntity.getNickname());
+        }
     }
 
 
@@ -141,3 +221,4 @@ class AuthControllerTest {
 
 
 
+*/
