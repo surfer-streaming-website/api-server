@@ -101,7 +101,7 @@ public class WebSecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("*"));
+                config.setAllowedOriginPatterns(Collections.singletonList("*"));
                 config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "HEAD", "PATCH", "OPTIONS"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
