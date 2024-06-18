@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,25 +36,22 @@ public class PlaylistServiceImpl implements PlaylistService {
         PlaylistGroupEntity playlistGroupEntity =
                 playlistGroupRequestDTO.toPlaylistGroupEntityWithOutTag(playlistGroupRequestDTO);
         playlistGroupEntity.setMemberEntity(getCurrentMember());
+        playlistGroupEntity = playlistGroupRepository.save(playlistGroupEntity);
 
-        if(playlistGroupRequestDTO.getTagList() == null || playlistGroupRequestDTO.getTagList().isEmpty()){
-            playlistGroupEntity.setPlaylistTagEntities(null);
-        }
-
-        PlaylistGroupEntity playlistGroup = playlistGroupRepository.save(playlistGroupEntity);
-
-        for (String tag : playlistGroupRequestDTO.getTagList()) {
-            playlistTagRepository.save(
-                    PlaylistTagEntity.builder()
-                            .tagEntity(tagRepository.findByTagName(tag)
-                                    .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST)))
-                            .playlistGroupEntity(playlistGroup)
-                            .build()
-            );
+        if(playlistGroupRequestDTO.getTagList() != null && !playlistGroupRequestDTO.getTagList().isEmpty()) {
+            for (String tag : playlistGroupRequestDTO.getTagList()) {
+                playlistTagRepository.save(
+                        PlaylistTagEntity.builder()
+                                .tagEntity(tagRepository.findByTagName(tag)
+                                        .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST)))
+                                .playlistGroupEntity(playlistGroupEntity)
+                                .build()
+                );
+            }
         }
 
         playlistTrackRepository.save(PlaylistTrackEntity.builder()
-                .playlistGroupEntity(playlistGroup)
+                .playlistGroupEntity(playlistGroupEntity)
                 .songEntity(findSong(songSeq))
                 .build());
 
@@ -63,6 +59,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public int insertSongIntoPlaylist(Long songSeq, Long playlistGroupSeq) {
         playlistTrackRepository.save(PlaylistTrackEntity.builder()
                 .songEntity(findSong(songSeq))
@@ -73,6 +70,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public List<PlaylistDTO.PlaylistGroupResponseDTO> getAllPlaylists() {
         List<PlaylistGroupEntity> playlists = playlistGroupRepository.findByMember(getCurrentMember());
         if (playlists.isEmpty()) {
@@ -83,40 +81,33 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public PlaylistDTO.PlaylistGroupResponseDTO getPlaylistById(Long playlistGroupSeq) {
         return new PlaylistDTO.PlaylistGroupResponseDTO(findPlaylistGroup(playlistGroupSeq));
     }
 
     @Override
+    @Transactional
     public int changePlaylist(Long playlistGroupSeq, PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO) {
         PlaylistGroupEntity playlistGroupEntity = findPlaylistGroup(playlistGroupSeq);
-
         playlistGroupEntity.setPlaylistName(playlistGroupRequestDTO.getPlaylistName());
         playlistGroupEntity.setIsOpen(playlistGroupRequestDTO.getIsOpen());
 
-        List<PlaylistTagEntity> playlistTagEntityList = new ArrayList<>();
-        if (playlistGroupRequestDTO.getDeleteTagList() != null) {
-            for (String tag : playlistGroupRequestDTO.getDeleteTagList()) {
-                TagEntity tagEntity = tagRepository.findByTagName(tag)
-                        .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST));
-                deleteTag(playlistGroupSeq, tagEntity);
-            }
-            playlistGroupEntity.setPlaylistTagEntities(playlistTagEntityList);
+        playlistTagRepository.deleteAll(playlistTagRepository.findByPlaylistGroup(findPlaylistGroup(playlistGroupSeq)));
 
-            if(playlistTagRepository.findByPlaylistGroup(playlistGroupEntity).isEmpty()) {
-                playlistGroupEntity.setPlaylistTagEntities(null);
-            }
-        }
-
-        if (playlistGroupRequestDTO.getTagList() != null) {
+        if (playlistGroupRequestDTO.getTagList() != null && !playlistGroupRequestDTO.getTagList().isEmpty()) {
             for (String tag : playlistGroupRequestDTO.getTagList()) {
                 TagEntity tagEntity = tagRepository.findByTagName(tag)
                         .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST));
-                PlaylistTagEntity playlistTagEntity = PlaylistTagEntity.builder().tagEntity(tagEntity).build();
-                playlistTagEntityList.add(playlistTagEntity);
+
+                playlistTagRepository.save(
+                        PlaylistTagEntity.builder()
+                                .tagEntity(tagEntity)
+                                .playlistGroupEntity(findPlaylistGroup(playlistGroupSeq))
+                                .build()
+                );
             }
         }
-        playlistGroupEntity.setPlaylistTagEntities(playlistTagEntityList);
 
         playlistGroupRepository.save(playlistGroupEntity);
 
@@ -124,16 +115,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public int deleteTag(Long playlistGroupSeq, TagEntity tagEntity) {
-        PlaylistTagEntity byPlaylistGroupAndTag = playlistTagRepository
-                .findByPlaylistGroupAndTag(findPlaylistGroup(playlistGroupSeq), tagEntity)
-                .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_TAG_ID, HttpStatus.BAD_REQUEST));
-        playlistTagRepository.delete(byPlaylistGroupAndTag);
-
-        return 1;
-    }
-
-    @Override
+    @Transactional
     public int deletePlaylistById(Long playlistGroupSeq) {
         playlistGroupRepository.deleteById(playlistGroupSeq);
 
@@ -141,6 +123,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public int deleteSongFromPlaylistById(Long playlistGroupSeq, Long songSeq) {
         PlaylistGroupEntity playlistGroupEntity = findPlaylistGroup(playlistGroupSeq);
         SongEntity songEntity = findSong(songSeq);
@@ -160,6 +143,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public List<PlaylistDTO.PlaylistLikeResponseDTO> likedPlaylists() {
         List<PlaylistLikeEntity> playlistLikeEntityList = playlistLikeRepository.findByMember(getCurrentMember());
         if(playlistLikeEntityList.isEmpty()) {
@@ -169,6 +153,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public int insertPlaylistLikeById(Long playlistGroupSeq) {
         playlistLikeRepository.save(PlaylistLikeEntity.builder()
                 .playlistGroupEntity(findPlaylistGroup(playlistGroupSeq))
@@ -179,6 +164,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    @Transactional
     public int deletePlaylistLikeById(Long playlistGroupSeq) {
         MemberEntity memberEntity = getCurrentMember();
         PlaylistGroupEntity playlistGroupEntity = findPlaylistGroup(playlistGroupSeq);

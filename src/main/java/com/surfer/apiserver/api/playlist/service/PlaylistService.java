@@ -29,14 +29,9 @@ public interface PlaylistService {
     PlaylistDTO.PlaylistGroupResponseDTO getPlaylistById(Long playlistGroupSeq);
 
     /**
-     * 플레이리스트 이름, 공개여부 변경, 태그 추가/수정
+     * 플레이리스트 이름, 공개여부 변경, 태그 추가/수정/삭제
      */
     int changePlaylist(Long playlistGroupSeq, PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO);
-
-    /**
-     * 플레이리스트의 태그 삭제
-     */
-    int deleteTag(Long playlistGroupSeq, TagEntity tagEntity);
 
     /**
      * 플레이리스트 삭제

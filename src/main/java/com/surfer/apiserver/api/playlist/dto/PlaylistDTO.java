@@ -9,18 +9,12 @@ import java.util.List;
 public class PlaylistDTO {
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class PlaylistGroupRequestDTO {
         private String playlistName;
         private int isOpen;
         private List<String> tagList;
-        private List<String> deleteTagList;
-
 
         public PlaylistGroupEntity toPlaylistGroupEntityWithOutTag(PlaylistGroupRequestDTO playlistGroupRequest) {
-
             return new PlaylistGroupEntity().builder()
                     .isOpen(playlistGroupRequest.getIsOpen())
                     .playlistName(playlistGroupRequest.getPlaylistName())
@@ -110,11 +104,30 @@ public class PlaylistDTO {
     @AllArgsConstructor
     public static class SongResponseDTO {
         private String songName;
-        private List<SongSingerEntity> artist;
+        private List<SongSingerResponseDTO> artist;
 
         public SongResponseDTO(SongEntity songEntity) {
             this.songName = songEntity.getSongTitle();
-            this.artist = songEntity.getSongSingerEntityList();
+
+            List<SongSingerResponseDTO> songSingerResponseDTOList = new ArrayList<>();
+            for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntityList()) {
+                SongSingerResponseDTO songSingerResponseDTO = new SongSingerResponseDTO(songSingerEntity);
+                songSingerResponseDTOList.add(songSingerResponseDTO);
+            }
+            this.artist = songSingerResponseDTOList;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SongSingerResponseDTO {
+        private String singer;
+
+        public SongSingerResponseDTO(SongSingerEntity songSingerEntity) {
+            this.singer = songSingerEntity.getSongSingerName();
         }
     }
 
