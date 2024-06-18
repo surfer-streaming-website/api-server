@@ -28,7 +28,7 @@ public class SongReq {
         this.songNumber = songEntity.getSongNumber();
         this.soundSourceName = songEntity.getSoundSourceName();
         this.songState = songEntity.getSongState();
-        this.singers = songEntity.getSongSingerEntityList();
+        this.singers = songEntity.getSongSingerEntities();
         this.totalPlayedCount = songEntity.getTotalPlayedCount();
     }
 }

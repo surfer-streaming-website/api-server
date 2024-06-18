@@ -1,48 +1,21 @@
 package com.surfer.apiserver.api.song.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.auth.dto.AuthDTO;
-import com.surfer.apiserver.api.auth.service.impl.AuthServiceImpl;
 import com.surfer.apiserver.api.song.dto.SongReplyReq;
-import com.surfer.apiserver.api.song.dto.SongReplyRes;
 import com.surfer.apiserver.common.constant.CommonCode;
-import com.surfer.apiserver.common.jwt.JwtTokenProvider;
-import com.surfer.apiserver.common.util.AES256Util;
-import com.surfer.apiserver.config.WebSecurityConfig;
 import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.hamcrest.Matchers;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,15 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -255,14 +223,14 @@ class SongBoardControllerTest {
 
 
             // 댓글 목록이 비어있지 않은 경우에만 테스트
-            if (songEntity.getSongReplies() != null && !songEntity.getSongReplies().isEmpty()) {
+            if (songEntity.getSongReplyEntities() != null && !songEntity.getSongReplyEntities().isEmpty()) {
 
-                List<SongReplyEntity> replyList = songEntity.getSongReplies();
+                List<SongReplyEntity> replyList = songEntity.getSongReplyEntities();
 
                 resultActions
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.last").value(nowPage*10>=songEntity.getSongReplies().toArray().length))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.totalPages").value((int)Math.ceil((double) songEntity.getSongReplies().toArray().length/10)))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.numberOfElements").value(songEntity.getSongReplies().toArray().length))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.last").value(nowPage*10>=songEntity.getSongReplyEntities().toArray().length))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.totalPages").value((int)Math.ceil((double) songEntity.getSongReplyEntities().toArray().length/10)))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.numberOfElements").value(songEntity.getSongReplyEntities().toArray().length))
                         .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.empty").value(false))
                 ;
 
@@ -301,8 +269,8 @@ class SongBoardControllerTest {
             }
 
             //singers목록이 비어있지 않은 경우에만 테스트
-            if(songEntity.getSongSingerEntityList() != null && !songEntity.getSongSingerEntityList().isEmpty()){
-                List<SongSingerEntity> songSingerEntityList = songEntity.getSongSingerEntityList();
+            if(songEntity.getSongSingerEntities() != null && !songEntity.getSongSingerEntities().isEmpty()){
+                List<SongSingerEntity> songSingerEntityList = songEntity.getSongSingerEntities();
                 for(int i=0; i<songSingerEntityList.size();i++){
                     SongSingerEntity singer = songSingerEntityList.get(i);
                     resultActions
