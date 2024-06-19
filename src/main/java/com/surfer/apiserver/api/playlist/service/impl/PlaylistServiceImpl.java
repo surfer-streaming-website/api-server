@@ -25,14 +25,12 @@ public class PlaylistServiceImpl implements PlaylistService {
     private final PlaylistTagRepository playlistTagRepository;
     private final PlaylistTrackRepository playlistTrackRepository;
     private final PlaylistLikeRepository playlistLikeRepository;
-//    private final SongTestRepository songTestRepository;
     private final TagRepository tagRepository;
     private final SongRepository songRepository;
 
     @Override
     @Transactional
     public int createNewPlaylist(PlaylistDTO.PlaylistGroupRequestDTO playlistGroupRequestDTO, Long songSeq) {
-//        Authentication authentication = playlistGroupRequestDTO.getAuthentication();
         PlaylistGroupEntity playlistGroupEntity =
                 playlistGroupRequestDTO.toPlaylistGroupEntityWithOutTag(playlistGroupRequestDTO);
         playlistGroupEntity.setMemberEntity(getCurrentMember());
@@ -134,7 +132,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         playlistTrackRepository.delete(playlistTrackEntity);
 
-        //해당 플레이리스트에 더이상 남아있는 곡이 없다면 플레이리스트 삭제
         if(playlistTrackRepository.findByPlaylistGroupSeq(playlistGroupEntity).isEmpty()) {
             deletePlaylistById(playlistGroupSeq);
         }
@@ -195,14 +192,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         return playlistGroupRepository.findById(playlistGroupSeq)
                 .orElseThrow(()->new BusinessException(ApiResponseCode.FAILED_LOAD_PLAYLIST, HttpStatus.BAD_REQUEST));
     }
-
-    /**
-     * songTestSeq 를 기준으로 SongTestEntity 를 찾아주는 메소드
-     */
-    /*private SongTestEntity findSongTest(Long songTestSeq) {
-        return songTestRepository.findById(songTestSeq)
-                .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_PARAMETER_ERR, HttpStatus.BAD_REQUEST));
-    }*/
 
     /**
      * songSeq 를 기준으로 SongEntity 를 찾아주는 메소드

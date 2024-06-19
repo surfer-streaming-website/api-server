@@ -1,8 +1,6 @@
 package com.surfer.apiserver.api.playlist.service;
 
 import com.surfer.apiserver.api.playlist.dto.PlaylistDTO;
-import com.surfer.apiserver.domain.database.entity.PlaylistLikeEntity;
-import com.surfer.apiserver.domain.database.entity.TagEntity;
 
 import java.util.List;
 
