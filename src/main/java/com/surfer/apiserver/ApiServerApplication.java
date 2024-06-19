@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 @SpringBootApplication
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
-//@EnableWebSecurity(debug = true)
 public class ApiServerApplication {
 
     public static void main(String[] args) {

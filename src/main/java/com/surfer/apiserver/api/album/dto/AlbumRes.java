@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,7 +21,7 @@ import java.util.List;
 public class AlbumRes {
     private Long albumSeq;
     private String albumTitle;
-    private Date releaseDate;
+    private String releaseDate;
     private String agency;
     private String albumContent;
     private String albumImage;
@@ -38,7 +38,11 @@ public class AlbumRes {
     public AlbumRes(AlbumEntity albumEntity, Page<AlbumReplyRes> replies, List<AlbumSingerEntity> singers){
         this.albumSeq = albumEntity.getAlbumSeq();
         this.albumTitle = albumEntity.getAlbumTitle();
-        this.releaseDate = albumEntity.getReleaseDate();
+        
+        //원하는 날짜 형태 문자열로 변환
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        this.releaseDate = formatter.format(albumEntity.getReleaseDate());
+
         this.agency = albumEntity.getAgency();
         this.albumContent = albumEntity.getAlbumContent();
         this.albumImage = albumEntity.getAlbumImage();
