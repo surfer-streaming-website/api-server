@@ -23,8 +23,6 @@ public class PlaylistController {
      */
     @PostMapping("/{songSeq}/newPlaylist")
     public ResponseEntity<?> createNewPlaylist(@RequestBody PlaylistDTO.PlaylistGroupRequestDTO request, @PathVariable Long songSeq) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        request.setAuthentication(authentication);
         int result = playlistService.createNewPlaylist(request, songSeq);
 
         RestApiResponse restApiResponse = new RestApiResponse();

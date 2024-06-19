@@ -7,7 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "playlist_track")
+@Entity
+@Table(name = "playlist_track")
 @Getter
 @Setter
 @Builder
