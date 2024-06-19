@@ -69,7 +69,10 @@ public class AlbumRes {
     public AlbumRes(AlbumEntity albumEntity, List<AlbumSingerEntity> singers){
         this.albumSeq = albumEntity.getAlbumSeq();
         this.albumTitle = albumEntity.getAlbumTitle();
-        this.releaseDate = albumEntity.getReleaseDate();
+
+        //원하는 날짜 형태 문자열로 변환
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        this.releaseDate = formatter.format(albumEntity.getReleaseDate());
         this.agency = albumEntity.getAgency();
         this.albumContent = albumEntity.getAlbumContent();
         this.albumImage = albumEntity.getAlbumImage();

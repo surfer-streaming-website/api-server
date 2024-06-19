@@ -93,7 +93,7 @@ public class PlaylistDTO {
             this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
 
             List<SongSingerResponseDTO> songSingerResponseDTOList = new ArrayList<>();
-            for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntityList()) {
+            for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntities()) {
                 SongSingerResponseDTO songSingerResponseDTO = new SongSingerResponseDTO(songSingerEntity);
                 songSingerResponseDTOList.add(songSingerResponseDTO);
             }
