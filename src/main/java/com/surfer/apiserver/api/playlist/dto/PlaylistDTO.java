@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class PlaylistDTO {
     @Getter
@@ -33,7 +33,7 @@ public class PlaylistDTO {
         private int isOpen;
         private String nickname;
         private List<PlaylistTagResponseDTO> tag;
-        private Stream<PlaylistTrackResponseDTO> track;
+        private List<PlaylistTrackResponseDTO> track;
 
         public PlaylistGroupResponseDTO(PlaylistGroupEntity playlistGroupEntity) {
             this.playlistName = playlistGroupEntity.getPlaylistName();
@@ -53,7 +53,7 @@ public class PlaylistDTO {
                 playlistTrackResponseDTOList.add(playlistTrackResponseDTO);
             }
             this.track = playlistTrackResponseDTOList.stream()
-                    .sorted(Comparator.comparing(PlaylistTrackResponseDTO::getRegDate));
+                    .sorted(Comparator.comparing(PlaylistTrackResponseDTO::getRegDate)).collect(Collectors.toList());
 
             this.playlistImage = playlistTrackResponseDTOList.get(0).getSong().getAlbumImage();
         }
