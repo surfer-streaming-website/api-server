@@ -51,4 +51,23 @@ public interface SongBoardService {
      */
     public ProducerDTO getProducer(String producer);
 
+    /**
+     * 곡 댓글 좋아요 확인
+     */
+    Boolean songReplyLike(Long songSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 곡 댓글 좋아요 등록
+     */
+    void songReplyLikeInsert(Long songSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 곡 댓글 추천수 업데이트
+     */
+    void songReplyLikeUpdate(Long replySeq, Boolean isLike);
+
+    /**
+     * 곡 댓글 좋아요 삭제
+     */
+    void songReplyLikeDelete(Long songSeq, Long memberSeq, Long replySeq);
 }
