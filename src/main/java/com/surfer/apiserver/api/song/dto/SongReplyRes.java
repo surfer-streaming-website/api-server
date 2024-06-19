@@ -29,7 +29,7 @@ public class SongReplyRes {
     public SongReplyRes(SongReplyEntity songReplyEntity){
         this.songReplySeq = songReplyEntity.getSongReplySeq();
         //원하는 날짜 형태 문자열로 변환
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.songReplyRegDate = formatter.format(songReplyEntity.getSongReplyRegdate());
         this.songReplyContent = songReplyEntity.getSongReplyContent();
         this.songReplyLike = songReplyEntity.getSongReplyLike();

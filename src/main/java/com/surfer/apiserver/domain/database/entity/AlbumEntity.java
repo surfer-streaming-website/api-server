@@ -48,7 +48,7 @@ public class AlbumEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "albumEntity", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<SongEntity> songEntityList;
+    private List<SongEntity> songEntities;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_seq")
