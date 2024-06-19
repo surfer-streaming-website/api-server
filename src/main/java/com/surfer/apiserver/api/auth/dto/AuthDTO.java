@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 import static com.surfer.apiserver.common.constant.CommonCode.*;
@@ -34,7 +36,6 @@ public class AuthDTO {
     }
 
     @Data
-    @Builder
     public static class SignInRequest {
         @NotBlank(message = "email 필수값입니다.")
         private String email;
