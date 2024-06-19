@@ -51,7 +51,7 @@ public class AlbumEntity {
     private List<SongEntity> songEntities;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_seq")
+    @JoinColumn(name = "member_id")
     @JsonIgnore
     private MemberEntity memberEntity;
 
