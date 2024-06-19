@@ -122,4 +122,9 @@ public class AlbumBoardController {
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
+
+
+
+
+
 }
