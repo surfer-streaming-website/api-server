@@ -31,9 +31,6 @@ import java.util.List;
 @RequestMapping("/api/song")
 public class SongBoardController {
 
-    //페이지 처리를 위해 추가
-    private final static int BLOCK_COUNT=5;
-
     @Autowired
     private SongBoardService songBoardService;
 
@@ -75,14 +72,6 @@ public class SongBoardController {
         ProducerDTO producer = songBoardService.getProducer(songEntity.getProducer());
 
         SongRes songDTO = new SongRes(songEntity, pageReplyList, songSingerList, producer);
-
-        //view에서 페이징 처리를 하기 위한 준비
-        /*int temp = (nowPage-1)%BLOCK_COUNT;
-        int startPage = nowPage-temp;*/
-
-//        model.addAttribute("blockCount", BLOCK_COUNT);
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("nowPage", nowPage);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), songDTO);
@@ -127,6 +116,54 @@ public class SongBoardController {
         String memberSeq = AES256Util.decrypt(authentication.getName());
 
         songBoardService.songReplyDelete(seq, Long.parseLong(memberSeq), replySeq);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "곡 상세페이지 댓글 좋아요 여부 조회", description = "댓글 좋아요 여부 확인 시 요청되는 api")
+    public ResponseEntity<?> checkSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        Boolean isLike = songBoardService.songReplyLike(seq, Long.parseLong(memberSeq), replySeq);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), isLike);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "곡 상세페이지 댓글 좋아요 등록", description = "댓글 좋아요 시 요청되는 api")
+    public ResponseEntity<?> increaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        //security에 저장된 member 정보 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        //곡 댓글 좋아요 테이블 수정
+        songBoardService.songReplyLikeInsert(seq, Long.parseLong(memberSeq), replySeq);
+
+        //곡 댓글 테이블 수정
+        songBoardService.songReplyLikeUpdate(replySeq, Boolean.TRUE);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "곡 상세페이지 댓글 좋아요 삭제", description = "댓글 좋아요 취소 시 요청되는 api")
+    public ResponseEntity<?> decreaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        //곡 댓글 좋아요 테이블 수정
+        songBoardService.songReplyLikeDelete(seq, Long.parseLong(memberSeq), replySeq);
+
+        //곡 댓글 테이블 수정
+        songBoardService.songReplyLikeUpdate(replySeq, Boolean.FALSE);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));

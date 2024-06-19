@@ -4,7 +4,6 @@ import com.surfer.apiserver.api.song.dto.ProducerDTO;
 import com.surfer.apiserver.api.song.dto.SongReplyReq;
 import com.surfer.apiserver.api.song.dto.SongReplyRes;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
-import com.surfer.apiserver.domain.database.entity.SongReplyEntity;
 import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
 import org.springframework.data.domain.Page;
 
@@ -50,5 +49,25 @@ public interface SongBoardService {
      * 작사가, 작곡가, 편곡자 분리하기
      */
     public ProducerDTO getProducer(String producer);
+
+    /**
+     * 곡 댓글 좋아요 확인
+     */
+    Boolean songReplyLike(Long songSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 곡 댓글 좋아요 등록
+     */
+    void songReplyLikeInsert(Long songSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 곡 댓글 추천수 업데이트
+     */
+    void songReplyLikeUpdate(Long replySeq, Boolean isLike);
+
+    /**
+     * 곡 댓글 좋아요 삭제
+     */
+    void songReplyLikeDelete(Long songSeq, Long memberSeq, Long replySeq);
 
 }

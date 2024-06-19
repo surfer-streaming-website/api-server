@@ -3,7 +3,6 @@ package com.surfer.apiserver.api.album.service;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
-import com.surfer.apiserver.domain.database.entity.AlbumReplyEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import org.springframework.data.domain.Page;
 
@@ -44,4 +43,24 @@ public interface AlbumBoardService {
      * 앨범 가수 찾기
      */
     public List<AlbumSingerEntity> getAlbumSingerList(AlbumEntity albumEntity);
+
+    /**
+     * 곡 댓글 좋아요 확인
+     */
+    Boolean albumReplyLike(Long songSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 앨범 댓글 좋아요 등록
+     */
+    void albumReplyLikeInsert(Long albumSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 앨범 댓글 추천수 업데이트
+     */
+    void albumReplyLikeUpdate(Long replySeq, Boolean isLike);
+
+    /**
+     * 앨범 댓글 좋아요 삭제
+     */
+    void albumReplyLikeDelete(Long albumSeq, Long memberSeq, Long replySeq);
 }
