@@ -1,6 +1,11 @@
 package com.surfer.apiserver.api.auth.service;
 
 
+import com.surfer.apiserver.api.auth.dto.AuthDTO;
+import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 
 public interface AuthService {
@@ -9,5 +14,16 @@ public interface AuthService {
     TokenInfo signInByEmailAndPassword(SignInRequest signInRequest);
 
     TokenInfo signInByRefreshToken(String refreshToken);
-//    Page<UserResponse> getUsers(Pageable pageable);
+
+    void createArtistApplication(CreateArtistApplicationRequest createArtistApplication);
+
+    Page<GetArtistApplicationsResponse> getArtistApplicationsAsPage(Pageable pageable);
+
+    GetArtistApplicationResponse getArtistApplication(Long id);
+
+    void updateArtistApplication(UpdateArtistApplicationRequest updateArtistApplicationRequest);
+
+    void deleteArtistApplication(Long artistApplicationId);
+
+    //    Page<UserResponse> getUsers(Pageable pageable);
 }

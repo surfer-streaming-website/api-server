@@ -56,7 +56,6 @@ public class MemberEntity {
     private List<MemberAuthorityEntity> memberAuthorityEntities;
 
     @Builder
-
     public MemberEntity(Long memberId, String email, String password, String nickname, String name, MemberStatus status, String refreshToken, Long refreshTokenExpiredAt, Date registerAt, Date updateAt) {
         this.memberId = memberId;
         this.email = email;
