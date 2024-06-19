@@ -1,5 +1,7 @@
 package com.surfer.apiserver.api.album.dto;
 
+import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
+import com.surfer.apiserver.domain.database.entity.SongEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +18,10 @@ public class AlbumReq {
     private String agency;
     private String albumContent;
     private String albumImage;
-    private String albumState;
-    private String memberId;
-    private List<SongDTO> songList;
-    private List<AlbumSingerDTO> albumSingerList;
-
+    private int albumState;
+    private Long memberId;
+    private List<SongDTO> songEntities;
+    private List<AlbumSingerDTO> albumSingerEntities;
 
 
 

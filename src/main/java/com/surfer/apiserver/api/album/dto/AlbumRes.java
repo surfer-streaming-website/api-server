@@ -46,7 +46,7 @@ public class AlbumRes {
 
         //song에 관련해서 필요한 정보만 담았다.
         List<SongReq> songDTOList = new ArrayList<>();
-        albumEntity.getSongEntityList().forEach(
+        albumEntity.getSongEntities().forEach(
                 song -> {
                     SongReq songDTO = new SongReq(song);
                     songDTOList.add(songDTO);
@@ -73,7 +73,7 @@ public class AlbumRes {
 
         //song에 관련해서 필요한 정보만 담았다.
         List<SongRes> songList = new ArrayList<>();
-        albumEntity.getSongEntityList().forEach(
+        albumEntity.getSongEntities().forEach(
                 song -> {
                     SongRes songRes = new SongRes(song);
                     songList.add(songRes);

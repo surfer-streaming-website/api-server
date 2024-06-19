@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.album.dto;
 
+import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +19,10 @@ public class SongDTO {
     private int totalPlayedCount;
     private int recentlyPlayedCount;
     private String genre;
-    private boolean songState;
+    private Boolean songState;
     private String soundSourceName;
     private String producer;
-    private String albumSeq;
-    private List<SongSingerDTO> songSingerList;
+    private List<SongSingerDTO> songSingerEntities;
 
 
 

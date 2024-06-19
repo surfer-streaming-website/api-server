@@ -11,5 +11,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AlbumSingerDTO {
     private String albumSingerName;
-    private String albumSeq;
 }

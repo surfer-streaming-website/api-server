@@ -1,4 +1,4 @@
-package com.surfer.apiserver.file.config;
+package com.surfer.apiserver.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

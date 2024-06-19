@@ -79,7 +79,7 @@ public class SongRes {
         this.genre = songEntity.getGenre();
         this.soundSourceName = songEntity.getSoundSourceName();
         this.songState = songEntity.getSongState();
-        this.singers = songEntity.getSongSingerEntityList();
+        this.singers = songEntity.getSongSingerEntities();
     }
 
 }

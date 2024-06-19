@@ -1,6 +1,7 @@
 package com.surfer.apiserver.domain.database.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Setter
+
 public class AlbumEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "album_id_seq")
@@ -47,7 +49,7 @@ public class AlbumEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "albumEntity", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<SongEntity> songEntityList;
+    private List<SongEntity> songEntities;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
