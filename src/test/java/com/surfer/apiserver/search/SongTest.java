@@ -61,7 +61,7 @@ public class SongTest {
         List<SongSearchDTO> song = searchRes.getSong();
         List<AlbumSearchDTO> album = searchRes.getAlbum();
         List<LyricsSearchDTO> lyrics = searchRes.getLyrics();
-        List<PlayListSearchDTO> playlist = searchRes.getPlayList();
+        List<PlaylistSearchDTO> playlist = searchRes.getPlayList();
 
         System.out.println("1------------------------------------");
         for(SongSearchDTO songSearchDTO : song){
@@ -76,7 +76,7 @@ public class SongTest {
         }
         System.out.println("2------------------------------------");
 
-        for(PlayListSearchDTO playListSearchDTO : playlist){
+        for(PlaylistSearchDTO playListSearchDTO : playlist){
             System.out.println(playListSearchDTO.getPlayListName() +" , "+playListSearchDTO.getAlbumImage() +" , "+ playListSearchDTO.getMemberName());
         }
         System.out.println("3------------------------------------");

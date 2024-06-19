@@ -13,6 +13,6 @@ public interface PlaylistGroupRepository extends JpaRepository<PlaylistGroupEnti
     /**
      * member 가 가지고 있는 playlistGroup 을 전부 조회
      */
-    @Query("SELECT pg FROM playlist_group pg JOIN FETCH pg.playlistTrackEntities WHERE pg.memberEntity = :member ORDER BY pg.regDate")
+    @Query("SELECT pg FROM PlaylistGroupEntity pg JOIN FETCH pg.playlistTrackEntities WHERE pg.memberEntity = :member ORDER BY pg.regDate")
     List<PlaylistGroupEntity> findByMember(@Param("member") MemberEntity member);
 }

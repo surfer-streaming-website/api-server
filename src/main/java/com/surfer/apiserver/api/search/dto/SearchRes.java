@@ -11,14 +11,14 @@ public class SearchRes {
 
     private List<SongSearchDTO> song;
     private List<AlbumSearchDTO> album;
-    private List<PlayListSearchDTO> playList;
+    private List<PlaylistSearchDTO> playlist;
     private List<LyricsSearchDTO> lyrics;
 
 
-    public SearchRes(List<SongSearchDTO> song, List<AlbumSearchDTO> album, List<PlayListSearchDTO> playList, List<LyricsSearchDTO> lyrics) {
+    public SearchRes(List<SongSearchDTO> song, List<AlbumSearchDTO> album, List<PlaylistSearchDTO> playlist, List<LyricsSearchDTO> lyrics) {
         this.song = song;
         this.album = album;
-        this.playList = playList;
+        this.playlist = playlist;
         this.lyrics = lyrics;
 
     }

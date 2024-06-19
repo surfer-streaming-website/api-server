@@ -14,6 +14,6 @@ public interface PlaylistTagRepository extends JpaRepository<PlaylistTagEntity, 
     /**
      * playlistGroupEntity 에 해당하는 playlistTag 찾기
      */
-    @Query("SELECT pt FROM playlist_tag pt WHERE pt.playlistGroupEntity = :groupEntity")
+    @Query("SELECT pt FROM PlaylistTagEntity pt WHERE pt.playlistGroupEntity = :groupEntity")
     List<PlaylistTagEntity> findByPlaylistGroup(@Param("groupEntity") PlaylistGroupEntity playlistGroup);
 }

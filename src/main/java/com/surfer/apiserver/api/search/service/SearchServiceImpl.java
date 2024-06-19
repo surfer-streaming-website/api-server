@@ -27,11 +27,11 @@ public class SearchServiceImpl implements SearchService {
     public SearchRes findKeyword(String keyword) {
         List<SongSearchDTO> song = songRepository.findKeywordSong(keyword);
         List<AlbumSearchDTO> album = songRepository.findKeywordAlbum(keyword);
-        List<PlayListSearchDTO> playList = songRepository.findKeywordPlayList(keyword);
+        List<PlaylistSearchDTO> playlist = songRepository.findKeywordPlaylist(keyword);
         List<LyricsSearchDTO> lyrics = songRepository.findKeywordLyrics(keyword);
 
 
-        SearchRes searchRes = new SearchRes(song,album,playList,lyrics);
+        SearchRes searchRes = new SearchRes(song,album,playlist,lyrics);
 
         return searchRes;
     }
