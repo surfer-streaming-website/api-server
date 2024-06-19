@@ -37,7 +37,6 @@ public class SongReplyEntity {
     private Date songReplyCordate;
 
     @Column(name = "song_reply_correct")
-    @ColumnDefault("false")
     @Builder.Default
     private Boolean songReplyCorrect=false;
 

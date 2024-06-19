@@ -12,18 +12,26 @@ public class Constant {
             //auth
             "/api/v1/auth/hi/*/bye",
             //song
-            "/api/song/detail/*",
+            "/api/song/detail/*","/api/search/*","/api/song/download/*",
             //album
-            "/api/album/detail/*"
+            "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
     };
     public static final String[] permitPostMethodUrl = {
             //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
+            //test
+            ,"/file/upload","/song/*"
+            //file upload
+            ,"/api/album/save"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };
-    public static final String[] permitDeleteMethodUrl = {};
-    public static final String[] permitDeleteMethodUrlAntPattern = {};
+    public static final String[] permitDeleteMethodUrl = {
+            "/api/album/delete/*"
+    };
+    public static final String[] permitDeleteMethodUrlAntPattern = {
+            "/api/album/delete/*"
+    };
     public static final String[] permitPutMethodUrl = {};
     public static final String[] permitPutMethodUrlAntPattern = {};
     public static final String[] permitHeadMethodUrl = {};

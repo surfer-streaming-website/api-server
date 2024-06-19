@@ -44,4 +44,8 @@ public interface AlbumBoardService {
      * 앨범 가수 찾기
      */
     public List<AlbumSingerEntity> getAlbumSingerList(AlbumEntity albumEntity);
+
+
+
+
 }

@@ -2,7 +2,6 @@ package com.surfer.apiserver.common.response;
 
 public enum ApiResponseCode {
     //COMMON
-
     SUCCESS("OK", "SUCCESS"),
     CREATED("OK", "CREATED"),
     ACCEPTED("OK", "ACCEPTED"),
@@ -24,13 +23,25 @@ public enum ApiResponseCode {
     INVALID_CLIENT_ID_OR_CLIENT_SECRET("INVALID_CLIENT_ID_OR_CLIENT_SECRET", "invalid client-id or client-secret"),
     INVALID_PARAMETER_ERR("INVALID_PARAMETER_ERR", "invalid parameter error"),
     UNAUTHORIZED_ACCESS("UNAUTHORIZED_ACCESS", "not authorized user"),
+    //member
+    INVALID_MEMBER_ID("INVALID_MEMBER_ID","failed to load member because is is not exist"),
+    //search
+    INVALID_KEYWORD("INVALID_KEYWORD","invalid keyword"),
     //song
+    FAILED_LOAD_SONGLIST("ERR_LOAD_SONGLIST","failed to load songlist because songlist does not exist"),
     INVALID_SONG_ID("INVALID_SONG_ID","failed to load song because seq is not exist"),
+    INVALID_ALBUM_ENTITY("INVALID_ALBUM_ID", "failed to load albumEntity because Entity is not exist"),
     INVALID_ALBUM_ID("INVALID_ALBUM_ID", "failed to load album because seq is not exist"),
+    INVALID_ALBUM_IMAGE("INVALID_ALBUM_STARE","failed to load album because image is not exist"),
     INVALID_ALBUM_STATE("INVALID_ALBUM_STATE","invalid album state"),
     INVALID_REPLY_ID("INVALID_REPLY_ID","failed to load reply because seq is not exist"),
-    FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized")
-    
+    FAILED_UPDATE_REPLY("ERR_UPDATE_REPLY","failed to update reply because user is not authorized"),
+    //playlist
+    FAILED_LOAD_PLAYLIST("ERR_LOAD_PLAYLIST", "failed to load playlist because playlist does not exist"), // 존재하는 플레이리스트가 없음
+    INVALID_PLAYLIST_ID("FAILED_ACCESS_PLAYLIST", "failed to access playlist because playlist does not exist"), // 해당하는 플레이리스트가 없음
+    FAILED_LOAD_PLAYLIST_LIKE("FAILED_LOAD_PLAYLIST_LIKE", "failed to load playlistLike because playlistLike does not exist"), // 존재하는 좋아요가 없음
+    INVALID_PLAYLIST_LIKE_ID("INVALID_ACCESS_PLAYLIST_LIKE", "failed to access playlistLike because playlistLike does not exist"), // 해당하는 좋아요가 없음
+    INVALID_TAG_ID("INVALID_TAG_ID","failed to access tag because tag does not exist"), // 해당하는 태그가 없음
     ;
 
 

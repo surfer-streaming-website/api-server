@@ -22,6 +22,7 @@ public class MemberEntity {
     @Column(name = "member_id", updatable = false)
     private Long memberId;
 
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -51,6 +52,7 @@ public class MemberEntity {
     @Column(name = "update_at")
     @UpdateTimestamp
     private Date updateAt;
+
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MemberAuthorityEntity> memberAuthorityEntities;

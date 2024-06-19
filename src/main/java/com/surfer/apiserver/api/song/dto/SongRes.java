@@ -32,6 +32,7 @@ public class SongRes {
 
     private Long albumSeq;
     private String albumTitle;
+    private String albumImage;
 
     private ProducerDTO producerDTO;
 
@@ -52,5 +53,35 @@ public class SongRes {
 
         this.albumSeq = songEntity.getAlbumEntity().getAlbumSeq();
         this.albumTitle = songEntity.getAlbumEntity().getAlbumTitle();
+        this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
     }
+
+
+    public SongRes(SongEntity songEntity,List<SongSingerEntity> singers, ProducerDTO producerDTO){
+        this.songSeq = songEntity.getSongSeq();
+        this.songTitle = songEntity.getSongTitle();
+        this.songNumber = songEntity.getSongNumber();
+        this.lyrics = songEntity.getLyrics();
+        this.genre = songEntity.getGenre();
+        this.songState = songEntity.getSongState();
+        this.soundSourceName = songEntity.getSoundSourceName();
+        this.producerDTO = producerDTO;
+        this.singers = singers;
+
+
+//        this.albumSeq = songEntity.getAlbumEntity().getAlbumSeq();
+//        this.albumTitle = songEntity.getAlbumEntity().getAlbumTitle();
+    }
+
+    public SongRes(SongEntity songEntity){
+        this.songSeq = songEntity.getSongSeq();
+        this.songTitle = songEntity.getSongTitle();
+        this.songNumber = songEntity.getSongNumber();
+        this.lyrics = songEntity.getLyrics();
+        this.genre = songEntity.getGenre();
+        this.soundSourceName = songEntity.getSoundSourceName();
+        this.songState = songEntity.getSongState();
+        this.singers = songEntity.getSongSingerEntities();
+    }
+
 }

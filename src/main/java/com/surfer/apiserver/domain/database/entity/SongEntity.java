@@ -54,10 +54,11 @@ public class SongEntity {
 
     @OneToMany(mappedBy = "songEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<SongReplyEntity> songReplies;
+    private List<SongReplyEntity> songReplyEntities;
 
     @OneToMany(mappedBy = "songEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<SongSingerEntity> songSingerEntityList;
+    private List<SongSingerEntity> songSingerEntities;
 
 }
+

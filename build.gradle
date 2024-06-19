@@ -29,6 +29,10 @@ dependencies {
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testAnnotationProcessor 'org.projectlombok:lombok' // 테스트를 위한 세팅
+    testImplementation 'org.projectlombok:lombok' // 테스트를 위한 세팅
+
     //dev tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //h2
@@ -61,6 +65,30 @@ dependencies {
     implementation 'org.springframework.security:spring-security-test'
     //junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
+
+    //오라클 db
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'com.oracle.database.security:osdt_cert:21.3.0.0'
+    implementation 'com.oracle.database.security:oraclepki:21.3.0.0'
+    implementation 'com.oracle.database.security:osdt_core:21.3.0.0'
+
+    // queryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+
+    //s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    //JAXB 의존성 추가
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 tasks.named('test') {
