@@ -3,8 +3,11 @@ package com.surfer.apiserver.api.playlist.dto;
 import com.surfer.apiserver.domain.database.entity.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PlaylistDTO {
     @Getter
@@ -24,20 +27,18 @@ public class PlaylistDTO {
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class PlaylistGroupResponseDTO {
+        private String playlistImage;
         private String playlistName;
         private int isOpen;
-        private MemberResponseDTO nickname;
+        private String nickname;
         private List<PlaylistTagResponseDTO> tag;
-        private List<PlaylistTrackResponseDTO> track;
+        private Stream<PlaylistTrackResponseDTO> track;
 
         public PlaylistGroupResponseDTO(PlaylistGroupEntity playlistGroupEntity) {
             this.playlistName = playlistGroupEntity.getPlaylistName();
             this.isOpen = playlistGroupEntity.getIsOpen();
-            this.nickname = new MemberResponseDTO(playlistGroupEntity.getMemberEntity().getNickname());
+            this.nickname = playlistGroupEntity.getMemberEntity().getNickname();
 
             List<PlaylistTagResponseDTO> playlistTagResponseDTOList = new ArrayList<>();
             for (PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {
@@ -51,63 +52,45 @@ public class PlaylistDTO {
                 PlaylistTrackResponseDTO playlistTrackResponseDTO = new PlaylistTrackResponseDTO(playlistTrackEntity);
                 playlistTrackResponseDTOList.add(playlistTrackResponseDTO);
             }
-            this.track = playlistTrackResponseDTOList;
+            this.track = playlistTrackResponseDTOList.stream()
+                    .sorted(Comparator.comparing(PlaylistTrackResponseDTO::getRegDate));
+
+            this.playlistImage = playlistTrackResponseDTOList.get(0).getSong().getAlbumImage();
         }
     }
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
     public static class PlaylistTagResponseDTO {
-        private TagResponseDTO tag;
+        private String tag;
 
         public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
-            this.tag = new TagResponseDTO(playlistTagEntity.getTagEntity());
+            this.tag = playlistTagEntity.getTagEntity().getTagName();
         }
     }
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
-    public static class TagResponseDTO {
-        private String tagName;
-
-        public TagResponseDTO(TagEntity tagEntity) {
-            this.tagName = tagEntity.getTagName();
-        }
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class PlaylistTrackResponseDTO {
         private SongResponseDTO song;
-        private String regDate;
+        private LocalDateTime regDate;
 
         public PlaylistTrackResponseDTO(PlaylistTrackEntity playlistTrackEntity) {
             this.song = new SongResponseDTO(playlistTrackEntity.getSongEntity());
+            this.regDate = playlistTrackEntity.getRegDate();
         }
     }
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class SongResponseDTO {
         private String songName;
+        private String albumImage;
         private List<SongSingerResponseDTO> artist;
 
         public SongResponseDTO(SongEntity songEntity) {
             this.songName = songEntity.getSongTitle();
+            this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
 
             List<SongSingerResponseDTO> songSingerResponseDTOList = new ArrayList<>();
             for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntityList()) {
@@ -120,9 +103,6 @@ public class PlaylistDTO {
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class SongSingerResponseDTO {
         private String singer;
 
@@ -133,18 +113,6 @@ public class PlaylistDTO {
 
     @Getter
     @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MemberResponseDTO {
-        private String Nickname;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class PlaylistLikeResponseDTO {
         private PlaylistGroupResponseDTO playlistGroup;
 
