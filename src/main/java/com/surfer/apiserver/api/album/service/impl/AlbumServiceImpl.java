@@ -56,6 +56,10 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public List<AlbumEntity> findAllByMemberEntityId(Long memberId) {
 
+        //멤버 id가 있는지 확인
+        if(memberId == null){
+            throw new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST);
+        }
         List<AlbumEntity> albumEntities= albumRepository.findAllAlbum(memberId);
 
         return albumEntities;
@@ -65,6 +69,10 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public AlbumEntity findAlbum(Long albumSeq) {
 
+        //앨범 시퀀스가 들어왔는지 확인
+        if(albumSeq == null){
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
+        }
         AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(
                 () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID,HttpStatus.BAD_REQUEST));
 
@@ -74,6 +82,11 @@ public class AlbumServiceImpl implements AlbumService {
     //앨범 가수 리스트
     @Override
     public List<AlbumSingerEntity> findAlbumSingerList(AlbumEntity albumEntity) {
+
+        //앨범 앤터티 존재여부 확인
+        if(albumEntity == null){
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ENTITY,HttpStatus.BAD_REQUEST);
+        }
 
         List<AlbumSingerEntity> list = albumSingerRepository.findAllByAlbum(albumEntity);
 
@@ -163,8 +176,17 @@ public class AlbumServiceImpl implements AlbumService {
         //Map에 저장된 albumImageName을 albumReq에 저장
         albumReq.setAlbumImage(fielNameMap.get(999));
 
+        // 예외 처리: Map에 999 키가 존재하지 않는 경우
+        if (!fielNameMap.containsKey(999)) {
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_IMAGE, HttpStatus.BAD_REQUEST);
+        }
+
         //Map에 저장된 file이름을 각각에 해당 곡에 저장
         List<SongDTO> songDTOList = albumReq.getSongEntities();
+
+        if (songDTOList == null || songDTOList.isEmpty()) {
+            throw new BusinessException(ApiResponseCode.FAILED_LOAD_SONGLIST, HttpStatus.BAD_REQUEST);
+        }
 
         Integer fileNo = 1;
         for(SongDTO songDTO : songDTOList) {
@@ -181,7 +203,12 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     //dto를 entity로 변환 후 db 저장
-    public void changAlbum (AlbumReq albumReq,Long memberId) throws BusinessException {
+    public void changAlbum (AlbumReq albumReq,Long memberId){
+
+        //멤버 id가 있는지 확인
+        if(memberId == null){
+            throw new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST);
+        }
 
         //앨범저장
         AlbumEntity albumEntity = new AlbumEntity();
@@ -245,6 +272,11 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public URL generateAlbumImgFileUrl(String albumImage) {
 
+        //앨범 이미지 존재 확인
+        if(albumImage == null){
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_IMAGE, HttpStatus.BAD_REQUEST);
+
+        }
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, albumImage)
                         .withMethod(com.amazonaws.HttpMethod.GET);
@@ -261,6 +293,12 @@ public class AlbumServiceImpl implements AlbumService {
 
         //앨범정보
         AlbumEntity albumEntity = findAlbum(albumSeq);
+
+        //앨범 시퀀스가 들어왔는지 확인
+        if(albumSeq == null){
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
+
+        }
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, albumEntity.getAlbumImage())
                         .withMethod(com.amazonaws.HttpMethod.GET);
@@ -280,6 +318,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElse(null);
 
+        //앨범 시퀀스가 있는지 확인
         if(!albumEntity.getAlbumSeq().equals(albumSeq)) {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
         }
