@@ -45,7 +45,25 @@ public interface AlbumBoardService {
      */
     public List<AlbumSingerEntity> getAlbumSingerList(AlbumEntity albumEntity);
 
+    /**
+     * 곡 댓글 좋아요 확인
+     */
+    Boolean albumReplyLike(Long songSeq, Long memberSeq, Long replySeq);
 
+    /**
+     * 앨범 댓글 좋아요 등록
+     */
+    void albumReplyLikeInsert(Long albumSeq, Long memberSeq, Long replySeq);
+
+    /**
+     * 앨범 댓글 추천수 업데이트
+     */
+    void albumReplyLikeUpdate(Long replySeq, Boolean isLike);
+
+    /**
+     * 앨범 댓글 좋아요 삭제
+     */
+    void albumReplyLikeDelete(Long albumSeq, Long memberSeq, Long replySeq);
 
 
 }

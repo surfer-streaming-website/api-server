@@ -6,10 +6,7 @@ import com.surfer.apiserver.api.song.dto.SongReplyRes;
 import com.surfer.apiserver.api.song.service.SongBoardService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
-import com.surfer.apiserver.domain.database.entity.MemberEntity;
-import com.surfer.apiserver.domain.database.entity.SongEntity;
-import com.surfer.apiserver.domain.database.entity.SongReplyEntity;
-import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
+import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,6 +42,8 @@ public class SongBoardServiceImpl implements SongBoardService {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private SongReplyLikeRepository songReplyLikeRepository;
 
     @Override
     public SongEntity selectById(Long seq) {
@@ -198,4 +197,118 @@ public class SongBoardServiceImpl implements SongBoardService {
         return ProducerDTO.builder().composerList(composers).lyricistList(lyricists).arrangerList(arrangers).build();
     }
 
+    @Override
+    public Boolean songReplyLike(Long songSeq, Long memberSeq, Long replySeq) {
+        //db에서 댓글 seq에 해당하는 댓글을 찾는다
+        SongReplyEntity songReplyEntity = songReplyRepository.findById(replySeq).orElseThrow(
+                ()->new BusinessException(ApiResponseCode.INVALID_REPLY_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //곡 seq에 해당하는 곡이 있는지 조회한다.
+        songBoardRepository.findById(songSeq).orElseThrow(
+                ()-> new BusinessException(ApiResponseCode.INVALID_SONG_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //db에 회원이 존재하는지 확인
+        Optional<MemberEntity> memberEntity = memberRepository.findById(memberSeq);
+        if(memberEntity.isEmpty()) {
+            throw new BusinessException(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET, HttpStatus.BAD_REQUEST);
+        }
+        MemberEntity member = memberEntity.get();
+
+        //db에서 댓글 좋아요에 관한 데이터를 찾는다
+        SongReplyLikeEntity songReplyLike
+                = songReplyLikeRepository.findByMemberAndSongReply(member.getMemberId(), songReplyEntity.getSongReplySeq());
+
+        if(songReplyLike == null){
+            //좋아요 누르지 않은 댓글
+            return Boolean.FALSE;
+        }else{
+            //좋아요 누른 댓글
+            return Boolean.TRUE;
+        }
+    }
+
+    @Override
+    public void songReplyLikeInsert(Long songSeq, Long memberSeq, Long replySeq) {
+        //db에서 댓글 seq에 해당하는 댓글을 찾는다
+        SongReplyEntity songReplyEntity = songReplyRepository.findById(replySeq).orElseThrow(
+                ()->new BusinessException(ApiResponseCode.INVALID_REPLY_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //곡 seq에 해당하는 곡이 있는지 조회한다.
+        songBoardRepository.findById(songSeq).orElseThrow(
+                ()-> new BusinessException(ApiResponseCode.INVALID_SONG_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //db에 회원이 존재하는지 확인
+        Optional<MemberEntity> memberEntity = memberRepository.findById(memberSeq);
+        if(memberEntity.isEmpty()) {
+            throw new BusinessException(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET, HttpStatus.BAD_REQUEST);
+        }
+        MemberEntity member = memberEntity.get();
+
+        //db에서 댓글 좋아요에 관한 데이터를 찾는다
+        SongReplyLikeEntity songReplyLike
+                = songReplyLikeRepository.findByMemberAndSongReply(member.getMemberId(), songReplyEntity.getSongReplySeq());
+
+        if(songReplyLike == null){
+            songReplyLikeRepository.save(
+                    SongReplyLikeEntity.builder()
+                            .memberEntity(member)
+                            .songReplyEntity(songReplyEntity)
+                            .build()
+            );
+        }else{
+            //이미 존재함
+            throw new BusinessException(ApiResponseCode.FAILED_UPDATE_REPLY, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public void songReplyLikeUpdate(Long replySeq, Boolean isLike) {
+        //db에서 댓글 seq에 해당하는 댓글을 찾는다
+        SongReplyEntity replyEntity = songReplyRepository.findById(replySeq).orElseThrow(
+                ()->new BusinessException(ApiResponseCode.INVALID_REPLY_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        if(isLike){
+            //추천수 1만큼 증가시킨다
+            replyEntity.setSongReplyLike(replyEntity.getSongReplyLike()+1);
+        }else{
+            //추천수 1만큼 감소시킨다.
+            replyEntity.setSongReplyLike(replyEntity.getSongReplyLike()-1);
+        }
+    }
+
+    @Override
+    public void songReplyLikeDelete(Long songSeq, Long memberSeq, Long replySeq) {
+        //db에서 댓글 seq에 해당하는 댓글을 찾는다
+        SongReplyEntity songReplyEntity = songReplyRepository.findById(replySeq).orElseThrow(
+                ()->new BusinessException(ApiResponseCode.INVALID_REPLY_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //곡 seq에 해당하는 곡이 있는지 조회한다.
+        songBoardRepository.findById(songSeq).orElseThrow(
+                ()-> new BusinessException(ApiResponseCode.INVALID_SONG_ID, HttpStatus.BAD_REQUEST)
+        );
+
+        //db에 회원이 존재하는지 확인
+        Optional<MemberEntity> memberEntity = memberRepository.findById(memberSeq);
+        if(memberEntity.isEmpty()) {
+            throw new BusinessException(ApiResponseCode.INVALID_CLIENT_ID_OR_CLIENT_SECRET, HttpStatus.BAD_REQUEST);
+        }
+        MemberEntity member = memberEntity.get();
+
+        //db에서 댓글 좋아요에 관한 데이터를 찾는다
+        SongReplyLikeEntity songReplyLike
+                = songReplyLikeRepository.findByMemberAndSongReply(member.getMemberId(), songReplyEntity.getSongReplySeq());
+
+        if(songReplyLike != null){
+            songReplyLikeRepository.delete(songReplyLike);
+        }else{
+            //데이터 존재 안함
+            throw new BusinessException(ApiResponseCode.FAILED_DELETE_LIKE, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
