@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +31,7 @@ import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 @RequestMapping("/api/v1/auth")
 @Slf4j
 @RequiredArgsConstructor
-@Tag(name = "Auth", description = "Auth API")
+@Tag(name = "Auth", description = "Auth API 사용자 권한, 인증 관련 API")
 public class AuthController {
     private final AuthService authService;
 
@@ -73,6 +74,50 @@ public class AuthController {
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), token);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/artist-application", consumes = "application/json", produces = "application/json")
+    @Operation(summary = "가수 신청", description = "사용자의 가수 자격 신청 시 요청되는 api")
+    public ResponseEntity<?> createArtistApplication(@Valid @RequestBody CreateArtistApplicationRequest createArtistApplication) {
+        authService.createArtistApplication(createArtistApplication);
+        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.CREATED), null);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/artist-application", produces = "application/json")
+    @Operation(summary = "가수 신청내역 리스트로 조회", description = "사용자가 신청한 삭제하지 않은 자신의 신청서를 모두 조회하는 경우 요청되는 api")
+    public ResponseEntity<?> getArtistApplicationsAsPage(Pageable pageable) {
+        RestApiResponse restApiResponse =
+                new RestApiResponse(
+                        new BaseResponse(ApiResponseCode.SUCCESS),
+                        authService.getArtistApplicationsAsPage(pageable));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/artist-application/{id}", produces = "application/json")
+    @Operation(summary = "가수 신청내역 조회", description = "사용자가 신청한 자신의 신청서를 조회하는 경우 요청되는 api")
+    public ResponseEntity<?> getArtistApplication(@PathVariable Long id) {
+        RestApiResponse restApiResponse =
+                new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), authService.getArtistApplication(id));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/artist-application/{id}", consumes = "application/json", produces = "application/json")
+    @Operation(summary = "가수 신청 내용 수정", description = "사용자가 요청한 가수 자격을 수정하는 경우 요청되는 api")
+    public ResponseEntity<?> updateArtistApplication(@Valid @RequestBody UpdateArtistApplicationRequest updateArtistApplicationRequest,
+                                                     @PathVariable Long id) {
+        updateArtistApplicationRequest.setArtistApplicationId(id);
+        authService.updateArtistApplication(updateArtistApplicationRequest);
+        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/artist-application/{id}", produces = "application/json")
+    @Operation(summary = "가수 신청 내용 삭제", description = "사용자가 요청한 가수 자격을 삭제하는 경우 요청되는 api")
+    public ResponseEntity<?> deleteArtistApplication(@PathVariable Long id) {
+        authService.deleteArtistApplication(id);
+        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 

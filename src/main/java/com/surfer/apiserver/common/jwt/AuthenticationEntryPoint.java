@@ -22,14 +22,15 @@ public class AuthenticationEntryPoint implements org.springframework.security.we
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json;charset=UTF8");
         RestApiResponse apiResponse = new RestApiResponse();
         String exception = (String) request.getAttribute("exception");
         if (exception == null) {
-            apiResponse.setResult(new BaseResponse(ApiResponseCode.UNKNWON));
+            apiResponse.setResult(new BaseResponse(ApiResponseCode.UNKNOWN));
         } else if (exception.equals("invalid")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.INVALID_API_ACCESS_TOKEN));
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else if (exception.equals("expire")) {
             apiResponse.setResult(new BaseResponse(ApiResponseCode.ACCESS_TOKEN_EXPIRED));
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
