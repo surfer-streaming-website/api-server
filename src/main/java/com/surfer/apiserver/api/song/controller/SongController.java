@@ -20,7 +20,7 @@ public class SongController {
 
 
 
-    //s3 파일 url
+    //음악 파일 url
     @GetMapping("/download/{id}")
     public ResponseEntity<String> downloadFile(@PathVariable Long id) {
         SongEntity songEntity = songService.selectById(id);

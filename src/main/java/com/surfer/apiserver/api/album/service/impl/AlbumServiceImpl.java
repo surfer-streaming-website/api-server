@@ -24,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -216,6 +219,20 @@ public class AlbumServiceImpl implements AlbumService {
         albumEntity.setAgency(albumReq.getAgency());
         albumEntity.setAlbumContent(albumReq.getAlbumContent());
         albumEntity.setAlbumImage(albumReq.getAlbumImage());
+
+
+
+
+        albumEntity.setReleaseDate(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+        System.out.println(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+
+
+
+
+
+
         albumEntity.setAlbumState(albumReq.getAlbumState());
         albumEntity.setMemberEntity(MemberEntity.builder().memberId(memberId).build());
 

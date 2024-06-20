@@ -9,5 +9,5 @@ public interface AuthService {
     TokenInfo signInByEmailAndPassword(SignInRequest signInRequest);
 
     TokenInfo signInByRefreshToken(String refreshToken);
-//    Page<UserResponse> getUsers(Pageable pageable);
+//    Page<`UserResponse> getUsers(Pageable pageable);
 }
