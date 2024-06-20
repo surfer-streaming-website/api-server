@@ -1,10 +1,12 @@
 package com.surfer.apiserver.api.song.controller;
 
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.api.song.dto.ProducerDTO;
 import com.surfer.apiserver.api.song.dto.SongRes;
 import com.surfer.apiserver.api.song.dto.SongReplyReq;
 import com.surfer.apiserver.api.song.dto.SongReplyRes;
 import com.surfer.apiserver.api.song.service.SongBoardService;
+import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -25,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -33,6 +36,8 @@ public class SongBoardController {
 
     @Autowired
     private SongBoardService songBoardService;
+    @Autowired
+    private AlbumService albumService;
 
     /**
      * 곡 정보 상세보기
@@ -72,6 +77,10 @@ public class SongBoardController {
         ProducerDTO producer = songBoardService.getProducer(songEntity.getProducer());
 
         SongRes songDTO = new SongRes(songEntity, pageReplyList, songSingerList, producer);
+
+        //앨범 이미지 url
+        URL albumImgFileUrl =albumService.generateAlbumImgFileUrl(songDTO.getAlbumImage());
+        songDTO.setAlbumImage(albumImgFileUrl.toString());
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), songDTO);
