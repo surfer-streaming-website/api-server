@@ -6,7 +6,10 @@ import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
+import com.surfer.apiserver.domain.database.entity.MemberAuthorityEntity;
+import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.repository.ArtistApplicationRepository;
+import com.surfer.apiserver.domain.database.repository.MemberAuthorityRepository;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.custom.CustomArtistApplicationRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import static com.surfer.apiserver.api.admin.dto.AdminDTO.ManageArtistApplicatio
 public class AdminServiceImpl implements AdminService {
     private final ArtistApplicationRepository artistApplicationRepository;
     private final CustomArtistApplicationRepository customArtistApplicationRepository;
+    private final MemberAuthorityRepository memberAuthorityRepository;
 
     @Override
     public Page<GetArtistApplicationsResponse> getArtistApplicationsAsPage(Pageable pageable) {
@@ -40,11 +44,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void manageArtistApplication(ManageArtistApplicationRequest manageArtistApplicationRequest, Long id) {
         ArtistApplicationEntity artistApplicationEntity = artistApplicationRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.NOT_FOUND, HttpStatus.NOT_FOUND));
         artistApplicationEntity.setStatus(CommonCode.ArtistApplicationStatus.fromString(manageArtistApplicationRequest.getStatus()));
         artistApplicationRepository.save(artistApplicationEntity);
+        if (CommonCode.ArtistApplicationStatus.fromString(manageArtistApplicationRequest.getStatus())
+                .equals(CommonCode.ArtistApplicationStatus.Completed)) {
+            memberAuthorityRepository.save(MemberAuthorityEntity.builder()
+                    .member(artistApplicationEntity.getMember())
+                    .authority(CommonCode.MemberAuthority.ROLE_SINGER)
+                    .build());
+        }
     }
 
 }

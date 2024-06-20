@@ -44,7 +44,6 @@ public class AuthDTO {
     }
 
     @Data
-    @Builder
     public static class CreateArtistApplicationRequest {
         @NotBlank(message = "국내외 구분 필수값입니다.")
         private String locationType;
@@ -60,7 +59,6 @@ public class AuthDTO {
     }
 
     @Data
-    @Builder
     public static class UpdateArtistApplicationRequest {
         private Long artistApplicationId;
         @NotBlank(message = "국내외 구분 필수값입니다.")
