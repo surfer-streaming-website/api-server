@@ -42,7 +42,8 @@ public class CustomArtistApplicationRepositoryImpl implements CustomArtistApplic
                 .select(qArtistApplicationEntity.count())
                 .from(qArtistApplicationEntity)
                 .where(qArtistApplicationEntity.member.eq(member));
-
+        result.forEach(entity ->
+            entity.setStatus(CommonCode.ArtistApplicationStatus.valueOf(entity.getStatus()).getDesc()));
         return new PageImpl<>(result, pageable, count.fetchCount());
     }
 
