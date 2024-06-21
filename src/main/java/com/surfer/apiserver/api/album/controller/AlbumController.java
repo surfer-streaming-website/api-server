@@ -3,6 +3,7 @@ package com.surfer.apiserver.api.album.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.album.dto.AlbumReq;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
+import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
@@ -86,6 +87,7 @@ public class AlbumController {
 
     }
 
+    //앨범 등록
     @PostMapping("/save")
     public ResponseEntity<?> saveAlbum(@Valid @ModelAttribute List<MultipartFile> multipartFiles,
                             @RequestPart("album") AlbumReq albumReq){

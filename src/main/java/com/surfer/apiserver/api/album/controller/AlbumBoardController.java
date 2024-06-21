@@ -3,6 +3,7 @@ package com.surfer.apiserver.api.album.controller;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
+import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
