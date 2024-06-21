@@ -4,6 +4,7 @@ import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -32,6 +34,8 @@ public class AlbumBoardController {
 
     @Autowired
     private AlbumBoardService albumBoardService;
+    @Autowired
+    private AlbumService albumService;
 
     /**
      * 앨범 상세정보 조회
@@ -60,6 +64,12 @@ public class AlbumBoardController {
 
         //앨범 가수 목록 불러오기
         List<AlbumSingerEntity> albumSingerList = albumBoardService.getAlbumSingerList(album);
+
+        //앨범 이미지 명에서 url로 변환
+        String albumImageName = album.getAlbumImage();
+        URL albumImgFileUrl= albumService.generateAlbumImgFileUrl(albumImageName);
+        String albumImageUrl = albumImgFileUrl.toString();
+        album.setAlbumImage(albumImageUrl);
 
         AlbumRes albumDTO = new AlbumRes(album, replyEntityPage, albumSingerList);
 
