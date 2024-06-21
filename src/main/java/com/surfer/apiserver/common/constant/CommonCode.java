@@ -33,6 +33,12 @@ public class CommonCode {
         DOMESTIC("국내"),
         INTERNATIONAL("국외");
         private final String desc;
+        public static LocationType fromString(String desc) {
+            return Arrays.stream(LocationType.values())
+                    .filter(status -> status.getDesc().equalsIgnoreCase(desc))
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(ApiResponseCode.UNACCEPTED_REQUEST, HttpStatus.BAD_REQUEST));
+        }
     }
 
     @AllArgsConstructor
@@ -46,6 +52,12 @@ public class CommonCode {
         RELIGIOUS("종교"),
         ;
         private final String desc;
+        public static Sector fromString(String desc) {
+            return Arrays.stream(Sector.values())
+                    .filter(status -> status.getDesc().equalsIgnoreCase(desc))
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(ApiResponseCode.UNACCEPTED_REQUEST, HttpStatus.BAD_REQUEST));
+        }
     }
 
     @AllArgsConstructor
