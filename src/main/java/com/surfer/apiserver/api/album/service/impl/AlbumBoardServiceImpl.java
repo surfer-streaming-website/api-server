@@ -26,7 +26,7 @@ import java.util.Optional;
 public class AlbumBoardServiceImpl implements AlbumBoardService {
 
     //페이지 처리를 위해 추가
-    private final static int PAGE_COUNT=10; //한 페이지 당 댓글 10개
+    private final static int PAGE_COUNT=5; //한 페이지 당 댓글 5개
 
     @Autowired
     private AlbumRepository albumRepository;
