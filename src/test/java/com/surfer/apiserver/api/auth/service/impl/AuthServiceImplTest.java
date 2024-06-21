@@ -1,4 +1,3 @@
-/*
 package com.surfer.apiserver.api.auth.service.impl;
 
 import com.surfer.apiserver.api.auth.dto.AuthDTO;
@@ -91,4 +90,4 @@ class AuthServiceImplTest {
     @Test
     void loadUserByUsername() {
     }
-}*/
+}

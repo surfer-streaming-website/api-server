@@ -134,9 +134,9 @@ class SongBoardControllerTest {
                             .songState(true)
                             .soundSourceName("sound src")
                             .producer("작곡가/작사가/편곡자")
-                            .albumEntity(albumEntity)
+                            .albumEntities(albumEntity)
                             .songReplies(songReplyEntityList)
-                            .songSingerEntityList(songSingerEntityList)
+                            .songSingerEntities(songSingerEntityList)
                             .build()
             );
 
@@ -214,8 +214,8 @@ class SongBoardControllerTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.sort.sorted").value(true))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.sort.unsorted").value(false))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.replies.first").value(nowPage==1))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data.albumSeq").value(songEntity.getAlbumEntity().getAlbumSeq()))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.data.albumTitle").value(songEntity.getAlbumEntity().getAlbumTitle()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.data.albumSeq").value(songEntity.getAlbumEntities().getAlbumSeq()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.data.albumTitle").value(songEntity.getAlbumEntities().getAlbumTitle()))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.producerDTO.composerList").value(songEntity.getProducer().split("/")[0]))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.producerDTO.lyricistList").value(songEntity.getProducer().split("/")[1]))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.data.producerDTO.arrangerList").value(songEntity.getProducer().split("/")[2]))
@@ -333,9 +333,9 @@ class SongBoardControllerTest {
                             .songState(true)
                             .soundSourceName("sound src")
                             .producer("작곡가/작사가/편곡자")
-                            .albumEntity(albumEntity)
+                            .albumEntities(albumEntity)
                             .songReplies(songReplyEntityList)
-                            .songSingerEntityList(songSingerEntityList)
+                            .songSingerEntities(songSingerEntityList)
                             .build()
             );
 

@@ -4,6 +4,7 @@ import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -32,9 +34,8 @@ public class AlbumBoardController {
 
     @Autowired
     private AlbumBoardService albumBoardService;
-
-    //페이지 처리를 위해 추가
-    private final static int BLOCK_COUNT=5;
+    @Autowired
+    private AlbumService albumService;
 
     /**
      * 앨범 상세정보 조회
@@ -64,16 +65,13 @@ public class AlbumBoardController {
         //앨범 가수 목록 불러오기
         List<AlbumSingerEntity> albumSingerList = albumBoardService.getAlbumSingerList(album);
 
+        //앨범 이미지 명에서 url로 변환
+        String albumImageName = album.getAlbumImage();
+        URL albumImgFileUrl= albumService.generateAlbumImgFileUrl(albumImageName);
+        String albumImageUrl = albumImgFileUrl.toString();
+        album.setAlbumImage(albumImageUrl);
+
         AlbumRes albumDTO = new AlbumRes(album, replyEntityPage, albumSingerList);
-
-        //view에서 페이지 처리를 하기 위한 준비
-        //int temp = (nowPage-1)%BLOCK_COUNT;
-        //int startPage = nowPage-temp;
-
-        //데이터 저장
-        /*model.addAttribute("blockCount", BLOCK_COUNT);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("nowPage", nowPage);*/
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), albumDTO);
@@ -122,4 +120,56 @@ public class AlbumBoardController {
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
+
+
+    @GetMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "앨범 상세페이지 댓글 좋아요 여부 조회", description = "댓글 좋아요 여부 확인 시 요청되는 api")
+    public ResponseEntity<?> checkAlbumReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        Boolean isLike = albumBoardService.albumReplyLike(seq, Long.parseLong(memberSeq), replySeq);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), isLike);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "앨범 상세페이지 댓글 좋아요 등록", description = "댓글 좋아요 시 요청되는 api")
+    public ResponseEntity<?> increaseAlbumReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        //security에 저장된 member 정보 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        //앨범 댓글 좋아요 테이블 수정
+        albumBoardService.albumReplyLikeInsert(seq, Long.parseLong(memberSeq), replySeq);
+
+        //앨범 댓글 테이블 수정
+        albumBoardService.albumReplyLikeUpdate(replySeq, Boolean.TRUE);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{seq}/reply/{replySeq}/like")
+    @Operation(summary = "앨범 상세페이지 댓글 좋아요 삭제", description = "댓글 좋아요 취소 시 요청되는 api")
+    public ResponseEntity<?> decreaseAlbumReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication.getName());
+
+        //앨범 댓글 좋아요 테이블 수정
+        albumBoardService.albumReplyLikeDelete(seq, Long.parseLong(memberSeq), replySeq);
+
+        //앨범 댓글 테이블 수정
+        albumBoardService.albumReplyLikeUpdate(replySeq, Boolean.FALSE);
+
+        RestApiResponse restApiResponse = new RestApiResponse();
+        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+
+
 }

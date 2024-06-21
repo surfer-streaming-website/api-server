@@ -29,6 +29,10 @@ dependencies {
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testAnnotationProcessor 'org.projectlombok:lombok' // 테스트를 위한 세팅
+    testImplementation 'org.projectlombok:lombok' // 테스트를 위한 세팅
+
     //dev tools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //h2
@@ -37,6 +41,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // oracle jdbc
     implementation group: 'com.oracle.database.jdbc', name: 'ojdbc11', version: '23.4.0.24.05'
+
+    //오라클 클라우드 db
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'com.oracle.database.security:osdt_cert:21.3.0.0'
+    implementation 'com.oracle.database.security:oraclepki:21.3.0.0'
+    implementation 'com.oracle.database.security:osdt_core:21.3.0.0'
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     //spring security
@@ -45,9 +55,13 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
-
-
-
+    //query dsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    //s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     //테스트
     //spring test
@@ -61,6 +75,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+clean {
+    delete file('src/main/generated')
+}
+
 
 //sourceSets {
 //    test {

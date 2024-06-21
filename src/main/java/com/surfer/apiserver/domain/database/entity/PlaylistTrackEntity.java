@@ -34,4 +34,4 @@ public class PlaylistTrackEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_seq", referencedColumnName = "song_seq", nullable = false)
     private SongEntity songEntity;
-}
+} 

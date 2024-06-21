@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,10 +39,19 @@ public class RestExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleOracleDataBaseException(DataIntegrityViolationException e) {
         RestApiResponse responseDTO = new RestApiResponse();
-        if(e.getMessage().contains("ORA-00001")){
+        if (e.getMessage().contains("ORA-00001")) {
             responseDTO.setResult(new BaseResponse(ApiResponseCode.UNIQUE_CONSTRAINT_VIOLATED, e.getMessage()));
         }
+        responseDTO.setResult(new BaseResponse(ApiResponseCode.UNKNOWN_DATABASE_EXCEPTION, e.getMessage()));
         return new ResponseEntity<RestApiResponse>(responseDTO, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<?> no(HttpMediaTypeNotSupportedException e) {
+        RestApiResponse responseDTO = new RestApiResponse();
+        responseDTO.setResult(new BaseResponse(ApiResponseCode.UNACCEPTED_REQUEST, e.getMessage()));
+        return new ResponseEntity<RestApiResponse>(responseDTO, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

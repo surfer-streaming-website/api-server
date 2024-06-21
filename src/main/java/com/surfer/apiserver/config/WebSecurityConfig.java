@@ -73,6 +73,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.HEAD, urlMapper(permitHeadMethodUrl, permitHeadMethodUrlAntPattern)).permitAll()
                             .requestMatchers(HttpMethod.PATCH, urlMapper(permitPatchMethodUrl, permitPatchMethodUrlAntPattern)).permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, urlMapper(permitOptionsMethodUrl, permitOptionsMethodUrlAntPattern)).permitAll()
+                            .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtTokenValidatorFilter(jwtTokenProvider), BasicAuthenticationFilter.class)
