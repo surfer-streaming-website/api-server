@@ -40,7 +40,7 @@ public class AlbumEntity {
     private String albumImage;
 
     @Column(name="album_state")
-    private int albumState;
+    private int albumState = 0;
 
     @Column(name="album_reg_date")
     @Temporal(TemporalType.DATE)
