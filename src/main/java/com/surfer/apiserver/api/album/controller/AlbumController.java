@@ -132,6 +132,15 @@ public class AlbumController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
+    // 앨범 상태 변경
+    @PutMapping("/updateStatus/{albumSeq}")
+    public ResponseEntity<?> updateAlbumStatus(@PathVariable Long albumSeq, @RequestBody Map<String, Integer> status) {
+        int newStatus = status.get("albumState");
+        albumService.updateAlbumStatus(albumSeq, newStatus);
+        return new ResponseEntity<>(new BaseResponse(ApiResponseCode.SUCCESS), HttpStatus.OK);
+    }
+
+
 
 
 }
