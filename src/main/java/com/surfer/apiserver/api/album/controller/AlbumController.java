@@ -86,12 +86,19 @@ public class AlbumController {
 
 
     }
-
     //앨범 등록
     @PostMapping("/save")
-    public ResponseEntity<?> saveAlbum(@Valid @ModelAttribute List<MultipartFile> multipartFiles,
+    public ResponseEntity<?> saveAlbum(@RequestPart("albumImage") List<MultipartFile> multipartFiles,
+                                       @RequestPart("album") AlbumReq albumReq){
+        System.out.println("111111111111111111111");
+
+/*
+    //앨범 등록
+    @PostMapping("/save")
+    public ResponseEntity<?> saveAlbum(@ModelAttribute List<MultipartFile> multipartFiles,
                             @RequestPart("album") AlbumReq albumReq){
 
+*/
 
    /*     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = Long.valueOf(authentication.getName());

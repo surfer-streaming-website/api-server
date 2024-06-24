@@ -142,7 +142,6 @@ public class AlbumServiceImpl implements AlbumService {
                 songName.append(file.getOriginalFilename());
 
                 fileNameMap.put(no, songName.toString());
-                fileNameList.add(songName.toString());
                 no=no+1;
 
                 ObjectMetadata objectMetadata = new ObjectMetadata();
