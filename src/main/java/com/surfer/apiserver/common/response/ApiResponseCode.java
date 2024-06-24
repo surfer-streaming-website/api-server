@@ -47,8 +47,8 @@ public enum ApiResponseCode {
     INVALID_TAG_ID("INVALID_TAG_ID","failed to access tag because tag does not exist"), // 해당하는 태그가 없음
 
     // like
-    ALREADY_LIKED("ALREADY_LIKED", "이미 좋아요를 눌렀습니다."),
-    NOT_LIKED("NOT_LIKED", "좋아요를 누르지 않았습니다.");
+    ALREADY_LIKED("ALREADY_LIKED", "ALREADY LIKE"),
+    NOT_LIKED("NOT_LIKED", "NOT PUSH LIKE");
     ;
 
 
