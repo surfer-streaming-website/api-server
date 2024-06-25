@@ -55,7 +55,7 @@ public class JwtTokenProvider implements InitializingBean {
     public TokenInfo createToken(MemberEntity member) {
         String authorities = member.getMemberAuthorityEntities().stream()
                 .map(memberAuthorityEntity -> memberAuthorityEntity.getAuthority().toString())
-                .collect(Collectors.joining(","));  // 콤마로 구분된 문자열로 수집;
+                .collect(Collectors.joining(","));
 
         String accessToken = Jwts.builder()
                 .issuer(issuer)
