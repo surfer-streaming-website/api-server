@@ -87,8 +87,8 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     public void createArtistApplication(CreateArtistApplicationRequest createArtistApplicationRequest) {
         MemberEntity memberEntity = getMemberEntityByAuthentication();
         artistApplicationRepository.save(ArtistApplicationEntity.builder()
-                .locationType(CommonCode.LocationType.fromString(createArtistApplicationRequest.getLocationType()))
-                .sector(CommonCode.Sector.fromString(createArtistApplicationRequest.getSector()))
+                .locationType(CommonCode.LocationType.fromDesc(createArtistApplicationRequest.getLocationType()))
+                .sector(CommonCode.Sector.fromDesc(createArtistApplicationRequest.getSector()))
                 .copyrightName(createArtistApplicationRequest.getCopyrightName())
                 .albumName(createArtistApplicationRequest.getAlbumName())
                 .artistName(createArtistApplicationRequest.getArtistName())
@@ -119,8 +119,8 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.NOT_FOUND, HttpStatus.NOT_FOUND));
         validAuthByMemberId(artistApplicationEntity.getMember().getMemberId());
 
-        artistApplicationEntity.setLocationType(LocationType.fromString(updateArtistApplicationRequest.getLocationType()));
-        artistApplicationEntity.setSector(Sector.fromString(updateArtistApplicationRequest.getSector()));
+        artistApplicationEntity.setLocationType(LocationType.fromDesc(updateArtistApplicationRequest.getLocationType()));
+        artistApplicationEntity.setSector(Sector.fromDesc(updateArtistApplicationRequest.getSector()));
         artistApplicationEntity.setCopyrightName(updateArtistApplicationRequest.getCopyrightName());
         artistApplicationEntity.setAlbumName(updateArtistApplicationRequest.getAlbumName());
         artistApplicationEntity.setArtistName(updateArtistApplicationRequest.getArtistName());
