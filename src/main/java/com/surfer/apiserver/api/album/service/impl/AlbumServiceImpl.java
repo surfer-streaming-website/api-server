@@ -327,10 +327,10 @@ public class AlbumServiceImpl implements AlbumService {
 
     }
 
-    // 앨범 상태 변경
     @Override
     public void updateAlbumStatus(Long albumSeq, int albumState) {
-        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(() -> new RuntimeException("Album not found"));
+        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(
+                () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST));
         albumEntity.setAlbumState(albumState);
         albumRepository.save(albumEntity);
     }

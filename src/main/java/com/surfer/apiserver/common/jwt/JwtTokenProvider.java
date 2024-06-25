@@ -1,6 +1,5 @@
 package com.surfer.apiserver.common.jwt;
 
-import com.surfer.apiserver.api.auth.dto.AuthDTO.TokenInfo;
 import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -11,12 +10,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -69,6 +69,7 @@ public class JwtTokenProvider implements InitializingBean {
         return TokenInfo.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .memberId(member.getMemberId())
                 .build();
     }
 
@@ -80,10 +81,9 @@ public class JwtTokenProvider implements InitializingBean {
                 .getPayload();
     }
 
-    public String getAccessTokenByRequestHeader(HttpServletRequest request) throws Exception{
+    public String getAccessTokenByRequestHeader(HttpServletRequest request) throws Exception {
         return request.getHeader(accessTokenHeader).split(" ")[1];
     }
-
 
     private String getRefreshToken(Long memberSeq) {
         MemberEntity memberEntity = memberRepository.findByMemberId(memberSeq).orElseThrow(
@@ -98,4 +98,15 @@ public class JwtTokenProvider implements InitializingBean {
         return memberEntity.getRefreshToken();
     }
 
+    @Data
+    @Builder
+    public static class TokenInfo {
+        private String accessToken;
+        private String refreshToken;
+        private Long memberId;  // memberId 필드 추가
+
+        public Long getMemberId() {
+            return memberId;
+        }
+    }
 }

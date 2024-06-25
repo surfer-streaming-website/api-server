@@ -1,6 +1,6 @@
 package com.surfer.apiserver.api.auth.service;
 
-
+import com.surfer.apiserver.common.jwt.JwtTokenProvider.TokenInfo;
 import com.surfer.apiserver.api.auth.dto.AuthDTO;
 import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
 import org.springframework.data.domain.Page;
