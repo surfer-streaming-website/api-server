@@ -16,7 +16,7 @@ import java.net.URL;
 public class SongController {
 
     @Autowired
-    private SongService songService;
+    private SongService  songService;
 
     @GetMapping("/download/{id}")
     public ResponseEntity<String> downloadFile(@PathVariable Long id) {
@@ -28,21 +28,21 @@ public class SongController {
         return ResponseEntity.ok(downloadUrl.toString());
     }
 
-    @GetMapping("/{songId}/like-status/{memberId}")
-    public ResponseEntity<RestApiResponse> isLiked(@PathVariable Long songId, @PathVariable Long memberId) {
-        boolean isLiked = songService.isSongLikedByUser(songId, memberId);
+    @GetMapping("/{songId}/like-status")
+    public ResponseEntity<RestApiResponse> isLiked(@PathVariable Long songId) {
+        boolean isLiked = songService.isSongLikedByUser(songId);
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), isLiked));
     }
 
-    @PostMapping("/{songId}/like/{memberId}")
-    public ResponseEntity<RestApiResponse> likeSong(@PathVariable Long songId, @PathVariable Long memberId) {
-        songService.likeSong(songId, memberId);
+    @PostMapping("/{songId}/like")
+    public ResponseEntity<RestApiResponse> likeSong(@PathVariable Long songId) {
+        songService.likeSong(songId);
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
     }
 
-    @DeleteMapping("/{songId}/like/{memberId}")
-    public ResponseEntity<RestApiResponse> unlikeSong(@PathVariable Long songId, @PathVariable Long memberId) {
-        songService.unlikeSong(songId, memberId);
+    @DeleteMapping("/{songId}/like")
+    public ResponseEntity<RestApiResponse> unlikeSong(@PathVariable Long songId) {
+        songService.unlikeSong(songId);
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
     }
 

@@ -13,8 +13,8 @@ public interface SongService {
     URL generateSongFileUrl(String fileName);
 
     // 좋아요 기능 추가
-    boolean isSongLikedByUser(Long songId, Long memberId);
-    void likeSong(Long songId, Long memberId);
-    void unlikeSong(Long songId, Long memberId);
+    boolean isSongLikedByUser(Long songId);
+    void likeSong(Long songId);
+    void unlikeSong(Long songId);
     long countSongLikes(Long songId);
 }

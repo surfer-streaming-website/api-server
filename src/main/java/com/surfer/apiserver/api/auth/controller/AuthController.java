@@ -1,7 +1,6 @@
 package com.surfer.apiserver.api.auth.controller;
 
 import com.surfer.apiserver.api.auth.service.AuthService;
-import com.surfer.apiserver.common.jwt.JwtTokenProvider;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -69,13 +68,12 @@ public class AuthController {
     })
     public ResponseEntity<?> signIn(@Valid @RequestBody(required = false) SignInRequest signInRequest,
                                     @RequestHeader Map<String, String> headers) {
-        JwtTokenProvider.TokenInfo token = headers.containsKey("refresh-token") ?
+        TokenInfo token = headers.containsKey("refresh-token") ?
                 authService.signInByRefreshToken(headers.get("refresh-token")) :
                 authService.signInByEmailAndPassword(signInRequest);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), token);
-        restApiResponse.addData("memberId", token.getMemberId());
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
