@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
-import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongLikeEntity;
@@ -15,7 +14,6 @@ import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
@@ -62,18 +60,16 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public boolean isSongLikedByUser(Long songId) {
+    public boolean isSongLikedByUser(Long songId, Long memberId) {
         SongEntity song = selectById(songId);
-        Long memberId = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST));
         return songLikeRepository.findBySongAndMember(song, member).isPresent();
     }
 
     @Override
-    public void likeSong(Long songId) {
+    public void likeSong(Long songId, Long memberId) {
         SongEntity song = selectById(songId);
-        Long memberId = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST));
         if (songLikeRepository.findBySongAndMember(song, member).isPresent()) {
@@ -84,9 +80,8 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public void unlikeSong(Long songId) {
+    public void unlikeSong(Long songId, Long memberId) {
         SongEntity song = selectById(songId);
-        Long memberId = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST));
         SongLikeEntity like = songLikeRepository.findBySongAndMember(song, member)

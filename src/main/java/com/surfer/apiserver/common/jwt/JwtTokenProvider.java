@@ -1,6 +1,5 @@
 package com.surfer.apiserver.common.jwt;
 
-import com.surfer.apiserver.api.auth.dto.AuthDTO;
 import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -25,8 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 
 @RequiredArgsConstructor
 @Service
@@ -72,6 +69,7 @@ public class JwtTokenProvider implements InitializingBean {
         return TokenInfo.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .memberId(member.getMemberId())
                 .build();
     }
 
@@ -98,5 +96,17 @@ public class JwtTokenProvider implements InitializingBean {
             memberEntity = memberRepository.save(memberEntity);
         }
         return memberEntity.getRefreshToken();
+    }
+
+    @Data
+    @Builder
+    public static class TokenInfo {
+        private String accessToken;
+        private String refreshToken;
+        private Long memberId;  // memberId 필드 추가
+
+        public Long getMemberId() {
+            return memberId;
+        }
     }
 }
