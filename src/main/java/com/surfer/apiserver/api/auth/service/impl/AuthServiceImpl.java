@@ -5,6 +5,7 @@ import com.surfer.apiserver.api.auth.service.AuthService;
 import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
+import com.surfer.apiserver.common.jwt.JwtTokenProvider.TokenInfo;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
@@ -37,12 +38,10 @@ import java.util.List;
 import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 import static com.surfer.apiserver.common.constant.CommonCode.*;
 
-
 @Service("AuthService")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthServiceImpl implements AuthService, UserDetailsService {
-
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
