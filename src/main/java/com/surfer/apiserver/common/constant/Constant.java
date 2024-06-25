@@ -6,7 +6,9 @@ public class Constant {
             //swagger
             "/v3/api-docs", "/v3/api-docs/swagger-config",
             //
-            "/favicon.ico"
+            "/favicon.ico",
+            //album
+            "/api/album/status"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth

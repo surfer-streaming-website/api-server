@@ -9,6 +9,7 @@ import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,20 +42,32 @@ public class AlbumController {
         this.albumService = albumService;
 
     }
-
     //마이페이지 신청리스트
     @GetMapping("/status")
     public  ResponseEntity<?> findAllByMemberEntityId() {
 
+        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication1.getName());
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = Long.valueOf(authentication.getName());
+        System.out.println("memberSeq: " + memberSeq);
+        System.out.println("memberId: " + memberId);
 
-        return new ResponseEntity<>(albumService.findAllByMemberEntityId(memberId), HttpStatus.OK);
+        return new ResponseEntity<>(albumService.findAllByMemberEntityId(Long.parseLong(memberSeq)), HttpStatus.OK);
     }
 
     //마이페이지 신청리스트 test
     @GetMapping("/status/{id}")
     public  ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
+
+        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+        String memberSeq = AES256Util.decrypt(authentication1.getName());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = Long.valueOf(authentication.getName());
+        System.out.println("memberSeq: " + memberSeq);
+        System.out.println("memberId: " + memberId);
 
         return new ResponseEntity<>(albumService.findAllByMemberEntityId(id), HttpStatus.OK);
     }
@@ -96,11 +110,6 @@ public class AlbumController {
 
 
 
-   /*     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberId = Long.valueOf(authentication.getName());
-        if(memberId != null){
-        albumReq.setMemberId(memberId);
-        }*/
         System.out.println(albumReq.getAlbumTitle());
         Long memberId = albumReq.getMemberId();
 

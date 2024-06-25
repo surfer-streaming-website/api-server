@@ -10,11 +10,12 @@ public class SongSearchDTO {
     private String albumImage;
     private String songTitle;
     private String songSingerName;
+    private Long songSeq;
 
-    public SongSearchDTO(String albumImage,String songTitle,String songSingerName) {
+    public SongSearchDTO(String albumImage,String songTitle,String songSingerName , Long songSeq) {
         this.albumImage = albumImage;
         this.songTitle = songTitle;
         this.songSingerName = songSingerName;
-
+        this.songSeq = songSeq;
     }
 }
