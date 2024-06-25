@@ -326,4 +326,12 @@ public class AlbumServiceImpl implements AlbumService {
         albumRepository.deleteById(albumSeq);
 
     }
+
+    @Override
+    public void updateAlbumStatus(Long albumSeq, int albumState) {
+        AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(
+                () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST));
+        albumEntity.setAlbumState(albumState);
+        albumRepository.save(albumEntity);
+    }
 }

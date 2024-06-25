@@ -18,6 +18,7 @@ public class SongReq {
     private String songTitle;
     private int songNumber;
     private String soundSourceName;
+    private String soundSourceUrl;
     private Boolean songState;
     private List<SongSingerEntity> singers;
     private int totalPlayedCount;
