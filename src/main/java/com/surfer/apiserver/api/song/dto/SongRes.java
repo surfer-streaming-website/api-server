@@ -25,6 +25,7 @@ public class SongRes {
     private int recentlyPlayedCount;
     private String genre;
     private String soundSourceName;
+    private String soundSourceUrl;
 
     private Page<SongReplyRes> replies;
 

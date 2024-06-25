@@ -190,7 +190,7 @@ public class PlaylistServiceImpl implements PlaylistService {
      */
     private PlaylistGroupEntity findPlaylistGroup(Long playlistGroupSeq) {
         return playlistGroupRepository.findById(playlistGroupSeq)
-                .orElseThrow(()->new BusinessException(ApiResponseCode.FAILED_LOAD_PLAYLIST, HttpStatus.BAD_REQUEST));
+                .orElseThrow(()->new BusinessException(ApiResponseCode.INVALID_PLAYLIST_ID, HttpStatus.BAD_REQUEST));
     }
 
     /**
