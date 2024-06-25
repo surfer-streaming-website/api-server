@@ -38,6 +38,8 @@ public class SongBoardController {
     private SongBoardService songBoardService;
     @Autowired
     private AlbumService albumService;
+    @Autowired
+    private SongService songService;
 
     /**
      * 곡 정보 상세보기
@@ -81,6 +83,10 @@ public class SongBoardController {
         //앨범 이미지 url
         URL albumImgFileUrl =albumService.generateAlbumImgFileUrl(songDTO.getAlbumImage());
         songDTO.setAlbumImage(albumImgFileUrl.toString());
+
+        //음원 url
+        URL songFileUrl = songService.generateSongFileUrl(songDTO.getSoundSourceName());
+        songDTO.setSoundSourceUrl(songFileUrl.toString());
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), songDTO);
