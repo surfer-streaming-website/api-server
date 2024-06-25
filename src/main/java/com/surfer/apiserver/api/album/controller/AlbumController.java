@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.album.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.album.dto.AlbumReq;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
@@ -88,23 +89,19 @@ public class AlbumController {
     }
     //앨범 등록
     @PostMapping("/save")
-    public ResponseEntity<?> saveAlbum(@RequestPart("albumImage") List<MultipartFile> multipartFiles,
-                                       @RequestPart("album") AlbumReq albumReq){
+    public ResponseEntity<?> saveAlbum(@RequestPart("multipartfiles") List<MultipartFile> multipartFiles,
+                                       @RequestPart("album") AlbumReq albumReq) {
         System.out.println("111111111111111111111");
 
-/*
-    //앨범 등록
-    @PostMapping("/save")
-    public ResponseEntity<?> saveAlbum(@ModelAttribute List<MultipartFile> multipartFiles,
-                            @RequestPart("album") AlbumReq albumReq){
 
-*/
+
 
    /*     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = Long.valueOf(authentication.getName());
         if(memberId != null){
         albumReq.setMemberId(memberId);
         }*/
+        System.out.println(albumReq.getAlbumTitle());
         Long memberId = albumReq.getMemberId();
 
 
