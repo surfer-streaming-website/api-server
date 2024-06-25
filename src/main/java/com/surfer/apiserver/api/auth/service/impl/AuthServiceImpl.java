@@ -4,7 +4,6 @@ import com.surfer.apiserver.api.auth.service.AuthService;
 import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.jwt.JwtTokenProvider;
-import com.surfer.apiserver.common.jwt.JwtTokenProvider.TokenInfo;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
