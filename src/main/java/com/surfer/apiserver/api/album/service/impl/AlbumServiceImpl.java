@@ -284,6 +284,9 @@ public class AlbumServiceImpl implements AlbumService {
         return String.valueOf(albumImageName);
     }
 
+    /*
+     * 앨범 이미지 url찾기 이거 사용!
+     * */
     //앨범 이미지 (albumIamge로) url 찾기
     @Override
     public URL generateAlbumImgFileUrl(String albumImage) {
@@ -301,9 +304,6 @@ public class AlbumServiceImpl implements AlbumService {
 
     }
 
-    /*
-    * 앨범 이미지 url찾기 이거 사용
-    * */
     //앨범 이미지 (albumSeq로) url 찾기
     public URL findAlbumUrl(Long albumSeq) {
 
