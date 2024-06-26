@@ -32,20 +32,22 @@ public class PlaylistDTO {
         private String playlistImage;
         private String playlistName;
         private String nickname;
-        private List<PlaylistTagResponseDTO> tag;
+        private int isOpen;
+        private List<String> tagList;
         private List<PlaylistTrackResponseDTO> track;
 
         public PlaylistGroupResponseDTO(PlaylistGroupEntity playlistGroupEntity) {
             this.playlistId = playlistGroupEntity.getPlaylistGroupSeq();
             this.playlistName = playlistGroupEntity.getPlaylistName();
             this.nickname = playlistGroupEntity.getMemberEntity().getNickname();
+            this.isOpen = playlistGroupEntity.getIsOpen();
 
-            List<PlaylistTagResponseDTO> playlistTagResponseDTOList = new ArrayList<>();
+            List<String> playlistTagList = new ArrayList<>();
             for (PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {
-                PlaylistTagResponseDTO playlistTagResponseDTO = new PlaylistTagResponseDTO(playlistTagEntity);
-                playlistTagResponseDTOList.add(playlistTagResponseDTO);
+                String playlistTag = playlistTagEntity.getTagEntity().getTagName();
+                playlistTagList.add(playlistTag);
             }
-            this.tag = playlistTagResponseDTOList;
+            this.tagList = playlistTagList;
 
             List<PlaylistTrackResponseDTO> playlistTrackResponseDTOList = new ArrayList<>();
             for (PlaylistTrackEntity playlistTrackEntity : playlistGroupEntity.getPlaylistTrackEntities()) {
@@ -59,7 +61,7 @@ public class PlaylistDTO {
         }
     }
 
-    @Getter
+    /*@Getter
     @Setter
     public static class PlaylistTagResponseDTO {
         private String tag;
@@ -67,7 +69,7 @@ public class PlaylistDTO {
         public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
             this.tag = playlistTagEntity.getTagEntity().getTagName();
         }
-    }
+    }*/
 
     @Getter
     @Setter

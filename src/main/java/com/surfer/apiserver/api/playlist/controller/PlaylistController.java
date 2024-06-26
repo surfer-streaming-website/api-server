@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.playlist.controller;
 
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.api.playlist.dto.PlaylistDTO;
 import com.surfer.apiserver.api.playlist.service.PlaylistService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaylistController {
     private final PlaylistService playlistService;
+    private final AlbumService albumService;
 
     /**
      * 존재하는 플레이리스트 X
@@ -51,6 +54,11 @@ public class PlaylistController {
     @GetMapping("/myPlaylists")
     public ResponseEntity<?> getAllPlaylists() {
         List<PlaylistDTO.PlaylistGroupResponseDTO> playlists = playlistService.getAllPlaylists();
+        playlists.forEach(playlist -> {
+            String imgName = playlist.getPlaylistImage();
+            URL url = albumService.generateAlbumImgFileUrl(imgName);
+            playlist.setPlaylistImage(url.toString());
+        });
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), playlists);
@@ -64,6 +72,10 @@ public class PlaylistController {
     @GetMapping("/myPlaylists/{playlistSeq}")
     public ResponseEntity<?> getPlaylistById(@PathVariable Long playlistSeq) {
         PlaylistDTO.PlaylistGroupResponseDTO playlist = playlistService.getPlaylistById(playlistSeq);
+
+        String imgName = playlist.getPlaylistImage();
+        URL url = albumService.generateAlbumImgFileUrl(imgName);
+        playlist.setPlaylistImage(url.toString());
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), playlist);
@@ -109,6 +121,19 @@ public class PlaylistController {
 
         return ResponseEntity.ok().body(restApiResponse);
     }
+
+    /**
+     * 등급이 dj 인 사용자가 공개한 플레이리스트 전부 조회
+     */
+//    @GetMapping("/openedPlaylists")
+//    public ResponseEntity<?> getAllOpenedPlaylists() {
+//        List<PlaylistDTO.PlaylistGroupResponseDTO> openPlaylist = playlistService.getOpenedPlaylists();
+//
+//        RestApiResponse restApiResponse = new RestApiResponse();
+//        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), openPlaylist);
+//
+//        return ResponseEntity.ok().body(restApiResponse);
+//    }
 
     /**
      * 플레이리스트에 좋아요가 존재하는지 확인

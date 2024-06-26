@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.playlist.service.impl;
 
 import com.surfer.apiserver.api.playlist.dto.PlaylistDTO;
 import com.surfer.apiserver.api.playlist.service.PlaylistService;
+import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.util.AES256Util;
@@ -139,6 +140,14 @@ public class PlaylistServiceImpl implements PlaylistService {
         return 1;
     }
 
+//    @Override
+//    @Transactional
+//    public List<PlaylistDTO.PlaylistGroupResponseDTO> getOpenedPlaylists() {
+//        List<PlaylistGroupEntity> roleDj = playlistGroupRepository.findByAuthority(CommonCode.MemberAuthority.ROLE_DJ);
+//
+//        return roleDj.stream().map(PlaylistDTO.PlaylistGroupResponseDTO::new).collect(Collectors.toList());
+//    }
+
     @Override
     @Transactional
     public List<PlaylistDTO.PlaylistLikeResponseDTO> likedPlaylists() {
@@ -146,6 +155,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         if(playlistLikeEntityList.isEmpty()) {
             throw new BusinessException(ApiResponseCode.FAILED_LOAD_PLAYLIST_LIKE, HttpStatus.BAD_REQUEST);
         }
+
         return playlistLikeEntityList.stream().map(PlaylistDTO.PlaylistLikeResponseDTO::new).collect(Collectors.toList());
     }
 

@@ -42,6 +42,11 @@ public interface PlaylistService {
     int deleteSongFromPlaylistById(Long playlistGroupSeq, Long songSeq);
 
     /**
+     * 등급이 dj 인 member 가 공개한 플레이리스트 전부 조회
+     */
+//    List<PlaylistDTO.PlaylistGroupResponseDTO> getOpenedPlaylists();
+
+    /**
      * 플레이리스트에 좋아요가 존재하는지 체크하고 있다면 전부 반환
      */
     List<PlaylistDTO.PlaylistLikeResponseDTO> likedPlaylists();
