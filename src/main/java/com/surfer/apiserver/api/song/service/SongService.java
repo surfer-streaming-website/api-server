@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface SongService {
 
-    //노래 정보 호출
+    // 노래 정보 호출
     SongEntity selectById(Long seq);
 
     // 노래 url 찾기
@@ -19,4 +19,9 @@ public interface SongService {
     // 음악 파일 다운
     Map<Integer,Object> songFileDownload(Long id , HttpServletRequest request);
 
+    // 좋아요 기능 추가
+    boolean isSongLikedByUser(Long songId);
+    void likeSong(Long songId);
+    void unlikeSong(Long songId);
+    long countSongLikes(Long songId);
 }

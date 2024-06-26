@@ -49,5 +49,8 @@ public interface AlbumService {
     * */
     URL generateAlbumImgFileUrl(String albumImage);
 
-
+    /*
+     * 앨범 상태 변경
+     * */
+    void updateAlbumStatus(Long albumSeq, int albumState);
 }

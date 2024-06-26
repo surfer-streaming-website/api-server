@@ -6,6 +6,7 @@ import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
 import com.surfer.apiserver.api.album.service.AlbumService;
+import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -37,6 +38,8 @@ public class AlbumBoardController {
     private AlbumBoardService albumBoardService;
     @Autowired
     private AlbumService albumService;
+    @Autowired
+    private SongService songService;
 
     /**
      * 앨범 상세정보 조회
@@ -73,6 +76,14 @@ public class AlbumBoardController {
         album.setAlbumImage(albumImageUrl);
 
         AlbumRes albumDTO = new AlbumRes(album, replyEntityPage, albumSingerList);
+
+        //음원 url
+        albumDTO.getSongDtoList().forEach(
+                song -> {
+                    URL songFileUrl = songService.generateSongFileUrl(song.getSoundSourceName());
+                    song.setSoundSourceUrl(songFileUrl.toString());
+                }
+        );
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), albumDTO);

@@ -43,23 +43,4 @@ public class Constant {
     public static final String[] permitOptionsMethodUrl = {};
     public static final String[] permitOptionsMethodUrlAntPattern = {};
 
-    public static final String[] permitGetMethodUrlPattern = convertAntToRegex(permitGetMethodUrlAntPattern);
-    public static final String[] permitDeleteMethodUrlPattern = convertAntToRegex(permitDeleteMethodUrlAntPattern);
-    public static final String[] permitPutMethodUrlPattern = convertAntToRegex(permitPutMethodUrlAntPattern);
-    public static final String[] permitHeadMethodUrlPattern = convertAntToRegex(permitHeadMethodUrlAntPattern);
-    public static final String[] permitPatchMethodUrlPattern = convertAntToRegex(permitPatchMethodUrlAntPattern);
-    public static final String[] permitOptionsMethodUrlPattern = convertAntToRegex(permitOptionsMethodUrlAntPattern);
-    public static final String[] permitPostMethodUrlPattern = convertAntToRegex(permitPostMethodUrlAntPattern);
-
-
-    private static String[] convertAntToRegex(String[] antUrl){
-        int antUrlSize = antUrl.length;
-        String[] result = new String[antUrlSize];
-        for(int i = 0; i < antUrlSize; i++){
-            String regexStr = antUrl[i].replaceAll("/\\*", "/[^/]");
-            regexStr = "^" + regexStr + "$";
-            result[i] = regexStr;
-        }
-        return result;
-    }
 }

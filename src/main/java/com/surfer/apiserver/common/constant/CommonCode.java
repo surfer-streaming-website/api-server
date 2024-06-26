@@ -33,7 +33,7 @@ public class CommonCode {
         DOMESTIC("국내"),
         INTERNATIONAL("국외");
         private final String desc;
-        public static LocationType fromString(String desc) {
+        public static LocationType fromDesc(String desc) {
             return Arrays.stream(LocationType.values())
                     .filter(status -> status.getDesc().equalsIgnoreCase(desc))
                     .findFirst()
@@ -52,7 +52,7 @@ public class CommonCode {
         RELIGIOUS("종교"),
         ;
         private final String desc;
-        public static Sector fromString(String desc) {
+        public static Sector fromDesc(String desc) {
             return Arrays.stream(Sector.values())
                     .filter(status -> status.getDesc().equalsIgnoreCase(desc))
                     .findFirst()
@@ -70,7 +70,7 @@ public class CommonCode {
         ;
         private final String desc;
 
-        public static ArtistApplicationStatus fromString(String desc) {
+        public static ArtistApplicationStatus fromDesc(String desc) {
             return Arrays.stream(ArtistApplicationStatus.values())
                     .filter(status -> status.getDesc().equalsIgnoreCase(desc))
                     .findFirst()

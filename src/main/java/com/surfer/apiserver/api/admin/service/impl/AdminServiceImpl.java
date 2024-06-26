@@ -7,10 +7,8 @@ import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.domain.database.entity.ArtistApplicationEntity;
 import com.surfer.apiserver.domain.database.entity.MemberAuthorityEntity;
-import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.repository.ArtistApplicationRepository;
 import com.surfer.apiserver.domain.database.repository.MemberAuthorityRepository;
-import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.custom.CustomArtistApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +46,9 @@ public class AdminServiceImpl implements AdminService {
     public void manageArtistApplication(ManageArtistApplicationRequest manageArtistApplicationRequest, Long id) {
         ArtistApplicationEntity artistApplicationEntity = artistApplicationRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ApiResponseCode.NOT_FOUND, HttpStatus.NOT_FOUND));
-        artistApplicationEntity.setStatus(CommonCode.ArtistApplicationStatus.fromString(manageArtistApplicationRequest.getStatus()));
+        artistApplicationEntity.setStatus(CommonCode.ArtistApplicationStatus.fromDesc(manageArtistApplicationRequest.getStatus()));
         artistApplicationRepository.save(artistApplicationEntity);
-        if (CommonCode.ArtistApplicationStatus.fromString(manageArtistApplicationRequest.getStatus())
+        if (CommonCode.ArtistApplicationStatus.fromDesc(manageArtistApplicationRequest.getStatus())
                 .equals(CommonCode.ArtistApplicationStatus.Completed)) {
             memberAuthorityRepository.save(MemberAuthorityEntity.builder()
                     .member(artistApplicationEntity.getMember())

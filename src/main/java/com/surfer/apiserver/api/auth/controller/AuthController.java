@@ -4,7 +4,6 @@ import com.surfer.apiserver.api.auth.service.AuthService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
-import com.surfer.apiserver.common.util.AES256Util;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -18,9 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -86,7 +82,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/artist-application", produces = "application/json")
-    @Operation(summary = "가수 신청내역 리스트로 조회", description = "사용자가 신청한 삭제하지 않은 자신의 신청서를 모두 조회하는 경우 요청되는 api")
+    @Operation(summary = "가수 신청내역 페이지로 조회", description = "사용자가 신청한 삭제하지 않은 자신의 신청서를 모두 조회하는 경우 요청되는 api")
     public ResponseEntity<?> getArtistApplicationsAsPage(Pageable pageable) {
         RestApiResponse restApiResponse =
                 new RestApiResponse(
@@ -118,22 +114,6 @@ public class AuthController {
     public ResponseEntity<?> deleteArtistApplication(@PathVariable Long id) {
         authService.deleteArtistApplication(id);
         RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
-        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/test")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> test() {
-        RestApiResponse restApiResponse = new RestApiResponse();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), AES256Util.decrypt(auth.getName()));
-        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/hi/{test}/bye")
-    public ResponseEntity<?> test1(@PathVariable String test) {
-        RestApiResponse restApiResponse = new RestApiResponse();
-        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), test);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 }

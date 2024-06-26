@@ -8,6 +8,9 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.exception.BusinessException;
+import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.response.BaseResponse;
+import com.surfer.apiserver.common.response.RestApiResponse;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.Objects;
 public class SongController {
 
     @Autowired
-    private SongService songService;
+    private SongService  songService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -81,4 +81,27 @@ public class SongController {
     }
 
 
+    @GetMapping("/{songId}/like-status")
+    public ResponseEntity<RestApiResponse> isLiked(@PathVariable Long songId) {
+        boolean isLiked = songService.isSongLikedByUser(songId);
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), isLiked));
+    }
+
+    @PostMapping("/{songId}/like")
+    public ResponseEntity<RestApiResponse> likeSong(@PathVariable Long songId) {
+        songService.likeSong(songId);
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
+    }
+
+    @DeleteMapping("/{songId}/like")
+    public ResponseEntity<RestApiResponse> unlikeSong(@PathVariable Long songId) {
+        songService.unlikeSong(songId);
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
+    }
+
+    @GetMapping("/{songId}/like-count")
+    public ResponseEntity<RestApiResponse> likeCount(@PathVariable Long songId) {
+        long count = songService.countSongLikes(songId);
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), count));
+    }
 }

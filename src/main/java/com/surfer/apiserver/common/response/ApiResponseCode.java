@@ -45,6 +45,10 @@ public enum ApiResponseCode {
     FAILED_LOAD_PLAYLIST_LIKE("FAILED_LOAD_PLAYLIST_LIKE", "failed to load playlistLike because playlistLike does not exist"), // 존재하는 좋아요가 없음
     INVALID_PLAYLIST_LIKE_ID("INVALID_ACCESS_PLAYLIST_LIKE", "failed to access playlistLike because playlistLike does not exist"), // 해당하는 좋아요가 없음
     INVALID_TAG_ID("INVALID_TAG_ID","failed to access tag because tag does not exist"), // 해당하는 태그가 없음
+
+    // like
+    ALREADY_LIKED("ALREADY_LIKED", "ALREADY LIKE"),
+    NOT_LIKED("NOT_LIKED", "NOT PUSH LIKE");
     ;
 
 
