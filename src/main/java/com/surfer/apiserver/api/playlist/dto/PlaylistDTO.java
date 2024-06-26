@@ -61,16 +61,6 @@ public class PlaylistDTO {
         }
     }
 
-    /*@Getter
-    @Setter
-    public static class PlaylistTagResponseDTO {
-        private String tag;
-
-        public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
-            this.tag = playlistTagEntity.getTagEntity().getTagName();
-        }
-    }*/
-
     @Getter
     @Setter
     public static class PlaylistTrackResponseDTO {
