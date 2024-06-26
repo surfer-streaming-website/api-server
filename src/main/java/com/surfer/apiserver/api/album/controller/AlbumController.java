@@ -154,8 +154,10 @@ public class AlbumController {
 
     @GetMapping("/userAuthority")
     public ResponseEntity<?> userAuthorityCheck(){
-
+        System.out.println("1들어와?");
         String userAuthority=albumService.userAuthorityCheck();
+        System.out.println("컨트롤userAuthority = "+userAuthority);
+
         return ResponseEntity.ok(userAuthority);
     }
 
