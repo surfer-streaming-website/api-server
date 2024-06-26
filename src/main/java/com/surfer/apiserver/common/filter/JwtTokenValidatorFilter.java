@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -28,6 +30,9 @@ import static com.surfer.apiserver.common.constant.Constant.*;
 public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Bean
+    public AntPathMatcher antPathMatcher(){ return new AntPathMatcher();}
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -38,10 +43,8 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
                     AuthorityUtils.commaSeparatedStringToAuthorityList((String) claims.get("authorities")));
             SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (ExpiredJwtException e) {
-            log.error("만료된 JWT 토큰입니다.");
             request.setAttribute("exception", "expire");
         } catch (Exception e) {
-            log.error("잘못된 JWT 토큰입니다.");
             request.setAttribute("exception", "invalid");
         }
         filterChain.doFilter(request, response);
@@ -50,20 +53,20 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         boolean excludeUri = switch (request.getMethod().toUpperCase()) {
-            case "GET" -> checkUrlPatternMatch(permitGetMethodUrl, permitGetMethodUrlPattern, request);
-            case "POST" -> checkUrlPatternMatch(permitPostMethodUrl, permitPostMethodUrlPattern, request);
-            case "DELETE" -> checkUrlPatternMatch(permitDeleteMethodUrl, permitDeleteMethodUrlPattern, request);
-            case "PUT" -> checkUrlPatternMatch(permitPutMethodUrl, permitPutMethodUrlPattern, request);
-            case "HEAD" -> checkUrlPatternMatch(permitHeadMethodUrl, permitHeadMethodUrlPattern, request);
-            case "PATCH" -> checkUrlPatternMatch(permitPatchMethodUrl, permitPatchMethodUrlPattern, request);
-            case "OPTIONS" -> checkUrlPatternMatch(permitOptionsMethodUrl, permitOptionsMethodUrlPattern, request);
+            case "GET" -> checkUrlPatternMatch(permitGetMethodUrl, permitGetMethodUrlAntPattern, request);
+            case "POST" -> checkUrlPatternMatch(permitPostMethodUrl, permitPostMethodUrlAntPattern, request);
+            case "DELETE" -> checkUrlPatternMatch(permitDeleteMethodUrl, permitDeleteMethodUrlAntPattern, request);
+            case "PUT" -> checkUrlPatternMatch(permitPutMethodUrl, permitPutMethodUrlAntPattern, request);
+            case "HEAD" -> checkUrlPatternMatch(permitHeadMethodUrl, permitHeadMethodUrlAntPattern, request);
+            case "PATCH" -> checkUrlPatternMatch(permitPatchMethodUrl, permitPatchMethodUrlAntPattern, request);
+            case "OPTIONS" -> checkUrlPatternMatch(permitOptionsMethodUrl, permitOptionsMethodUrlAntPattern, request);
             default -> false;
         };
         return excludeUri;
     }
 
     private boolean checkUrlPatternMatch(String[] urls, String[] patterns, HttpServletRequest request) {
-        return (boolean) Arrays.stream(urls).anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()))
-                || (boolean) Arrays.stream(patterns).anyMatch(urlPattern -> Pattern.matches(urlPattern, request.getServletPath()));
+        return Arrays.stream(urls).anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()))
+                || Arrays.stream(patterns).anyMatch(pattern -> antPathMatcher().match(pattern, request.getServletPath()));
     }
 }

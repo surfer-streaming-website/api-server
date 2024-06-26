@@ -28,53 +28,47 @@ import java.util.Map;
 public class AlbumController {
 
     private ObjectMapper objectMapper;
-
     private AlbumService albumService;
-
 
     @Autowired
     public AlbumController(ObjectMapper objectMapper, AlbumService albumService) {
         this.objectMapper = objectMapper;
         this.albumService = albumService;
-
     }
 
-    //마이페이지 신청리스트
+    // 마이페이지 신청리스트
     @GetMapping("/status")
-    public  ResponseEntity<?> findAllByMemberEntityId() {
-
+    public ResponseEntity<?> findAllByMemberEntityId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long memberId = Long.valueOf(authentication.getName());
 
         return new ResponseEntity<>(albumService.findAllByMemberEntityId(memberId), HttpStatus.OK);
     }
 
-    //마이페이지 신청리스트 test
+    // 마이페이지 신청리스트 test
     @GetMapping("/status/{id}")
-    public  ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
-
+    public ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
         return new ResponseEntity<>(albumService.findAllByMemberEntityId(id), HttpStatus.OK);
     }
 
-    //마이페이지 앨범 상세보기
+    // 마이페이지 앨범 상세보기
     @GetMapping("/{albumSeq}")
     public ResponseEntity<?> findAlbum(@PathVariable Long albumSeq) {
-        //앨범정보
+        // 앨범정보
         AlbumEntity albumEntity = albumService.findAlbum(albumSeq);
 
-        //앨범 가수 정보
+        // 앨범 가수 정보
         List<AlbumSingerEntity> albumSingerList = albumService.findAlbumSingerList(albumEntity);
 
-        AlbumRes albumRes = new AlbumRes(albumEntity,albumSingerList);
+        AlbumRes albumRes = new AlbumRes(albumEntity, albumSingerList);
 
         return new ResponseEntity<>(albumRes, HttpStatus.OK);
     }
 
-    //앨범 이미지 찾기
+    // 앨범 이미지 찾기
     @GetMapping("/image/{albumSeq}")
     public ResponseEntity<?> findAlbumImg(@PathVariable Long albumSeq) {
-
-        //앨범정보
+        // 앨범정보
         AlbumEntity albumEntity = albumService.findAlbum(albumSeq);
 
         if (albumEntity == null) {
@@ -82,26 +76,16 @@ public class AlbumController {
         }
         URL downloadUrl = albumService.generateAlbumImgFileUrl(albumEntity.getAlbumImage());
         return ResponseEntity.ok(downloadUrl.toString());
-
-
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> saveAlbum(@Valid @ModelAttribute List<MultipartFile> multipartFiles,
-                            @RequestPart("album") AlbumReq albumReq){
-
-
-   /*     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberId = Long.valueOf(authentication.getName());
-        if(memberId != null){
-        albumReq.setMemberId(memberId);
-        }*/
+                                       @RequestPart("album") AlbumReq albumReq) {
         Long memberId = albumReq.getMemberId();
-
 
         System.out.println("1========================");
 
-        Map<Integer,String> fielNameMap = albumService.uploadFile(multipartFiles,albumReq);
+        Map<Integer, String> fielNameMap = albumService.uploadFile(multipartFiles, albumReq);
         System.out.println("2========================");
 
         fielNameMap.forEach((key, value) -> {
@@ -109,17 +93,14 @@ public class AlbumController {
         });
         System.out.println("3========================");
 
-        albumService.albumSave(albumReq, fielNameMap,memberId);
+        albumService.albumSave(albumReq, fielNameMap, memberId);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
-
-
-
-    //신청한 앨범 삭제
+    // 신청한 앨범 삭제
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteAlbum(@PathVariable Long id) {
         System.out.println("여기까지1");
@@ -132,7 +113,13 @@ public class AlbumController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
-
+    // 앨범 상태 변경
+    @PutMapping("/updateStatus/{albumSeq}")
+    public ResponseEntity<?> updateAlbumStatus(@PathVariable Long albumSeq, @RequestBody Map<String, Integer> status) {
+        int newStatus = status.get("albumState");
+        albumService.updateAlbumStatus(albumSeq, newStatus);
+        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
+        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
 
 }
-

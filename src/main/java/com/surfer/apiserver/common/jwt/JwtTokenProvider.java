@@ -1,6 +1,6 @@
 package com.surfer.apiserver.common.jwt;
 
-import com.surfer.apiserver.api.auth.dto.AuthDTO.TokenInfo;
+import com.surfer.apiserver.api.auth.dto.AuthDTO;
 import com.surfer.apiserver.common.constant.CommonCode;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -11,12 +11,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -24,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.surfer.apiserver.api.auth.dto.AuthDTO.*;
 
 @RequiredArgsConstructor
 @Service
@@ -52,7 +55,7 @@ public class JwtTokenProvider implements InitializingBean {
     public TokenInfo createToken(MemberEntity member) {
         String authorities = member.getMemberAuthorityEntities().stream()
                 .map(memberAuthorityEntity -> memberAuthorityEntity.getAuthority().toString())
-                .collect(Collectors.joining(","));  // 콤마로 구분된 문자열로 수집;
+                .collect(Collectors.joining(","));
 
         String accessToken = Jwts.builder()
                 .issuer(issuer)
@@ -80,10 +83,9 @@ public class JwtTokenProvider implements InitializingBean {
                 .getPayload();
     }
 
-    public String getAccessTokenByRequestHeader(HttpServletRequest request) throws Exception{
+    public String getAccessTokenByRequestHeader(HttpServletRequest request) throws Exception {
         return request.getHeader(accessTokenHeader).split(" ")[1];
     }
-
 
     private String getRefreshToken(Long memberSeq) {
         MemberEntity memberEntity = memberRepository.findByMemberId(memberSeq).orElseThrow(
@@ -97,5 +99,4 @@ public class JwtTokenProvider implements InitializingBean {
         }
         return memberEntity.getRefreshToken();
     }
-
 }
