@@ -24,7 +24,7 @@ public class SearchController {
     @GetMapping("/{keyword}")
     public ResponseEntity<?> keywordSearch(@PathVariable String keyword) {
 
-       System.out.println("여기들어와!!~~~~!!~!@");
+       System.out.println("검색어 = "+keyword);
 
        SearchRes searchRes= searchService.findKeyword(keyword);
 

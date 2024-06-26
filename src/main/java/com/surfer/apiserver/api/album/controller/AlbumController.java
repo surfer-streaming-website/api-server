@@ -61,13 +61,13 @@ public class AlbumController {
     @GetMapping("/status/{id}")
     public  ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
 
-        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-        String memberSeq = AES256Util.decrypt(authentication1.getName());
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberId = Long.valueOf(authentication.getName());
-        System.out.println("memberSeq: " + memberSeq);
-        System.out.println("memberId: " + memberId);
+//        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+//        String memberSeq = AES256Util.decrypt(authentication1.getName());
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Long memberId = Long.valueOf(authentication.getName());
+//        System.out.println("memberSeq: " + memberSeq);
+//        System.out.println("memberId: " + memberId);
 
         return new ResponseEntity<>(albumService.findAllByMemberEntityId(id), HttpStatus.OK);
     }
