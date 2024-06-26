@@ -26,7 +26,7 @@ public class AlbumReq {
     private Date releaseDate;
 
     private int albumState;
-    private Long memberId;
+//    private Long memberId;
     private List<SongDTO> songEntities;
     private List<AlbumSingerDTO> albumSingerEntities;
 

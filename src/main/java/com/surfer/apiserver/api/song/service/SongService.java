@@ -24,4 +24,7 @@ public interface SongService {
     void likeSong(Long songId);
     void unlikeSong(Long songId);
     long countSongLikes(Long songId);
+
+
+
 }

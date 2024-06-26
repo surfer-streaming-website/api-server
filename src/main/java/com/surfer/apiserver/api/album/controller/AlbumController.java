@@ -43,11 +43,19 @@ public class AlbumController {
     // 마이페이지 신청리스트
     @GetMapping("/status")
     public ResponseEntity<?> findAllByMemberEntityId() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Long memberSeq = Long.valueOf(authentication.getName());
+        System.out.println("1==============================");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberSeq = Long.valueOf(authentication.getName());
-        System.out.println("memberSeq: " + memberSeq);
+        Long memberSeq = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
+        System.out.println("memberSeq = " +memberSeq);
 
-        return new ResponseEntity<>(albumService.findAllByMemberEntityId(memberSeq), HttpStatus.OK);
+        System.out.println("1=================================");
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String memberSeq = AES256Util.decrypt(authentication.getName());
+//        System.out.println("memberSeq: " + memberSeq);
+
+        return new ResponseEntity<>(albumService.findAllByMemberEntityId(Long.valueOf(memberSeq)), HttpStatus.OK);
     }
 
     // 마이페이지 신청리스트 test
@@ -97,11 +105,13 @@ public class AlbumController {
                                        @RequestPart("album") AlbumReq albumReq) {
         System.out.println("111111111111111111111");
 
+//        Long memberId = albumReq.getMemberId();
+//        System.out.println(memberId);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberSeq = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
+        System.out.println("memberSeq = " +memberSeq);
 
-
-        System.out.println(albumReq.getAlbumTitle());
-        Long memberId = albumReq.getMemberId();
 
         System.out.println("1========================");
 
@@ -113,7 +123,7 @@ public class AlbumController {
         });
         System.out.println("3========================");
 
-        albumService.albumSave(albumReq, fielNameMap, memberId);
+        albumService.albumSave(albumReq, fielNameMap, memberSeq);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
@@ -140,6 +150,13 @@ public class AlbumController {
         albumService.updateAlbumStatus(albumSeq, newStatus);
         RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/userAuthority")
+    public ResponseEntity<?> userAuthorityCheck(){
+
+        String userAuthority=albumService.userAuthorityCheck();
+        return ResponseEntity.ok(userAuthority);
     }
 
 }

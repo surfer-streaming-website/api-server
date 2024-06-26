@@ -11,7 +11,10 @@ import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
+import com.surfer.apiserver.common.util.AES256Util;
+import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
+import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +51,8 @@ public class SongController {
 
     @Autowired
     private AmazonS3 s3Client;
+    @Autowired
+    private MemberRepository memberRepository;
 
     //음악 파일 url
     @GetMapping("/file/{id}")
@@ -104,4 +110,6 @@ public class SongController {
         long count = songService.countSongLikes(songId);
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), count));
     }
+
+
 }

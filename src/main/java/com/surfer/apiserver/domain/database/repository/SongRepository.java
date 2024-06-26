@@ -29,9 +29,8 @@ public interface SongRepository extends JpaRepository<SongEntity, Long> {
     @Query("SELECT new com.surfer.apiserver.api.search.dto.PlaylistSearchDTO(ple.playlistName, ae.albumImage, me.name , ple.playlistGroupSeq) FROM PlaylistTrackEntity plte JOIN plte.playlistGroupEntity ple JOIN ple.memberEntity me JOIN plte.songEntity se JOIN se.albumEntity ae WHERE ple.playlistName LIKE %:keyword% AND plte.regDate = (SELECT MIN(plte2.regDate) FROM PlaylistTrackEntity plte2 WHERE plte2.playlistGroupEntity = ple)")
     List<PlaylistSearchDTO> findKeywordPlaylist(@Param("keyword") String keyword);
 
-    @Query("SELECT DISTINCT new com.surfer.apiserver.api.search.dto.LyricsSearchDTO(ae.albumImage, se.songTitle, sse.songSingerName, se.lyrics,se.songSeq) FROM SongSingerEntity sse join sse.songEntity se join se.albumEntity ae WHERE se.lyrics LIKE %:keyword%")
+     @Query("SELECT DISTINCT new com.surfer.apiserver.api.search.dto.LyricsSearchDTO(ae.albumImage, se.songTitle, sse.songSingerName, se.lyrics,se.songSeq) FROM SongSingerEntity sse join sse.songEntity se join se.albumEntity ae WHERE se.lyrics LIKE %:keyword%")
     List<LyricsSearchDTO> findKeywordLyrics(@Param("keyword") String keyword);
-
 
 
 

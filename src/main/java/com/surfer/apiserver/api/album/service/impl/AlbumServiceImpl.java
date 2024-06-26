@@ -12,12 +12,14 @@ import com.surfer.apiserver.api.album.dto.SongSingerDTO;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +47,10 @@ public class AlbumServiceImpl implements AlbumService {
     private SongRepository songRepository;
     @Autowired
     private SongSingerRepository songSingerRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private MemberAuthorityRepository memberAuthorityRepository;
 
     @Autowired
     public AlbumServiceImpl(SongRepository songRepository, SongSingerRepository songSingerRepository, AlbumRepository albumRepository, AlbumSingerRepository albumSingerRepository) {
@@ -310,6 +316,8 @@ public class AlbumServiceImpl implements AlbumService {
         //앨범정보
         AlbumEntity albumEntity = findAlbum(albumSeq);
 
+
+
         //앨범 시퀀스가 들어왔는지 확인
         if(albumSeq == null){
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
@@ -349,5 +357,17 @@ public class AlbumServiceImpl implements AlbumService {
                 () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST));
         albumEntity.setAlbumState(albumState);
         albumRepository.save(albumEntity);
+    }
+
+    @Override
+    public String userAuthorityCheck() {
+
+        String userAuthority = AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
+        System.out.println("확인 userAuthority = "+userAuthority);
+        if(userAuthority.equals("ROLE_SINGER")) {
+        }else{
+            new BusinessException(ApiResponseCode. FAILED_FIND_SINGER, HttpStatus.BAD_REQUEST);
+        }
+        return userAuthority;
     }
 }
