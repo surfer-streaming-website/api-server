@@ -2,9 +2,6 @@ package com.surfer.apiserver.api.song.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.surfer.apiserver.api.album.service.AlbumService;
-import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
-import com.surfer.apiserver.api.song.dto.ResponseSongByGenreDTO;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -20,7 +17,6 @@ import com.surfer.apiserver.domain.database.repository.SongRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
-import com.surfer.apiserver.domain.database.repository.SongSingerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -35,9 +31,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -64,11 +57,6 @@ public class SongServiceImpl implements SongService {
 
     @Autowired
     private SongLikeRepository songLikeRepository;
-    @Autowired
-    private SongSingerRepository songSingerRepository;
-
-    @Autowired
-    private AlbumService albumService;
 
     @Override
     public SongEntity selectById(Long seq) {
@@ -197,47 +185,5 @@ public class SongServiceImpl implements SongService {
         return songLikeRepository.countBySong(song);
     }
 
-    // 장르별 음악 조회
-    @Override
-    public ResponseSongByGenreDTO getSongsByGenre(String genre) {
-        ResponseSongByGenreDTO responseSongByGenreDTO = new ResponseSongByGenreDTO();
-        List<ResponseSongByGenreDTO.ImageAndSongDTO> responseSongByGenreDTOImageAndSongDTO = new ArrayList<>();
-        AlbumServiceImpl albumService1 = (AlbumServiceImpl) albumService;
-        songRepository.findALlByGenre(genre).stream().forEach(song -> {
-            responseSongByGenreDTOImageAndSongDTO.add(ResponseSongByGenreDTO.ImageAndSongDTO.builder()
-                    .song(song)
-                    .singer(songSingerRepository.findAllBySong(song).stream()
-                            .map(songSingerEntity -> songSingerEntity.getSongSingerName())
-                            .collect(Collectors.joining(", ")))
-                    .url(albumService1.findAlbumUrl(song.getAlbumEntity().getAlbumSeq()).toString())
-                    .build());
-        });
-        responseSongByGenreDTO.setSongs(responseSongByGenreDTOImageAndSongDTO);
 
-        return responseSongByGenreDTO;
-    }
-
-    // 전체 음악 조회
-    @Override
-    public List<SongEntity> getAllSongs() {
-        return songRepository.findAllSongs();
-    }
-
-    @Override
-    public ResponseSongByGenreDTO getSongs() {
-        ResponseSongByGenreDTO responseSongByGenreDTO = new ResponseSongByGenreDTO();
-        List<ResponseSongByGenreDTO.ImageAndSongDTO> responseSongByGenreDTOImageAndSongDTO = new ArrayList<>();
-        AlbumServiceImpl albumService1 = (AlbumServiceImpl) albumService;
-        songRepository.findAllSongs().stream().forEach(song -> {
-            responseSongByGenreDTOImageAndSongDTO.add(ResponseSongByGenreDTO.ImageAndSongDTO.builder()
-                    .song(song)
-                    .singer(songSingerRepository.findAllBySong(song).stream()
-                            .map(songSingerEntity -> songSingerEntity.getSongSingerName())
-                            .collect(Collectors.joining(", ")))
-                    .url(albumService1.findAlbumUrl(song.getAlbumEntity().getAlbumSeq()).toString())
-                    .build());
-        });
-        responseSongByGenreDTO.setSongs(responseSongByGenreDTOImageAndSongDTO);
-        return responseSongByGenreDTO;
-    }
 }

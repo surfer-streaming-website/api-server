@@ -32,14 +32,7 @@ public interface SongRepository extends JpaRepository<SongEntity, Long> {
      @Query("SELECT DISTINCT new com.surfer.apiserver.api.search.dto.LyricsSearchDTO(ae.albumImage, se.songTitle, sse.songSingerName, se.lyrics,se.songSeq) FROM SongSingerEntity sse join sse.songEntity se join se.albumEntity ae WHERE se.lyrics LIKE %:keyword%")
     List<LyricsSearchDTO> findKeywordLyrics(@Param("keyword") String keyword);
 
-    // 장르별 음악 조회
-//    @Query("SELECT DISTINCT new com.surfer.apiserver.api.search.dto.GenreSearchDTO(ae.albumImage, se.songTitle, sse.songSingerName, ge.genre) FROM SongSingerEntity sse join sse.songEntity se join se.albumEntity ae ORDER BY ")
 
-    // 전체 음악 조회
-    @Query("SELECT s FROM SongEntity s JOIN FETCH s.albumEntity")
-    List<SongEntity> findAllSongs();
-
-    List<SongEntity> findALlByGenre(String genre);
 
 }
 

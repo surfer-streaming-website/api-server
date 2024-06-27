@@ -1,7 +1,6 @@
 package com.surfer.apiserver.api.album.service;
 
 import com.surfer.apiserver.api.album.dto.AlbumReq;
-import com.surfer.apiserver.api.album.dto.GetLatestAlbumsResponse;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,12 +60,6 @@ public interface AlbumService {
      * */
     void updateAlbumStatus(Long albumSeq, int albumState);
 
-    /*
-     * 최신 앨범 조회
-     * */
-    GetLatestAlbumsResponse getLatestAlbums();
-
-    Long getAlbumLikeCountResponse(Long albumSeq);
 
     //권한 확인
     String userAuthorityCheck();
