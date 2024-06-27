@@ -1,11 +1,11 @@
 package com.surfer.apiserver.domain.database.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class AlbumEntity {
     private String albumImage;
 
     @Column(name="album_state")
-    private int albumState;
+    private int albumState = 0;
 
     @Column(name="album_reg_date")
     @Temporal(TemporalType.DATE)
