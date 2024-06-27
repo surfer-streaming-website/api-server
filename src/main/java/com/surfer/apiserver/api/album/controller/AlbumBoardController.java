@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.album.controller;
 
+import java.util.*;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
@@ -188,5 +189,17 @@ public class AlbumBoardController {
         return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), albumBoardService.getLatestAlbum()));
     }
 
+    @GetMapping("/status/all")
+    @Operation(summary = "관리자 albumList")
+    public ResponseEntity<?> getAlbumListAllAdmin(){
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), albumBoardService.getAlbumListAllAdmin()));
+    }
 
-}
+    @PutMapping("/updateStatus/{albumSeq}")
+    @Operation(summary = "관리자 앨범 상태 변경")
+    public ResponseEntity<?> updateAlbumAdmin(@PathVariable Long albumSeq, @RequestBody Map<String, String> status){
+        albumBoardService.upDateAlbumAdmin(albumSeq, Integer.parseInt(status.get("albumState")));
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
+    }
+
+ }

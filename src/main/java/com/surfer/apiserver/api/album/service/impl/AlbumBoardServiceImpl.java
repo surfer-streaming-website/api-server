@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.album.service.impl;
 
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
+import com.surfer.apiserver.api.album.dto.GetAlbumListAllAdminResponse;
 import com.surfer.apiserver.api.album.dto.GetLatestAlbumResponse;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
 import com.surfer.apiserver.common.exception.BusinessException;
@@ -288,5 +289,13 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
         return latestAlbum;
     }
 
+    @Override
+    public List<GetAlbumListAllAdminResponse> getAlbumListAllAdmin() {
+        return customAlbumRepository.getAlbumListAllAdmin();
+    }
 
+    @Override
+    public void upDateAlbumAdmin(Long album, Integer albumState) {
+        customAlbumRepository.upDateAlbumAdmin(album, albumState);
+    }
 }

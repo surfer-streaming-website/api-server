@@ -103,8 +103,6 @@ public class AlbumController {
     @PostMapping("/save")
     public ResponseEntity<?> saveAlbum(@RequestPart("multipartfiles") List<MultipartFile> multipartFiles,
                                        @RequestPart("album") AlbumReq albumReq) {
-        System.out.println("111111111111111111111");
-
 //        Long memberId = albumReq.getMemberId();
 //        System.out.println(memberId);
 
@@ -143,14 +141,14 @@ public class AlbumController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
-    // 앨범 상태 변경
-    @PutMapping("/updateStatus/{albumSeq}")
-    public ResponseEntity<?> updateAlbumStatus(@PathVariable Long albumSeq, @RequestBody Map<String, Integer> status) {
-        int newStatus = status.get("albumState");
-        albumService.updateAlbumStatus(albumSeq, newStatus);
-        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
-        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
-    }
+//    // 앨범 상태 변경
+//    @PutMapping("/updateStatus/{albumSeq}")
+//    public ResponseEntity<?> updateAlbumStatus(@PathVariable Long albumSeq, @RequestBody Map<String, Integer> status) {
+//        int newStatus = status.get("albumState");
+//        albumService.updateAlbumStatus(albumSeq, newStatus);
+//        RestApiResponse restApiResponse = new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), null);
+//        return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
+//    }
 
     @GetMapping("/userAuthority")
     public ResponseEntity<?> userAuthorityCheck(){
