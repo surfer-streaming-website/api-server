@@ -12,19 +12,26 @@ import com.surfer.apiserver.api.album.dto.SongSingerDTO;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,7 +40,7 @@ public class AlbumServiceImpl implements AlbumService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     @Autowired
-    private  AmazonS3 s3Client;
+    private AmazonS3 s3Client;
     @Autowired
     private AlbumRepository albumRepository;
     @Autowired
@@ -42,6 +49,10 @@ public class AlbumServiceImpl implements AlbumService {
     private SongRepository songRepository;
     @Autowired
     private SongSingerRepository songSingerRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private MemberAuthorityRepository memberAuthorityRepository;
 
     @Autowired
     public AlbumServiceImpl(SongRepository songRepository, SongSingerRepository songSingerRepository, AlbumRepository albumRepository, AlbumSingerRepository albumSingerRepository) {
@@ -52,15 +63,15 @@ public class AlbumServiceImpl implements AlbumService {
         this.albumSingerRepository = albumSingerRepository;
     }
 
-     //등록 신청 앨범 리스트 찾기
+    //등록 신청 앨범 리스트 찾기
     @Override
     public List<AlbumEntity> findAllByMemberEntityId(Long memberId) {
 
         //멤버 id가 있는지 확인
-        if(memberId == null){
+        if (memberId == null) {
             throw new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST);
         }
-        List<AlbumEntity> albumEntities= albumRepository.findAllAlbum(memberId);
+        List<AlbumEntity> albumEntities = albumRepository.findAllAlbum(memberId);
 
         return albumEntities;
     }
@@ -70,22 +81,22 @@ public class AlbumServiceImpl implements AlbumService {
     public AlbumEntity findAlbum(Long albumSeq) {
 
         //앨범 시퀀스가 들어왔는지 확인
-        if(albumSeq == null){
+        if (albumSeq == null) {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
         }
         AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElseThrow(
-                () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID,HttpStatus.BAD_REQUEST));
+                () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST));
 
         return albumEntity;
     }
-    
+
     //앨범 가수 리스트
     @Override
     public List<AlbumSingerEntity> findAlbumSingerList(AlbumEntity albumEntity) {
 
         //앨범 앤터티 존재여부 확인
-        if(albumEntity == null){
-            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ENTITY,HttpStatus.BAD_REQUEST);
+        if (albumEntity == null) {
+            throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ENTITY, HttpStatus.BAD_REQUEST);
         }
 
         List<AlbumSingerEntity> list = albumSingerRepository.findAllByAlbum(albumEntity);
@@ -95,12 +106,12 @@ public class AlbumServiceImpl implements AlbumService {
 
     // 여러개의 파일 업로드
     @Override
-    public Map<Integer,String> uploadFile(List<MultipartFile> multipartFile, AlbumReq albumReq) throws BusinessException {
+    public Map<Integer, String> uploadFile(List<MultipartFile> multipartFile, AlbumReq albumReq) throws BusinessException {
         List<String> fileNameList = new ArrayList<>();
-        Map<Integer,String> fileNameMap = new HashMap<>();
+        Map<Integer, String> fileNameMap = new HashMap<>();
 
         String albumIamgeName = albumImageName(albumReq);
-        fileNameMap.put(999,albumIamgeName);
+        fileNameMap.put(999, albumIamgeName);
         //가수이름 추출
         List<SongDTO> songDTOList = albumReq.getSongEntities();
         Map<Integer, String> songSinger = new HashMap<>();
@@ -108,9 +119,9 @@ public class AlbumServiceImpl implements AlbumService {
         for (SongDTO songDTO : songDTOList) {
             List<SongSingerDTO> songSingerDTOList = songDTO.getSongSingerEntities();
             StringBuilder result = new StringBuilder();
-            for(SongSingerDTO singerDTO : songSingerDTOList) {
+            for (SongSingerDTO singerDTO : songSingerDTOList) {
                 String singerName = singerDTO.getSongSingerName();
-                if(!result.isEmpty()){
+                if (!result.isEmpty()) {
                     result.append(",");
                 }
                 result.append(singerName);
@@ -119,7 +130,7 @@ public class AlbumServiceImpl implements AlbumService {
 
             // 결과 문자열을 Map에 추가
             songSinger.put(key, result.toString());
-            key=key+1;
+            key = key + 1;
 
         }
         // 최종 Map 출력
@@ -127,10 +138,10 @@ public class AlbumServiceImpl implements AlbumService {
         songSinger.forEach((k, v) -> System.out.println("Key: " + k + ", Value: " + v));
 
         int no = 1;
-        for(MultipartFile file : multipartFile) {
+        for (MultipartFile file : multipartFile) {
 
             String idxFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            if(idxFileName.equals(".mp3")){
+            if (idxFileName.equals(".mp3")) {
 
                 StringBuilder songName = new StringBuilder();
 
@@ -139,21 +150,20 @@ public class AlbumServiceImpl implements AlbumService {
                 songName.append(file.getOriginalFilename());
 
                 fileNameMap.put(no, songName.toString());
-                fileNameList.add(songName.toString());
-                no=no+1;
+                no = no + 1;
 
                 ObjectMetadata objectMetadata = new ObjectMetadata();
                 objectMetadata.setContentLength(file.getSize());
                 objectMetadata.setContentType(file.getContentType());
 
-                try(InputStream inputStream = file.getInputStream()) {
+                try (InputStream inputStream = file.getInputStream()) {
                     s3Client.putObject(new PutObjectRequest(bucket, songName.toString(), inputStream, objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
-                } catch(IOException e) {
+                } catch (IOException e) {
 //                throw new BusinessException(ErrorCode.FILE_UPLOAD_ERROR);
                 }
 
-            }else {
+            } else {
                 ObjectMetadata objectMetadata = new ObjectMetadata();
                 objectMetadata.setContentLength(file.getSize());
                 objectMetadata.setContentType(file.getContentType());
@@ -164,14 +174,16 @@ public class AlbumServiceImpl implements AlbumService {
                 } catch (IOException e) {
 //                throw new BusinessException(ErrorCode.FILE_UPLOAD_ERROR);
                 }
-            };
-        };
+            }
+            ;
+        }
+        ;
         return fileNameMap;
     }
 
 
     //알맞은 image이름 song이름 저장
-    public void albumSave(AlbumReq albumReq, Map<Integer, String> fielNameMap,Long memberId) throws BusinessException {
+    public void albumSave(AlbumReq albumReq, Map<Integer, String> fielNameMap, Long memberId) throws BusinessException {
 
         //Map에 저장된 albumImageName을 albumReq에 저장
         albumReq.setAlbumImage(fielNameMap.get(999));
@@ -189,24 +201,24 @@ public class AlbumServiceImpl implements AlbumService {
         }
 
         Integer fileNo = 1;
-        for(SongDTO songDTO : songDTOList) {
+        for (SongDTO songDTO : songDTOList) {
             songDTO.setSoundSourceName(fielNameMap.get(fileNo));
-            System.out.println("singerNameMap.get(singerNo) = "+fielNameMap.get(fileNo));
-            fileNo=fileNo+1;
+            System.out.println("singerNameMap.get(singerNo) = " + fielNameMap.get(fileNo));
+            fileNo = fileNo + 1;
         }
 
 
         System.out.println("albumReq.getAlbumImage() = " + albumReq.getAlbumImage());
         System.out.println("end============================end");
         //albumReq를 각각의 entity에 할당후 저장
-        changAlbum(albumReq,memberId);
+        changAlbum(albumReq, memberId);
     }
 
     //dto를 entity로 변환 후 db 저장
-    public void changAlbum (AlbumReq albumReq,Long memberId){
+    public void changAlbum(AlbumReq albumReq, Long memberId) {
 
         //멤버 id가 있는지 확인
-        if(memberId == null){
+        if (memberId == null) {
             throw new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST);
         }
 
@@ -216,14 +228,22 @@ public class AlbumServiceImpl implements AlbumService {
         albumEntity.setAgency(albumReq.getAgency());
         albumEntity.setAlbumContent(albumReq.getAlbumContent());
         albumEntity.setAlbumImage(albumReq.getAlbumImage());
+
+
+        albumEntity.setReleaseDate(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+        System.out.println(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+
+
         albumEntity.setAlbumState(albumReq.getAlbumState());
         albumEntity.setMemberEntity(MemberEntity.builder().memberId(memberId).build());
 
-        AlbumEntity savedAlbumEntity =albumRepository.save(albumEntity);
+        AlbumEntity savedAlbumEntity = albumRepository.save(albumEntity);
 
         //앨범 가수 저장
-        List<AlbumSingerDTO> albumSingerList=albumReq.getAlbumSingerEntities();
-        for(AlbumSingerDTO albumSingerDTO : albumSingerList) {
+        List<AlbumSingerDTO> albumSingerList = albumReq.getAlbumSingerEntities();
+        for (AlbumSingerDTO albumSingerDTO : albumSingerList) {
             AlbumSingerEntity albumSingerEntity = new AlbumSingerEntity();
             albumSingerEntity.setAlbumSingerName(albumSingerDTO.getAlbumSingerName());
             albumSingerEntity.setAlbumEntity(savedAlbumEntity);
@@ -232,7 +252,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         //수록곡 저장
         List<SongDTO> songDTOList = albumReq.getSongEntities();
-        for(SongDTO songDTO : songDTOList) {
+        for (SongDTO songDTO : songDTOList) {
             SongEntity songEntity = new SongEntity();
             songEntity.setSongTitle(songDTO.getSongTitle());
             songEntity.setSongNumber(songDTO.getSongNumber());
@@ -246,7 +266,7 @@ public class AlbumServiceImpl implements AlbumService {
             songRepository.save(songEntity);
 
             List<SongSingerDTO> songSingerDTOList = songDTO.getSongSingerEntities();
-            for(SongSingerDTO songSingerDTO : songSingerDTOList) {
+            for (SongSingerDTO songSingerDTO : songSingerDTOList) {
                 SongSingerEntity songSingerEntity = new SongSingerEntity();
                 songSingerEntity.setSongSingerName(songSingerDTO.getSongSingerName());
                 songSingerEntity.setSongEntity(songEntity);
@@ -257,7 +277,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     //앨범 이름 생성하기
-    public String albumImageName(AlbumReq albumReq){
+    public String albumImageName(AlbumReq albumReq) {
         StringBuilder albumImageName = new StringBuilder();
 
         Date date = new Date();
@@ -268,12 +288,15 @@ public class AlbumServiceImpl implements AlbumService {
         return String.valueOf(albumImageName);
     }
 
+    /*
+     * 앨범 이미지 url찾기 이거 사용!
+     * */
     //앨범 이미지 (albumIamge로) url 찾기
     @Override
     public URL generateAlbumImgFileUrl(String albumImage) {
 
         //앨범 이미지 존재 확인
-        if(albumImage == null){
+        if (albumImage == null) {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_IMAGE, HttpStatus.BAD_REQUEST);
 
         }
@@ -285,17 +308,15 @@ public class AlbumServiceImpl implements AlbumService {
 
     }
 
-    /*
-    * 앨범 이미지 url찾기 이거 사용
-    * */
     //앨범 이미지 (albumSeq로) url 찾기
     public URL findAlbumUrl(Long albumSeq) {
 
         //앨범정보
         AlbumEntity albumEntity = findAlbum(albumSeq);
 
+
         //앨범 시퀀스가 들어왔는지 확인
-        if(albumSeq == null){
+        if (albumSeq == null) {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
 
         }
@@ -308,9 +329,6 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
 
-
-
-
     //신청한 앨범 삭제
     @Override
     public void deleteAlbum(Long albumSeq) {
@@ -319,10 +337,10 @@ public class AlbumServiceImpl implements AlbumService {
         AlbumEntity albumEntity = albumRepository.findById(albumSeq).orElse(null);
 
         //앨범 시퀀스가 있는지 확인
-        if(!albumEntity.getAlbumSeq().equals(albumSeq)) {
+        if (!albumEntity.getAlbumSeq().equals(albumSeq)) {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST);
         }
-        System.out.println("albumSeq = "+albumEntity.getAlbumSeq());
+        System.out.println("albumSeq = " + albumEntity.getAlbumSeq());
         albumRepository.deleteById(albumSeq);
 
     }
@@ -333,5 +351,28 @@ public class AlbumServiceImpl implements AlbumService {
                 () -> new BusinessException(ApiResponseCode.INVALID_ALBUM_ID, HttpStatus.BAD_REQUEST));
         albumEntity.setAlbumState(albumState);
         albumRepository.save(albumEntity);
+    }
+
+    //유저 권한 확인
+    @Override
+    public String userAuthorityCheck() {
+        System.out.println("3들어와?");
+        Long memberId = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST));
+
+        String userAuthority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+
+//        System.out.println("확인 member = " + member);
+//        String userAuthority = AES256Util.decrypt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getAuthorities()));
+        System.out.println("확인 userAuthority = " + userAuthority);
+        if (userAuthority.equals("ROLE_SINGER")) {
+        } else {
+            new BusinessException(ApiResponseCode.FAILED_FIND_SINGER, HttpStatus.BAD_REQUEST);
+        }
+        return userAuthority;
     }
 }

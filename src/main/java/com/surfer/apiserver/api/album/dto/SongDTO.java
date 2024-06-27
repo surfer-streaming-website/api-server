@@ -16,8 +16,6 @@ public class SongDTO {
     private String SongTitle;
     private int songNumber;
     private String lyrics;
-    private int totalPlayedCount;
-    private int recentlyPlayedCount;
     private String genre;
     private Boolean songState;
     private String soundSourceName;
