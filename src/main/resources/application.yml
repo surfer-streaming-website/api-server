@@ -4,4 +4,4 @@ spring:
   profiles:
     default: local
     active:
-      - ${profile:dev}
+      - ${profile:local}
