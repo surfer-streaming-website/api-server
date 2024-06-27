@@ -26,7 +26,6 @@ public class AlbumRes {
     private String albumContent;
     private String albumImage;
     private int albumState;
-    private String albumRegDate;
 
     private List<SongReq> songDtoList;
 
@@ -73,7 +72,7 @@ public class AlbumRes {
 
         //원하는 날짜 형태 문자열로 변환
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        this.albumRegDate = formatter.format(albumEntity.getAlbumRegDate());
+        this.releaseDate = formatter.format(albumEntity.getReleaseDate());
         this.agency = albumEntity.getAgency();
         this.albumContent = albumEntity.getAlbumContent();
         this.albumImage = albumEntity.getAlbumImage();

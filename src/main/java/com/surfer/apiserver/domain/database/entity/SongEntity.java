@@ -30,10 +30,10 @@ public class SongEntity {
     private String lyrics;
 
     @Column(name="total_played_count")
-    private int totalPlayedCount=0;
+    private int totalPlayedCount;
 
     @Column(name="recently_played_count")
-    private int recentlyPlayedCount=0;
+    private int recentlyPlayedCount;
 
     @Column(name="genre", nullable = false)
     private String genre;

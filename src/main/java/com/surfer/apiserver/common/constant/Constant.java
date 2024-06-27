@@ -6,25 +6,23 @@ public class Constant {
             //swagger
             "/v3/api-docs", "/v3/api-docs/swagger-config",
             //
-            "/favicon.ico",
-            //album
-//            "/api/album/status"
+            "/favicon.ico"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
             "/api/v1/auth/hi/*/bye",
             //song
-            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*",
+            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*", "/api/song/genre/*",
             //album
-            "/api/album/detail/*"
-//            ,"/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
+            "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*","/api/album/image/*", "api/album/*/like-count"
     };
     public static final String[] permitPostMethodUrl = {
             //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
             //test
-//            ,"/file/upload","/song/*"
+            ,"/file/upload","/song/*"
             //file upload
+            ,"/api/album/save"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };
