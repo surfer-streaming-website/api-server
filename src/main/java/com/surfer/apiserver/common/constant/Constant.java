@@ -5,8 +5,10 @@ public class Constant {
     public static final String[] permitGetMethodUrl = {
             //swagger
             "/v3/api-docs", "/v3/api-docs/swagger-config",
-            //
-            "/favicon.ico"
+            // common
+            "/favicon.ico",
+            // song
+            "/api/song/rank"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth

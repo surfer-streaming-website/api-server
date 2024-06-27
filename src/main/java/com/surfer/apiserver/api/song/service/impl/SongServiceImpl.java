@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.song.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -12,6 +13,7 @@ import com.surfer.apiserver.domain.database.entity.SongLikeEntity;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
+import com.surfer.apiserver.domain.database.repository.custom.CustomSongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +42,8 @@ public class SongServiceImpl implements SongService {
     @Autowired
     private SongLikeRepository songLikeRepository;
 
+    @Autowired
+    private CustomSongRepository customSongRepository;
     @Override
     public SongEntity selectById(Long seq) {
         // 곡 seq에 해당하는 곡이 있는지 조회한다.
@@ -98,5 +103,10 @@ public class SongServiceImpl implements SongService {
     public long countSongLikes(Long songId) {
         SongEntity song = selectById(songId);
         return songLikeRepository.countBySong(song);
+    }
+
+    @Override
+    public List<GetSongRankResponse> getSongRank() {
+        return customSongRepository.getSongRank();
     }
 }
