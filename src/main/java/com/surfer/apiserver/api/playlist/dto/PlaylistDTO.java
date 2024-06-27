@@ -45,7 +45,7 @@ public class PlaylistDTO {
             List<String> playlistTagList = new ArrayList<>();
             for (PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {
                 String playlistTag = playlistTagEntity.getTagEntity().getTagName();
-                playlistTagList.add(playlistTag);
+                playlistTagList.add(playlistTag + ", ");
             }
             this.tagList = playlistTagList;
 
@@ -93,7 +93,7 @@ public class PlaylistDTO {
             List<String> artistList = new ArrayList<>();
             for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntities()) {
                 String singer = songSingerEntity.getSongSingerName();
-                artistList.add(singer);
+                artistList.add(singer + ", ");
             }
             this.artist = artistList;
         }
