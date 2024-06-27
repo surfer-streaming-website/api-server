@@ -5,10 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.surfer.apiserver.api.album.dto.AlbumReq;
-import com.surfer.apiserver.api.album.dto.AlbumSingerDTO;
-import com.surfer.apiserver.api.album.dto.SongDTO;
-import com.surfer.apiserver.api.album.dto.SongSingerDTO;
+import com.surfer.apiserver.api.album.dto.*;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -53,6 +50,9 @@ public class AlbumServiceImpl implements AlbumService {
     private MemberRepository memberRepository;
     @Autowired
     private MemberAuthorityRepository memberAuthorityRepository;
+
+    @Autowired
+    private SongLikeRepository songLikeRepository;
 
     @Autowired
     public AlbumServiceImpl(SongRepository songRepository, SongSingerRepository songSingerRepository, AlbumRepository albumRepository, AlbumSingerRepository albumSingerRepository) {
@@ -150,6 +150,7 @@ public class AlbumServiceImpl implements AlbumService {
                 songName.append(file.getOriginalFilename());
 
                 fileNameMap.put(no, songName.toString());
+                fileNameList.add(songName.toString());
                 no = no + 1;
 
                 ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -353,6 +354,28 @@ public class AlbumServiceImpl implements AlbumService {
         albumRepository.save(albumEntity);
     }
 
+    // 최신 앨범 조회
+    @Override
+    public GetLatestAlbumsResponse getLatestAlbums() {
+        List<AlbumEntity> latestAlbums = albumRepository.findTop12ByOrderByAlbumRegDateDesc();
+        GetLatestAlbumsResponse response = new GetLatestAlbumsResponse();
+        response.setData(new ArrayList<>());
+        latestAlbums.forEach(albumEntity -> {
+            response.getData().add(GetLatestAlbumsResponse.AlbumAndSingerAndUrlDTO.builder()
+                    .singer(albumSingerRepository.findAllByAlbum(albumEntity)
+                            .stream().map(albumSingerEntity ->
+                                    albumEntity.getAlbumSingerEntities().stream().map(albumSinger ->
+                                            albumSinger.getAlbumSingerName()).collect(Collectors.joining(", "))).collect(Collectors.joining(", ")))
+                    .url(findAlbumUrl(albumEntity.getAlbumSeq()).toString())
+                    .album(albumEntity)
+                    .build());
+        });
+        return response;
+    }
+
+    @Override
+    public Long getAlbumLikeCountResponse(Long albumSeq) {
+        return albumRepository.findById(albumSeq).get().getSongEntities().stream().map(songEntity -> songLikeRepository.countBySong(songEntity)).collect(Collectors.counting());
     //유저 권한 확인
     @Override
     public String userAuthorityCheck() {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.album.dto.AlbumReq;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
+import com.surfer.apiserver.api.album.dto.GetLatestAlbumsResponse;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -152,6 +153,18 @@ public class AlbumController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
+    // 최신 앨범 조회(12곡)
+    @GetMapping("/latest")
+    public ResponseEntity<RestApiResponse> getLatestAlbums() {
+        GetLatestAlbumsResponse latestAlbums = albumService.getLatestAlbums();
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), latestAlbums));
+    }
+
+    @GetMapping("/{albumSeq}/like-count")
+    public ResponseEntity<RestApiResponse> getAlbumLikeCount(@PathVariable Long albumSeq) {
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS),
+                albumService.getAlbumLikeCountResponse(albumSeq)
+                ));
     @GetMapping("/userAuthority")
     public ResponseEntity<?> userAuthorityCheck(){
         System.out.println("1들어와?");

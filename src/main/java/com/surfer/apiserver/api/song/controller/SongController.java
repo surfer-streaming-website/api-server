@@ -1,11 +1,15 @@
 package com.surfer.apiserver.api.song.controller;
 
+<<<<<<< HEAD
+import com.surfer.apiserver.api.song.dto.ResponseSongByGenreDTO;
+=======
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+>>>>>>> 28dd948cd4b58c25da197e6677148ad8dd59b83c
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -31,12 +35,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+<<<<<<< HEAD
+import java.util.List;
+=======
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+>>>>>>> 28dd948cd4b58c25da197e6677148ad8dd59b83c
 
 @Slf4j
 @RestController
@@ -111,5 +119,18 @@ public class SongController {
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), count));
     }
 
+    // 장르별 음악 조회
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<RestApiResponse> getSongsByGenre(@PathVariable String genre) {
+        ResponseSongByGenreDTO songs = songService.getSongsByGenre(genre);
 
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songs));
+    }
+
+    // 장르별 음악 조회(전체 버튼 눌렀을 때 모든 음악이 나오도록 함)
+    @GetMapping("/all")
+    public ResponseEntity<RestApiResponse> getAllSongs() {
+        ResponseSongByGenreDTO songs = songService.getSongs();
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songs));
+    }
 }
