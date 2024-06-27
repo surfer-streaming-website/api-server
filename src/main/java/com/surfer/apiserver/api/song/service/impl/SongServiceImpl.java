@@ -2,6 +2,9 @@ package com.surfer.apiserver.api.song.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.surfer.apiserver.api.album.service.AlbumService;
+import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
+import com.surfer.apiserver.api.song.dto.ResponseSongByGenreDTO;
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -12,6 +15,7 @@ import com.surfer.apiserver.domain.database.entity.SongLikeEntity;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
+import com.surfer.apiserver.domain.database.repository.SongSingerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,7 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -38,6 +44,11 @@ public class SongServiceImpl implements SongService {
 
     @Autowired
     private SongLikeRepository songLikeRepository;
+    @Autowired
+    private SongSingerRepository songSingerRepository;
+
+    @Autowired
+    private AlbumService albumService;
 
     @Override
     public SongEntity selectById(Long seq) {
@@ -98,5 +109,49 @@ public class SongServiceImpl implements SongService {
     public long countSongLikes(Long songId) {
         SongEntity song = selectById(songId);
         return songLikeRepository.countBySong(song);
+    }
+
+    // 장르별 음악 조회
+    @Override
+    public ResponseSongByGenreDTO getSongsByGenre(String genre) {
+        ResponseSongByGenreDTO responseSongByGenreDTO = new ResponseSongByGenreDTO();
+        List<ResponseSongByGenreDTO.ImageAndSongDTO> responseSongByGenreDTOImageAndSongDTO = new ArrayList<>();
+        AlbumServiceImpl albumService1 = (AlbumServiceImpl) albumService;
+        songRepository.findALlByGenre(genre).stream().forEach(song -> {
+            responseSongByGenreDTOImageAndSongDTO.add(ResponseSongByGenreDTO.ImageAndSongDTO.builder()
+                    .song(song)
+                    .singer(songSingerRepository.findAllBySong(song).stream()
+                            .map(songSingerEntity -> songSingerEntity.getSongSingerName())
+                            .collect(Collectors.joining(", ")))
+                    .url(albumService1.findAlbumUrl(song.getAlbumEntity().getAlbumSeq()).toString())
+                    .build());
+        });
+        responseSongByGenreDTO.setSongs(responseSongByGenreDTOImageAndSongDTO);
+
+        return responseSongByGenreDTO;
+    }
+
+    // 전체 음악 조회
+    @Override
+    public List<SongEntity> getAllSongs() {
+        return songRepository.findAllSongs();
+    }
+
+    @Override
+    public ResponseSongByGenreDTO getSongs() {
+        ResponseSongByGenreDTO responseSongByGenreDTO = new ResponseSongByGenreDTO();
+        List<ResponseSongByGenreDTO.ImageAndSongDTO> responseSongByGenreDTOImageAndSongDTO = new ArrayList<>();
+        AlbumServiceImpl albumService1 = (AlbumServiceImpl) albumService;
+        songRepository.findAllSongs().stream().forEach(song -> {
+            responseSongByGenreDTOImageAndSongDTO.add(ResponseSongByGenreDTO.ImageAndSongDTO.builder()
+                    .song(song)
+                    .singer(songSingerRepository.findAllBySong(song).stream()
+                            .map(songSingerEntity -> songSingerEntity.getSongSingerName())
+                            .collect(Collectors.joining(", ")))
+                    .url(albumService1.findAlbumUrl(song.getAlbumEntity().getAlbumSeq()).toString())
+                    .build());
+        });
+        responseSongByGenreDTO.setSongs(responseSongByGenreDTOImageAndSongDTO);
+        return responseSongByGenreDTO;
     }
 }

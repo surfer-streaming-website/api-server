@@ -12,9 +12,9 @@ public class Constant {
             //auth
             "/api/v1/auth/hi/*/bye",
             //song
-            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*",
+            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*", "/api/song/genre/*",
             //album
-            "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
+            "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*","/api/album/image/*", "api/album/*/like-count"
     };
     public static final String[] permitPostMethodUrl = {
             //auth

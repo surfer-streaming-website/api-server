@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.song.controller;
 
+import com.surfer.apiserver.api.song.dto.ResponseSongByGenreDTO;
 import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URL;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/song")
@@ -50,5 +52,20 @@ public class SongController {
     public ResponseEntity<RestApiResponse> likeCount(@PathVariable Long songId) {
         long count = songService.countSongLikes(songId);
         return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), count));
+    }
+
+    // 장르별 음악 조회
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<RestApiResponse> getSongsByGenre(@PathVariable String genre) {
+        ResponseSongByGenreDTO songs = songService.getSongsByGenre(genre);
+
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songs));
+    }
+
+    // 장르별 음악 조회(전체 버튼 눌렀을 때 모든 음악이 나오도록 함)
+    @GetMapping("/all")
+    public ResponseEntity<RestApiResponse> getAllSongs() {
+        ResponseSongByGenreDTO songs = songService.getSongs();
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songs));
     }
 }
