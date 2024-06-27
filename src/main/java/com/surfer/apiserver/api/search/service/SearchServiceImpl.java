@@ -1,6 +1,5 @@
 package com.surfer.apiserver.api.search.service;
 
-import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
 import com.surfer.apiserver.api.search.dto.*;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
@@ -17,13 +16,11 @@ import java.util.List;
 public class SearchServiceImpl implements SearchService {
 
     private final SongRepository songRepository;
-    private final AlbumServiceImpl albumServiceImpl;
 
     @Autowired
-    public SearchServiceImpl(SongRepository songRepository, AlbumServiceImpl albumServiceImpl) {
+    public SearchServiceImpl(SongRepository songRepository) {
 
         this.songRepository = songRepository;
-        this.albumServiceImpl = albumServiceImpl;
     }
 
 
@@ -37,27 +34,10 @@ public class SearchServiceImpl implements SearchService {
             throw new BusinessException(ApiResponseCode.INVALID_KEYWORD, HttpStatus.BAD_REQUEST);
         }
         List<SongSearchDTO> song = songRepository.findKeywordSong(keyword);
-        for(SongSearchDTO songSearchDTO : song) {
-            String newAlbumImage = String.valueOf(albumServiceImpl.generateAlbumImgFileUrl(songSearchDTO.getAlbumImage()));
-            songSearchDTO.setAlbumImage(newAlbumImage);
-        }
-
         List<AlbumSearchDTO> album = songRepository.findKeywordAlbum(keyword);
-        for(AlbumSearchDTO albumSearchDTO : album) {
-            String newAlbumImage = String.valueOf(albumServiceImpl.generateAlbumImgFileUrl(albumSearchDTO.getAlbumImage()));
-            albumSearchDTO.setAlbumImage(newAlbumImage);
-        }
         List<PlaylistSearchDTO> playlist = songRepository.findKeywordPlaylist(keyword);
-        for (PlaylistSearchDTO playlistSearchDTO : playlist) {
-            String newAlbumImage = String.valueOf(albumServiceImpl.generateAlbumImgFileUrl(playlistSearchDTO.getAlbumImage()));
-            playlistSearchDTO.setAlbumImage(newAlbumImage);
-        }
-
         List<LyricsSearchDTO> lyrics = songRepository.findKeywordLyrics(keyword);
-        for (LyricsSearchDTO lyricsSearchDTO : lyrics) {
-            String newAlbumImage = String.valueOf(albumServiceImpl.generateAlbumImgFileUrl(lyricsSearchDTO.getAlbumImage()));
-            lyricsSearchDTO.setAlbumImage(newAlbumImage);
-        }
+
 
         SearchRes searchRes = new SearchRes(song,album,playlist,lyrics);
 
