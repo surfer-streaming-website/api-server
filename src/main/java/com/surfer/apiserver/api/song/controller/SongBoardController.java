@@ -201,7 +201,6 @@ public class SongBoardController {
     @GetMapping("/genre/{genre}")
     @Operation(summary = "장르 별 곡 리스트 반환")
     public ResponseEntity<?> getSongsByGenre(@PathVariable String genre) {
-        System.out.println("genre = " + genre);
         return genre.equals("전체") ? ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getAllSongs())) :
                 ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getAllSongsByGenre(genre)));
     }

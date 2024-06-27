@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.album.service;
 
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
+import com.surfer.apiserver.api.album.dto.GetAlbumListAllAdminResponse;
 import com.surfer.apiserver.api.album.dto.GetLatestAlbumResponse;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
@@ -67,4 +68,7 @@ public interface AlbumBoardService {
 
     List<GetLatestAlbumResponse> getLatestAlbum();
 
+    List<GetAlbumListAllAdminResponse> getAlbumListAllAdmin();
+
+    void upDateAlbumAdmin(Long album, Integer albumState);
 }
