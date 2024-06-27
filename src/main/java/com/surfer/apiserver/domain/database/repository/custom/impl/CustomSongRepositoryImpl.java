@@ -2,7 +2,9 @@ package com.surfer.apiserver.domain.database.repository.custom.impl;
 import java.util.ArrayList;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.surfer.apiserver.api.song.dto.GetAllSongsResponse;
 import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
+import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.custom.CustomSongRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -55,6 +57,45 @@ public class CustomSongRepositoryImpl implements CustomSongRepository {
         });
 
         return getSongRankResponses;
+    }
+
+    @Override
+    public List<GetAllSongsResponse> getAllSongs() {
+        List<SongEntity> fetch = jpaQueryFactory
+                .selectFrom(songEntity)
+                .orderBy(songEntity.songSeq.desc())
+                .limit(30)
+                .fetch();
+        List<GetAllSongsResponse> getAllSongsResponses = new ArrayList<>();
+        fetch.forEach(song ->{
+            SongSingerEntity songSingerEntity1 = jpaQueryFactory.selectFrom(songSingerEntity)
+                    .where(songSingerEntity.songEntity.songSeq.eq(song.getSongSeq())).limit(1).fetchOne();
+            AlbumEntity albumEntity = jpaQueryFactory.selectFrom(QAlbumEntity.albumEntity)
+                    .where(QAlbumEntity.albumEntity.albumSeq.eq(song.getAlbumEntity().getAlbumSeq())).fetchOne();
+
+            getAllSongsResponses.add(new GetAllSongsResponse(song.getSongSeq(), song.getSongTitle(), songSingerEntity1.getSongSingerName(), albumEntity.getAlbumImage()));
+        });
+        return getAllSongsResponses;
+    }
+
+    @Override
+    public List<GetAllSongsResponse> getAllSongsByGenre(String genre) {
+        List<SongEntity> fetch = jpaQueryFactory
+                .selectFrom(songEntity)
+                .where(songEntity.genre.eq(genre))
+                .orderBy(songEntity.songSeq.desc())
+                .limit(30)
+                .fetch();
+        List<GetAllSongsResponse> getAllSongsResponses = new ArrayList<>();
+        fetch.forEach(song ->{
+            SongSingerEntity songSingerEntity1 = jpaQueryFactory.selectFrom(songSingerEntity)
+                    .where(songSingerEntity.songEntity.songSeq.eq(song.getSongSeq())).limit(1).fetchOne();
+            AlbumEntity albumEntity = jpaQueryFactory.selectFrom(QAlbumEntity.albumEntity)
+                    .where(QAlbumEntity.albumEntity.albumSeq.eq(song.getAlbumEntity().getAlbumSeq())).fetchOne();
+
+            getAllSongsResponses.add(new GetAllSongsResponse(song.getSongSeq(), song.getSongTitle(), songSingerEntity1.getSongSingerName(), albumEntity.getAlbumImage()));
+        });
+        return getAllSongsResponses;
     }
 }
 

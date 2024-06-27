@@ -54,7 +54,7 @@ public class SongBoardController {
             @Parameter(name = "sort", description = "정렬 기준", example = "Like or RegDate")
     })
     public ResponseEntity<?> read(@PathVariable Long seq, @RequestParam(defaultValue = "1") int nowPage,
-                                  @RequestParam(defaultValue = "regDate") String sort){
+                                  @RequestParam(defaultValue = "regDate") String sort) {
         //nowPage: 댓글페이징을 위해 추가
         //sort: 최신순/추천순 정렬 구분을 위해 추가
 
@@ -64,10 +64,10 @@ public class SongBoardController {
         Page<SongReplyRes> pageReplyList;
 
         //댓글 페이징 처리
-        if("Like".equals(sort)){
+        if ("Like".equals(sort)) {
             //추천순 정렬
             pageReplyList = songBoardService.getSongReplyLikeList(songEntity, nowPage);
-        }else {
+        } else {
             //최신순 정렬
             pageReplyList = songBoardService.getSongReplyRegList(songEntity, nowPage);
         }
@@ -81,7 +81,7 @@ public class SongBoardController {
         SongRes songDTO = new SongRes(songEntity, pageReplyList, songSingerList, producer);
 
         //앨범 이미지 url
-        URL albumImgFileUrl =albumService.generateAlbumImgFileUrl(songDTO.getAlbumImage());
+        URL albumImgFileUrl = albumService.generateAlbumImgFileUrl(songDTO.getAlbumImage());
         songDTO.setAlbumImage(albumImgFileUrl.toString());
 
         //음원 url
@@ -95,7 +95,7 @@ public class SongBoardController {
 
     @PostMapping("/{seq}/reply")
     @Operation(summary = "곡 상세페이지 댓글 작성", description = "댓글 작성 시 요청되는 api")
-    public ResponseEntity<?> insertSongReply(@PathVariable Long seq, @RequestBody SongReplyReq songReply){
+    public ResponseEntity<?> insertSongReply(@PathVariable Long seq, @RequestBody SongReplyReq songReply) {
         //sercurity에 저장된 member 정보 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
@@ -111,7 +111,7 @@ public class SongBoardController {
     @PutMapping("/{seq}/reply/{replySeq}")
     @Operation(summary = "곡 상세페이지 댓글 수정", description = "댓글 수정 시 요청되는 api")
     public ResponseEntity<?> updateSongReply(@PathVariable Long seq, @RequestBody SongReplyReq songReplyReq,
-                                             @PathVariable Long replySeq){
+                                             @PathVariable Long replySeq) {
         //sercurity에 저장된 member 정보 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
@@ -125,7 +125,7 @@ public class SongBoardController {
 
     @DeleteMapping("/{seq}/reply/{replySeq}")
     @Operation(summary = "곡 상세페이지 댓글 삭제", description = "댓글 삭제 시 요청되는 api")
-    public ResponseEntity<?> deleteSongReply(@PathVariable Long seq, @PathVariable Long replySeq){
+    public ResponseEntity<?> deleteSongReply(@PathVariable Long seq, @PathVariable Long replySeq) {
         //sercurity에 저장된 member 정보 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
@@ -140,7 +140,7 @@ public class SongBoardController {
 
     @GetMapping("/{seq}/reply/{replySeq}/like")
     @Operation(summary = "곡 상세페이지 댓글 좋아요 여부 조회", description = "댓글 좋아요 여부 확인 시 요청되는 api")
-    public ResponseEntity<?> checkSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+    public ResponseEntity<?> checkSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
 
@@ -153,7 +153,7 @@ public class SongBoardController {
 
     @PutMapping("/{seq}/reply/{replySeq}/like")
     @Operation(summary = "곡 상세페이지 댓글 좋아요 등록", description = "댓글 좋아요 시 요청되는 api")
-    public ResponseEntity<?> increaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+    public ResponseEntity<?> increaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq) {
         //security에 저장된 member 정보 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
@@ -171,7 +171,7 @@ public class SongBoardController {
 
     @DeleteMapping("/{seq}/reply/{replySeq}/like")
     @Operation(summary = "곡 상세페이지 댓글 좋아요 삭제", description = "댓글 좋아요 취소 시 요청되는 api")
-    public ResponseEntity<?> decreaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq){
+    public ResponseEntity<?> decreaseSongReplyLike(@PathVariable Long seq, @PathVariable Long replySeq) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberSeq = AES256Util.decrypt(authentication.getName());
 
@@ -188,7 +188,23 @@ public class SongBoardController {
 
     @GetMapping("/rank")
     @Operation(summary = "조회수 기반 곡의 순위 반환", description = "조회수를 기반으로 10곡의 순위와 정보를 반환하는 API")
-    public ResponseEntity<?> getSongRank(){
+    public ResponseEntity<?> getSongRank() {
         return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getSongRank()));
     }
+
+    @GetMapping("/all")
+    @Operation(summary = "전체 곡 리스트 반환")
+    public ResponseEntity<?> getAllSongs() {
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getAllSongs()));
+    }
+
+    @GetMapping("/genre/{genre}")
+    @Operation(summary = "장르 별 곡 리스트 반환")
+    public ResponseEntity<?> getSongsByGenre(@PathVariable String genre) {
+        System.out.println("genre = " + genre);
+        return genre.equals("전체") ? ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getAllSongs())) :
+                ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getAllSongsByGenre(genre)));
+    }
+
+
 }

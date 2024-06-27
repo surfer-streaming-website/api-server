@@ -8,19 +8,20 @@ public class Constant {
             // common
             "/favicon.ico",
             // song
-            "/api/song/rank",
+            "/api/song/rank", "/api/song/all",
             //
             "/favicon.ico",
             //album
 //            "/api/album/status"
+            "/api/album/latest"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
             "/api/v1/auth/hi/*/bye",
             //song
-            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*",
+            "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*", "/api/song/genre/*",
             //album
-            "/api/album/detail/*"
+            "/api/album/detail/*",
 //            ,"/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
     };
     public static final String[] permitPostMethodUrl = {

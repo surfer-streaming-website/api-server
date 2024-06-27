@@ -2,8 +2,8 @@ package com.surfer.apiserver.api.album.service;
 
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
+import com.surfer.apiserver.api.album.dto.GetLatestAlbumResponse;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
-import com.surfer.apiserver.domain.database.entity.AlbumReplyEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import org.springframework.data.domain.Page;
 
@@ -65,5 +65,6 @@ public interface AlbumBoardService {
      */
     void albumReplyLikeDelete(Long albumSeq, Long memberSeq, Long replySeq);
 
+    List<GetLatestAlbumResponse> getLatestAlbum();
 
 }

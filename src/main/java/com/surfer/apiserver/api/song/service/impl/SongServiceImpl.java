@@ -3,6 +3,7 @@ package com.surfer.apiserver.api.song.service.impl;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
+import com.surfer.apiserver.api.song.dto.GetAllSongsResponse;
 import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -204,5 +205,23 @@ public class SongServiceImpl implements SongService {
             response.setUrl(albumServiceImpl.findAlbumUrl(response.getAlbumSeq()).toString());
         });
         return songRank;
+    }
+
+    @Override
+    public List<GetAllSongsResponse> getAllSongs() {
+        List<GetAllSongsResponse> allSongs = customSongRepository.getAllSongs();
+        allSongs.forEach(song -> {
+            song.setUrl(albumServiceImpl.generateAlbumImgFileUrl(song.getUrl()).toString());
+        });
+        return allSongs;
+    }
+
+    @Override
+    public List<GetAllSongsResponse> getAllSongsByGenre(String genre) {
+        List<GetAllSongsResponse> allSongs = customSongRepository.getAllSongsByGenre(genre);
+        allSongs.forEach(song -> {
+            song.setUrl(albumServiceImpl.generateAlbumImgFileUrl(song.getUrl()).toString());
+        });
+        return allSongs;
     }
 }

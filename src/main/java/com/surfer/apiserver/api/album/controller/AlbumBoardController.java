@@ -182,6 +182,11 @@ public class AlbumBoardController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/latest")
+    @Operation(summary = "최신앨범")
+    public ResponseEntity<?> getLatestAlbum(){
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), albumBoardService.getLatestAlbum()));
+    }
 
 
 }
