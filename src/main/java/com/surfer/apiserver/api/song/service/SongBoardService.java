@@ -3,7 +3,6 @@ package com.surfer.apiserver.api.song.service;
 import com.surfer.apiserver.api.song.dto.ProducerDTO;
 import com.surfer.apiserver.api.song.dto.SongReplyReq;
 import com.surfer.apiserver.api.song.dto.SongReplyRes;
-import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import com.surfer.apiserver.domain.database.entity.SongReplyEntity;
 import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
@@ -71,8 +70,4 @@ public interface SongBoardService {
      * 곡 댓글 좋아요 삭제
      */
     void songReplyLikeDelete(Long songSeq, Long memberSeq, Long replySeq);
-
-    Long getLikeCounts(SongEntity songEntity);
-
-    Boolean getIsLike(SongEntity songEntity, MemberEntity memberEntity);
 }

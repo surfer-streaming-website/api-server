@@ -41,9 +41,6 @@ public class SongBoardServiceImpl implements SongBoardService {
     private SongSingerRepository songSingerRepository;
 
     @Autowired
-    private SongLikeRepository songLikeRepository;
-
-    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private SongReplyLikeRepository songReplyLikeRepository;
@@ -313,15 +310,5 @@ public class SongBoardServiceImpl implements SongBoardService {
             //데이터 존재 안함
             throw new BusinessException(ApiResponseCode.FAILED_DELETE_LIKE, HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @Override
-    public Long getLikeCounts(SongEntity song) {
-        return songLikeRepository.countBySong(song);
-    }
-
-    @Override
-    public Boolean getIsLike(SongEntity songEntity, MemberEntity memberEntity) {
-        return songLikeRepository.findBySongAndMember(songEntity, memberEntity).isEmpty() ? false : true;
     }
 }
