@@ -140,14 +140,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         return 1;
     }
 
-//    @Override
-//    @Transactional
-//    public List<PlaylistDTO.PlaylistGroupResponseDTO> getOpenedPlaylists() {
-//        List<PlaylistGroupEntity> roleDj = playlistGroupRepository.findByAuthority(CommonCode.MemberAuthority.ROLE_DJ);
-//
-//        return roleDj.stream().map(PlaylistDTO.PlaylistGroupResponseDTO::new).collect(Collectors.toList());
-//    }
-
     @Override
     @Transactional
     public List<PlaylistDTO.PlaylistLikeResponseDTO> likedPlaylists() {

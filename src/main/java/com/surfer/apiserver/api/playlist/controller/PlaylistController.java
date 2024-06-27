@@ -129,19 +129,6 @@ public class PlaylistController {
     }
 
     /**
-     * 등급이 dj 인 사용자가 공개한 플레이리스트 전부 조회
-     */
-//    @GetMapping("/openedPlaylists")
-//    public ResponseEntity<?> getAllOpenedPlaylists() {
-//        List<PlaylistDTO.PlaylistGroupResponseDTO> openPlaylist = playlistService.getOpenedPlaylists();
-//
-//        RestApiResponse restApiResponse = new RestApiResponse();
-//        restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), openPlaylist);
-//
-//        return ResponseEntity.ok().body(restApiResponse);
-//    }
-
-    /**
      * 플레이리스트에 좋아요가 존재하는지 확인
      */
     @GetMapping("/likedPlaylists")
