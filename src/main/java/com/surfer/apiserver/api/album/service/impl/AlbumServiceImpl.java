@@ -27,9 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,8 +48,6 @@ public class AlbumServiceImpl implements AlbumService {
     private SongSingerRepository songSingerRepository;
     @Autowired
     private MemberRepository memberRepository;
-    @Autowired
-    private MemberAuthorityRepository memberAuthorityRepository;
 
     @Autowired
     public AlbumServiceImpl(SongRepository songRepository, SongSingerRepository songSingerRepository, AlbumRepository albumRepository, AlbumSingerRepository albumSingerRepository) {
