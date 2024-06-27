@@ -11,13 +11,15 @@ public class LyricsSearchDTO {
     private String songSingerName;
     private String lyrics;
     private Long songSeq;
+    private int albumState;
 
 
-    public LyricsSearchDTO(String albumImage,String songTitle,String songSingerName,String lyrics, Long songSeq) {
+    public LyricsSearchDTO(String albumImage,String songTitle,String songSingerName,String lyrics, Long songSeq,int albumState) {
         this.albumImage = albumImage;
         this.songTitle = songTitle;
         this.songSingerName = songSingerName;
         this.lyrics = lyrics;
         this.songSeq = songSeq;
+        this.albumState = albumState;
     }
 }
