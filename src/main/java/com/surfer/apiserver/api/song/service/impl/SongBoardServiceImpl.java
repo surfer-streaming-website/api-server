@@ -67,10 +67,6 @@ public class SongBoardServiceImpl implements SongBoardService {
             throw new BusinessException(ApiResponseCode.INVALID_ALBUM_STATE, HttpStatus.BAD_REQUEST);
         }
 
-        //재생 수 증가
-        songEntity.setRecentlyPlayedCount(songEntity.getRecentlyPlayedCount()+1);
-        songEntity = songBoardRepository.save(songEntity);
-
         return songEntity;
     }
 
