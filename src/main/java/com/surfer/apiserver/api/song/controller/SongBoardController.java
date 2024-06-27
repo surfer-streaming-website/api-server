@@ -98,7 +98,6 @@ public class SongBoardController {
         URL songFileUrl = songService.generateSongFileUrl(songDTO.getSoundSourceName());
         songDTO.setSoundSourceUrl(songFileUrl.toString());
 
-        System.out.println("authorizationHeader = " + AES256Util.decrypt(authorizationHeader));
 
         songDTO.setIsLiked(authorizationHeader !=null &&
                 !songLikeRepository.findBySongAndMember(songEntity,
