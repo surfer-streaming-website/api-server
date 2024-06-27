@@ -80,30 +80,22 @@ public class PlaylistDTO {
     public static class SongResponseDTO {
         private Long songId;
         private String albumImage;
+        private String soundSource;
         private String songName;
-        private List<SongSingerResponseDTO> artist;
+        private List<String> artist;
 
         public SongResponseDTO(SongEntity songEntity) {
             this.songId = songEntity.getSongSeq();
             this.songName = songEntity.getSongTitle();
             this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
+            this.soundSource = songEntity.getSoundSourceName();
 
-            List<SongSingerResponseDTO> songSingerResponseDTOList = new ArrayList<>();
+            List<String> artistList = new ArrayList<>();
             for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntities()) {
-                SongSingerResponseDTO songSingerResponseDTO = new SongSingerResponseDTO(songSingerEntity);
-                songSingerResponseDTOList.add(songSingerResponseDTO);
+                String singer = songSingerEntity.getSongSingerName();
+                artistList.add(singer);
             }
-            this.artist = songSingerResponseDTOList;
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class SongSingerResponseDTO {
-        private String singer;
-
-        public SongSingerResponseDTO(SongSingerEntity songSingerEntity) {
-            this.singer = songSingerEntity.getSongSingerName();
+            this.artist = artistList;
         }
     }
 
