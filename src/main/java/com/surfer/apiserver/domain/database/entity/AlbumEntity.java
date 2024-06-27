@@ -33,7 +33,7 @@ public class AlbumEntity {
     @Column(name = "agency")
     private String agency;
 
-    @Column(name = "album_content")
+    @Column(name = "album_content", length = 500)
     private String albumContent;
 
     @Column(name = "album_image")
