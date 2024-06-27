@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.song.service;
 
+import com.surfer.apiserver.api.song.dto.GetAllSongsResponse;
 import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
@@ -31,5 +32,9 @@ public interface SongService {
     long countSongLikes(Long songId);
 
     List<GetSongRankResponse> getSongRank();
+
+    List<GetAllSongsResponse> getAllSongs();
+
+    List<GetAllSongsResponse> getAllSongsByGenre(String genre);
 
 }

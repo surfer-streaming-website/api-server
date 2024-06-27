@@ -2,12 +2,13 @@ package com.surfer.apiserver.api.album.service.impl;
 
 import com.surfer.apiserver.api.album.dto.AlbumReplyReq;
 import com.surfer.apiserver.api.album.dto.AlbumReplyRes;
+import com.surfer.apiserver.api.album.dto.GetLatestAlbumResponse;
 import com.surfer.apiserver.api.album.service.AlbumBoardService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
-import org.springframework.beans.factory.InitializingBean;
+import com.surfer.apiserver.domain.database.repository.custom.impl.CustomAlbumRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +39,11 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
     private MemberRepository memberRepository;
     @Autowired
     private AlbumReplyLikeRepository albumReplyLikeRepository;
+
+    @Autowired
+    private CustomAlbumRepositoryImpl customAlbumRepository;
+    @Autowired
+    private AlbumServiceImpl albumServiceImpl;
 
     @Override
     public AlbumEntity selectById(Long seq) {
@@ -274,8 +279,14 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
         }
     }
 
-
-
+    @Override
+    public List<GetLatestAlbumResponse> getLatestAlbum() {
+        List<GetLatestAlbumResponse> latestAlbum = customAlbumRepository.getLatestAlbum();
+        latestAlbum.forEach(item -> {
+            item.setUrl(albumServiceImpl.findAlbumUrl(item.getAlbumSeq()).toString());
+        });
+        return latestAlbum;
+    }
 
 
 }
