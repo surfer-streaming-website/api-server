@@ -16,5 +16,4 @@ public interface AlbumRepository extends JpaRepository<AlbumEntity,Long> {
 
     @Query("SELECT ae FROM AlbumEntity ae WHERE ae.memberEntity.memberId = :memberId order by ae.albumRegDate desc")
     List<AlbumEntity> findAllAlbum(Long memberId);
-
 }
