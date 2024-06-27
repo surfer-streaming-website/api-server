@@ -77,6 +77,12 @@ public class PlaylistController {
         URL url = albumService.generateAlbumImgFileUrl(imgName);
         playlist.setPlaylistImage(url.toString());
 
+        for(PlaylistDTO.PlaylistTrackResponseDTO track : playlist.getTrack()) {
+            String songImg = track.getSong().getAlbumImage();
+            URL imgUrl = albumService.generateAlbumImgFileUrl(songImg);
+            track.getSong().setAlbumImage(imgUrl.toString());
+        }
+
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), playlist);
 
