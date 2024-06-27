@@ -6,7 +6,9 @@ public class Constant {
             //swagger
             "/v3/api-docs", "/v3/api-docs/swagger-config",
             //
-            "/favicon.ico"
+            "/favicon.ico",
+            //album
+//            "/api/album/status"
     };
     public static final String[] permitGetMethodUrlAntPattern = {
             //auth
@@ -14,15 +16,19 @@ public class Constant {
             //song
             "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*", "/api/song/genre/*",
             //album
+<<<<<<< HEAD
             "/api/album/detail/*","/album/*","/api/album/status/*","/api/album/*","/api/album/image/*", "api/album/*/like-count"
+=======
+            "/api/album/detail/*"
+//            ,"/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
+>>>>>>> 28dd948cd4b58c25da197e6677148ad8dd59b83c
     };
     public static final String[] permitPostMethodUrl = {
             //auth
             "/api/v1/auth/sign-up", "/api/v1/auth/sign-in"
             //test
-            ,"/file/upload","/song/*"
+//            ,"/file/upload","/song/*"
             //file upload
-            ,"/api/album/save"
     };
     public static final String[] permitPostMethodUrlAntPattern = {
     };

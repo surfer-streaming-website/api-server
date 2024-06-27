@@ -9,18 +9,24 @@ import com.surfer.apiserver.api.album.dto.*;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
+import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.*;
 import com.surfer.apiserver.domain.database.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +46,10 @@ public class AlbumServiceImpl implements AlbumService {
     private SongRepository songRepository;
     @Autowired
     private SongSingerRepository songSingerRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private MemberAuthorityRepository memberAuthorityRepository;
 
     @Autowired
     private SongLikeRepository songLikeRepository;
@@ -219,6 +229,14 @@ public class AlbumServiceImpl implements AlbumService {
         albumEntity.setAgency(albumReq.getAgency());
         albumEntity.setAlbumContent(albumReq.getAlbumContent());
         albumEntity.setAlbumImage(albumReq.getAlbumImage());
+
+
+        albumEntity.setReleaseDate(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+        System.out.println(albumReq.getReleaseDate());
+        System.out.println("----------------------------------");
+
+
         albumEntity.setAlbumState(albumReq.getAlbumState());
         albumEntity.setMemberEntity(MemberEntity.builder().memberId(memberId).build());
 
@@ -271,6 +289,9 @@ public class AlbumServiceImpl implements AlbumService {
         return String.valueOf(albumImageName);
     }
 
+    /*
+     * 앨범 이미지 url찾기 이거 사용!
+     * */
     //앨범 이미지 (albumIamge로) url 찾기
     @Override
     public URL generateAlbumImgFileUrl(String albumImage) {
@@ -288,14 +309,12 @@ public class AlbumServiceImpl implements AlbumService {
 
     }
 
-    /*
-     * 앨범 이미지 url찾기 이거 사용
-     * */
     //앨범 이미지 (albumSeq로) url 찾기
     public URL findAlbumUrl(Long albumSeq) {
 
         //앨범정보
         AlbumEntity albumEntity = findAlbum(albumSeq);
+
 
         //앨범 시퀀스가 들어왔는지 확인
         if (albumSeq == null) {
@@ -357,5 +376,26 @@ public class AlbumServiceImpl implements AlbumService {
     @Override
     public Long getAlbumLikeCountResponse(Long albumSeq) {
         return albumRepository.findById(albumSeq).get().getSongEntities().stream().map(songEntity -> songLikeRepository.countBySong(songEntity)).collect(Collectors.counting());
+    //유저 권한 확인
+    @Override
+    public String userAuthorityCheck() {
+        System.out.println("3들어와?");
+        Long memberId = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ApiResponseCode.INVALID_MEMBER_ID, HttpStatus.BAD_REQUEST));
+
+        String userAuthority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+
+//        System.out.println("확인 member = " + member);
+//        String userAuthority = AES256Util.decrypt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getAuthorities()));
+        System.out.println("확인 userAuthority = " + userAuthority);
+        if (userAuthority.equals("ROLE_SINGER")) {
+        } else {
+            new BusinessException(ApiResponseCode.FAILED_FIND_SINGER, HttpStatus.BAD_REQUEST);
+        }
+        return userAuthority;
     }
 }

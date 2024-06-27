@@ -51,6 +51,12 @@ public interface AlbumService {
     URL generateAlbumImgFileUrl(String albumImage);
 
     /*
+    * 앨범 이미지 url 찾기
+    */
+    
+    URL findAlbumUrl(Long albumSeq);
+    
+    /*
      * 앨범 상태 변경
      * */
     void updateAlbumStatus(Long albumSeq, int albumState);
@@ -61,4 +67,8 @@ public interface AlbumService {
     GetLatestAlbumsResponse getLatestAlbums();
 
     Long getAlbumLikeCountResponse(Long albumSeq);
+
+    //권한 확인
+    String userAuthorityCheck();
+
 }
