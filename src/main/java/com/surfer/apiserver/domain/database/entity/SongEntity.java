@@ -26,7 +26,7 @@ public class SongEntity {
     @Column(name="song_number", nullable = false)
     private int songNumber;
 
-    @Column(name="lyrics")
+    @Column(name="lyrics", length = 500)
     private String lyrics;
 
     @Column(name="total_played_count")
