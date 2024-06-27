@@ -11,12 +11,14 @@ public class AlbumSearchDTO {
     private String albumTitle;
     private String albumSingerName;
     private Long albumSeq;
+    private int albumState;
 
     //앨범 2
-    public AlbumSearchDTO(String albumImage,String albumTitle,String albumSingerName,Long albumSeq) {
+    public AlbumSearchDTO(String albumImage,String albumTitle,String albumSingerName,Long albumSeq,int albumState) {
         this.albumImage =albumImage;
         this.albumTitle = albumTitle;
         this.albumSingerName = albumSingerName;
         this.albumSeq = albumSeq;
+        this.albumState = albumState;
     }
 }
