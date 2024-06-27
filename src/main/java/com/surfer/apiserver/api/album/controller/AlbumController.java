@@ -1,15 +1,13 @@
 package com.surfer.apiserver.api.album.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surfer.apiserver.api.album.dto.AlbumReq;
 import com.surfer.apiserver.api.album.dto.AlbumRes;
-import com.surfer.apiserver.api.album.dto.AlbumRes;
+import com.surfer.apiserver.api.album.dto.GetLatestAlbumsResponse;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
-import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
@@ -19,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,33 +40,15 @@ public class AlbumController {
     // 마이페이지 신청리스트
     @GetMapping("/status")
     public ResponseEntity<?> findAllByMemberEntityId() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Long memberSeq = Long.valueOf(authentication.getName());
-        System.out.println("1==============================");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberSeq = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
-        System.out.println("memberSeq = " +memberSeq);
+        Long memberId = Long.valueOf(authentication.getName());
 
-        System.out.println("1=================================");
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String memberSeq = AES256Util.decrypt(authentication.getName());
-//        System.out.println("memberSeq: " + memberSeq);
-
-        return new ResponseEntity<>(albumService.findAllByMemberEntityId(Long.valueOf(memberSeq)), HttpStatus.OK);
+        return new ResponseEntity<>(albumService.findAllByMemberEntityId(memberId), HttpStatus.OK);
     }
 
     // 마이페이지 신청리스트 test
     @GetMapping("/status/{id}")
-    public  ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
-
-//        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-//        String memberSeq = AES256Util.decrypt(authentication1.getName());
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Long memberId = Long.valueOf(authentication.getName());
-//        System.out.println("memberSeq: " + memberSeq);
-//        System.out.println("memberId: " + memberId);
-
+    public ResponseEntity<?> findAllByMemberEntityId(@PathVariable Long id) {
         return new ResponseEntity<>(albumService.findAllByMemberEntityId(id), HttpStatus.OK);
     }
 
@@ -99,19 +78,11 @@ public class AlbumController {
         URL downloadUrl = albumService.generateAlbumImgFileUrl(albumEntity.getAlbumImage());
         return ResponseEntity.ok(downloadUrl.toString());
     }
-    //앨범 등록
+
     @PostMapping("/save")
-    public ResponseEntity<?> saveAlbum(@RequestPart("multipartfiles") List<MultipartFile> multipartFiles,
+    public ResponseEntity<?> saveAlbum(@Valid @ModelAttribute List<MultipartFile> multipartFiles,
                                        @RequestPart("album") AlbumReq albumReq) {
-        System.out.println("111111111111111111111");
-
-//        Long memberId = albumReq.getMemberId();
-//        System.out.println(memberId);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberSeq = Long.valueOf(AES256Util.decrypt(SecurityContextHolder.getContext().getAuthentication().getName()));
-        System.out.println("memberSeq = " +memberSeq);
-
+        Long memberId = albumReq.getMemberId();
 
         System.out.println("1========================");
 
@@ -123,7 +94,7 @@ public class AlbumController {
         });
         System.out.println("3========================");
 
-        albumService.albumSave(albumReq, fielNameMap, memberSeq);
+        albumService.albumSave(albumReq, fielNameMap, memberId);
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
@@ -152,13 +123,18 @@ public class AlbumController {
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/userAuthority")
-    public ResponseEntity<?> userAuthorityCheck(){
-        System.out.println("1들어와?");
-        String userAuthority=albumService.userAuthorityCheck();
-        System.out.println("컨트롤userAuthority = "+userAuthority);
+    // 최신 앨범 조회(12곡)
+    @GetMapping("/latest")
+    public ResponseEntity<RestApiResponse> getLatestAlbums() {
+        GetLatestAlbumsResponse latestAlbums = albumService.getLatestAlbums();
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), latestAlbums));
+    }
 
-        return ResponseEntity.ok(userAuthority);
+    @GetMapping("/{albumSeq}/like-count")
+    public ResponseEntity<RestApiResponse> getAlbumLikeCount(@PathVariable Long albumSeq) {
+        return ResponseEntity.ok(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS),
+                albumService.getAlbumLikeCountResponse(albumSeq)
+                ));
     }
 
 }
