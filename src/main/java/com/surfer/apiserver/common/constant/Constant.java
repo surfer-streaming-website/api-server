@@ -5,6 +5,10 @@ public class Constant {
     public static final String[] permitGetMethodUrl = {
             //swagger
             "/v3/api-docs", "/v3/api-docs/swagger-config",
+            // common
+            "/favicon.ico",
+            // song
+            "/api/song/rank",
             //
             "/favicon.ico",
             //album

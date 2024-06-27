@@ -2,6 +2,8 @@ package com.surfer.apiserver.api.song.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
+import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -13,10 +15,12 @@ import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongLikeEntity;
+import com.surfer.apiserver.domain.database.repository.AlbumRepository;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
 import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
+import com.surfer.apiserver.domain.database.repository.custom.CustomSongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -31,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.List;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -57,6 +62,13 @@ public class SongServiceImpl implements SongService {
 
     @Autowired
     private SongLikeRepository songLikeRepository;
+
+    @Autowired
+    private CustomSongRepository customSongRepository;
+    @Autowired
+    private AlbumServiceImpl albumServiceImpl;
+    @Autowired
+    private AlbumRepository albumRepository;
 
     @Override
     public SongEntity selectById(Long seq) {
@@ -185,5 +197,12 @@ public class SongServiceImpl implements SongService {
         return songLikeRepository.countBySong(song);
     }
 
-
+    @Override
+    public List<GetSongRankResponse> getSongRank() {
+        List<GetSongRankResponse> songRank = customSongRepository.getSongRank();
+        songRank.forEach(response ->{
+            response.setUrl(albumServiceImpl.findAlbumUrl(response.getAlbumSeq()).toString());
+        });
+        return songRank;
+    }
 }

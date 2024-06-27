@@ -185,4 +185,10 @@ public class SongBoardController {
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS));
         return new ResponseEntity<>(restApiResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/rank")
+    @Operation(summary = "조회수 기반 곡의 순위 반환", description = "조회수를 기반으로 10곡의 순위와 정보를 반환하는 API")
+    public ResponseEntity<?> getSongRank(){
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), songService.getSongRank()));
+    }
 }
