@@ -32,7 +32,7 @@ public class CustomSongRepositoryImpl implements CustomSongRepository {
 //                .limit(10)
 //                .fetch();
         List<Tuple> fetch = jpaQueryFactory
-                .select(songEntity.songTitle, songEntity.songSeq)
+                .select(songEntity.songTitle, songEntity.songSeq, songEntity.albumEntity.albumSeq)
                 .from(songEntity)
                 .orderBy(songEntity.recentlyPlayedCount.desc())
                 .limit(10)
@@ -48,8 +48,9 @@ public class CustomSongRepositoryImpl implements CustomSongRepository {
                     .where(songSingerEntity.songEntity.songSeq.eq(songSeq))
                     .limit(1)
                     .fetch();
+            Long albumSeq = tuple.get(songEntity.albumEntity.albumSeq);
             String songSingerName = singerNames.isEmpty() ? null : singerNames.get(0);
-            getSongRankResponses.add(new GetSongRankResponse(songTitle, songSingerName, songSeq, rank.get()));
+            getSongRankResponses.add(new GetSongRankResponse(songTitle, songSingerName, songSeq, rank.get(), null, albumSeq));
             rank.addAndGet(1);
         });
 

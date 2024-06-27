@@ -2,6 +2,7 @@ package com.surfer.apiserver.api.song.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.surfer.apiserver.api.album.service.impl.AlbumServiceImpl;
 import com.surfer.apiserver.api.song.dto.GetSongRankResponse;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -14,6 +15,7 @@ import com.surfer.apiserver.common.util.AES256Util;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongLikeEntity;
+import com.surfer.apiserver.domain.database.repository.AlbumRepository;
 import com.surfer.apiserver.domain.database.repository.SongRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import com.surfer.apiserver.domain.database.repository.MemberRepository;
@@ -63,6 +65,11 @@ public class SongServiceImpl implements SongService {
 
     @Autowired
     private CustomSongRepository customSongRepository;
+    @Autowired
+    private AlbumServiceImpl albumServiceImpl;
+    @Autowired
+    private AlbumRepository albumRepository;
+
     @Override
     public SongEntity selectById(Long seq) {
         // 곡 seq에 해당하는 곡이 있는지 조회한다.
@@ -192,6 +199,10 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public List<GetSongRankResponse> getSongRank() {
-        return customSongRepository.getSongRank();
+        List<GetSongRankResponse> songRank = customSongRepository.getSongRank();
+        songRank.forEach(response ->{
+            response.setUrl(albumServiceImpl.findAlbumUrl(response.getAlbumSeq()).toString());
+        });
+        return songRank;
     }
 }

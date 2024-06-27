@@ -12,5 +12,7 @@ public class GetSongRankResponse {
     private String songAuthor;
     private long songSeq;
     private int rank;
+    private String url;
+    private Long albumSeq;
 }
 //14 4 2 2 0
