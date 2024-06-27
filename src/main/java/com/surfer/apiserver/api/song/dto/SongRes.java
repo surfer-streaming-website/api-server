@@ -39,6 +39,9 @@ public class SongRes {
 
     private ProducerDTO producerDTO;
 
+    private Boolean isLiked;
+    private Long likeCount;
+
     public SongRes(SongEntity songEntity, Page<SongReplyRes> replies, List<SongSingerEntity> singers, ProducerDTO producerDTO){
         this.songSeq = songEntity.getSongSeq();
         this.songTitle = songEntity.getSongTitle();

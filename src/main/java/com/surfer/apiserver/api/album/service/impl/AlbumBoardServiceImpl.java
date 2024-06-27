@@ -45,6 +45,10 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
     private CustomAlbumRepositoryImpl customAlbumRepository;
     @Autowired
     private AlbumServiceImpl albumServiceImpl;
+    @Autowired
+    private SongLikeRepository songLikeRepository;
+    @Autowired
+    private SongRepository songRepository;
 
     @Override
     public AlbumEntity selectById(Long seq) {
@@ -297,5 +301,11 @@ public class AlbumBoardServiceImpl implements AlbumBoardService {
     @Override
     public void upDateAlbumAdmin(Long album, Integer albumState) {
         customAlbumRepository.upDateAlbumAdmin(album, albumState);
+    }
+
+    @Override
+    public Long getAlbumLikeCount(Long albumSeq) {
+        List<SongEntity> songEntities = albumRepository.findById(albumSeq).get().getSongEntities();
+        return songEntities.stream().mapToLong(songEntity -> songLikeRepository.countBySong(songEntity)).sum();
     }
 }
