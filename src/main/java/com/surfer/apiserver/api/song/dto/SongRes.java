@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,6 +31,7 @@ public class SongRes {
     private Page<SongReplyRes> replies;
 
     private List<SongSingerEntity> singers;
+    private List<String> singerList;
 
     private Long albumSeq;
     private String albumTitle;
@@ -48,7 +50,24 @@ public class SongRes {
         this.soundSourceName = songEntity.getSoundSourceName();
         this.genre = songEntity.getGenre();
         this.replies = replies;
-        this.singers = singers;
+//        this.singers = singers;
+
+        List<String> singerList = new ArrayList<>();
+        List<SongSingerEntity> songSingerEntities = songEntity.getSongSingerEntities();
+        int size = songSingerEntities.size();
+
+        for (int i = 0; i < size; i++) {
+            SongSingerEntity songSingerEntity = songSingerEntities.get(i);
+            String singer = songSingerEntity.getSongSingerName();
+
+            singerList.add(singer);
+
+            // 마지막 가수가 아닌 경우에만 쉼표를 추가
+            if (i < size - 1) {
+                singerList.add(", ");
+            }
+        }
+        this.singerList = singerList;
 
         this.producerDTO = producerDTO;
 

@@ -4,6 +4,7 @@ import com.surfer.apiserver.api.song.dto.SongReq;
 import com.surfer.apiserver.api.song.dto.SongRes;
 import com.surfer.apiserver.domain.database.entity.AlbumEntity;
 import com.surfer.apiserver.domain.database.entity.AlbumSingerEntity;
+import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class AlbumRes {
     private Page<AlbumReplyRes> replies;
 
     private List<AlbumSingerEntity> singers;
+    private List<String> singerList;
 
     private List<SongRes> songList;
 
@@ -60,7 +62,23 @@ public class AlbumRes {
         this.songDtoList = songDTOList;
 
         this.replies = replies;
-        this.singers = singers;
+
+        List<String> singerList = new ArrayList<>();
+        List<AlbumSingerEntity> albumSingerEntities = albumEntity.getAlbumSingerEntities();
+        int size = albumSingerEntities.size();
+
+        for (int i = 0; i < size; i++) {
+            AlbumSingerEntity albumSingerEntity = albumSingerEntities.get(i);
+            String singer = albumSingerEntity.getAlbumSingerName();
+
+            singerList.add(singer);
+
+            // 마지막 가수가 아닌 경우에만 쉼표를 추가
+            if (i < size - 1) {
+                singerList.add(", ");
+            }
+        }
+        this.singerList = singerList;
     }
 
 
