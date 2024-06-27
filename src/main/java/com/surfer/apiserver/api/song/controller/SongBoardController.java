@@ -1,5 +1,6 @@
 package com.surfer.apiserver.api.song.controller;
 
+import java.util.*;
 import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.api.song.dto.ProducerDTO;
 import com.surfer.apiserver.api.song.dto.SongRes;
@@ -7,12 +8,16 @@ import com.surfer.apiserver.api.song.dto.SongReplyReq;
 import com.surfer.apiserver.api.song.dto.SongReplyRes;
 import com.surfer.apiserver.api.song.service.SongBoardService;
 import com.surfer.apiserver.api.song.service.SongService;
+import com.surfer.apiserver.common.exception.BusinessException;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
 import com.surfer.apiserver.common.util.AES256Util;
+import com.surfer.apiserver.domain.database.entity.MemberEntity;
 import com.surfer.apiserver.domain.database.entity.SongEntity;
 import com.surfer.apiserver.domain.database.entity.SongSingerEntity;
+import com.surfer.apiserver.domain.database.repository.MemberRepository;
+import com.surfer.apiserver.domain.database.repository.SongLikeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -40,6 +45,10 @@ public class SongBoardController {
     private AlbumService albumService;
     @Autowired
     private SongService songService;
+    @Autowired
+    private SongLikeRepository songLikeRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     /**
      * 곡 정보 상세보기
@@ -54,7 +63,8 @@ public class SongBoardController {
             @Parameter(name = "sort", description = "정렬 기준", example = "Like or RegDate")
     })
     public ResponseEntity<?> read(@PathVariable Long seq, @RequestParam(defaultValue = "1") int nowPage,
-                                  @RequestParam(defaultValue = "regDate") String sort) {
+                                  @RequestParam(defaultValue = "regDate") String sort,
+                                  @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         //nowPage: 댓글페이징을 위해 추가
         //sort: 최신순/추천순 정렬 구분을 위해 추가
 
@@ -87,6 +97,15 @@ public class SongBoardController {
         //음원 url
         URL songFileUrl = songService.generateSongFileUrl(songDTO.getSoundSourceName());
         songDTO.setSoundSourceUrl(songFileUrl.toString());
+
+        System.out.println("authorizationHeader = " + AES256Util.decrypt(authorizationHeader));
+
+        songDTO.setIsLiked(authorizationHeader !=null &&
+                !songLikeRepository.findBySongAndMember(songEntity,
+                        memberRepository.findById(Long.parseLong(AES256Util.decrypt(authorizationHeader)))
+                                .orElseThrow(() -> new BusinessException(ApiResponseCode.NOT_FOUND, HttpStatus.OK))).isEmpty());
+
+        songDTO.setLikeCount(songLikeRepository.countBySong(songEntity));
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), songDTO);

@@ -202,4 +202,9 @@ public class AlbumBoardController {
         return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS)));
     }
 
+    @GetMapping("/{albumSeq}/like-count")
+    @Operation(summary = "관리자 앨범 총 좋아요 갯수 조회")
+    public ResponseEntity<?> getAlbumLikeCount(@PathVariable Long albumSeq){
+        return ResponseEntity.ok().body(new RestApiResponse(new BaseResponse(ApiResponseCode.SUCCESS), albumBoardService.getAlbumLikeCount(albumSeq)));
+    }
  }

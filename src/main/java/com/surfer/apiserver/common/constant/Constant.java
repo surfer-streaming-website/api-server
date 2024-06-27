@@ -22,6 +22,7 @@ public class Constant {
             "/api/song/detail/*","/api/search/*","/api/song/download/*","/api/song/*", "/api/song/genre/*",
             //album
             "/api/album/detail/*",
+            "/api/album/*/like-count",
 //            ,"/album/*","/api/album/status/*","/api/album/*","/api/album/image/*"
     };
     public static final String[] permitPostMethodUrl = {

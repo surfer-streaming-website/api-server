@@ -71,4 +71,6 @@ public interface AlbumBoardService {
     List<GetAlbumListAllAdminResponse> getAlbumListAllAdmin();
 
     void upDateAlbumAdmin(Long album, Integer albumState);
+
+    Long getAlbumLikeCount(Long albumSeq);
 }
