@@ -1,7 +1,9 @@
 package com.surfer.apiserver.api.playlist.controller;
 
+import com.surfer.apiserver.api.album.service.AlbumService;
 import com.surfer.apiserver.api.playlist.dto.PlaylistDTO;
 import com.surfer.apiserver.api.playlist.service.PlaylistService;
+import com.surfer.apiserver.api.song.service.SongService;
 import com.surfer.apiserver.common.response.ApiResponseCode;
 import com.surfer.apiserver.common.response.BaseResponse;
 import com.surfer.apiserver.common.response.RestApiResponse;
@@ -9,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -16,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaylistController {
     private final PlaylistService playlistService;
+    private final AlbumService albumService;
+    private final SongService songService;
 
     /**
      * 존재하는 플레이리스트 X
@@ -51,6 +56,11 @@ public class PlaylistController {
     @GetMapping("/myPlaylists")
     public ResponseEntity<?> getAllPlaylists() {
         List<PlaylistDTO.PlaylistGroupResponseDTO> playlists = playlistService.getAllPlaylists();
+        playlists.forEach(playlist -> {
+            String imgName = playlist.getPlaylistImage();
+            URL url = albumService.generateAlbumImgFileUrl(imgName);
+            playlist.setPlaylistImage(url.toString());
+        });
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), playlists);
@@ -64,6 +74,23 @@ public class PlaylistController {
     @GetMapping("/myPlaylists/{playlistSeq}")
     public ResponseEntity<?> getPlaylistById(@PathVariable Long playlistSeq) {
         PlaylistDTO.PlaylistGroupResponseDTO playlist = playlistService.getPlaylistById(playlistSeq);
+
+        //앨범 이미지 String -> url 변경
+        String imgName = playlist.getPlaylistImage();
+        URL url = albumService.generateAlbumImgFileUrl(imgName);
+        playlist.setPlaylistImage(url.toString());
+
+        for(PlaylistDTO.PlaylistTrackResponseDTO track : playlist.getTrack()) {
+            //PalylistTrack 의 각 노래의 앨범 이미지 String -> url 변경
+            String songImg = track.getSong().getAlbumImage();
+            URL imgUrl = albumService.generateAlbumImgFileUrl(songImg);
+            track.getSong().setAlbumImage(imgUrl.toString());
+
+            //노래 파일 String -> url 변경
+            String songSource = track.getSong().getSoundSource();
+            URL soundUrl = songService.generateSongFileUrl(songSource);
+            track.getSong().setSoundSource(soundUrl.toString());
+        }
 
         RestApiResponse restApiResponse = new RestApiResponse();
         restApiResponse.setResult(new BaseResponse(ApiResponseCode.SUCCESS), playlist);

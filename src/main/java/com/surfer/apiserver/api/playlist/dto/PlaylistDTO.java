@@ -32,20 +32,22 @@ public class PlaylistDTO {
         private String playlistImage;
         private String playlistName;
         private String nickname;
-        private List<PlaylistTagResponseDTO> tag;
+        private int isOpen;
+        private List<String> tagList;
         private List<PlaylistTrackResponseDTO> track;
 
         public PlaylistGroupResponseDTO(PlaylistGroupEntity playlistGroupEntity) {
             this.playlistId = playlistGroupEntity.getPlaylistGroupSeq();
             this.playlistName = playlistGroupEntity.getPlaylistName();
             this.nickname = playlistGroupEntity.getMemberEntity().getNickname();
+            this.isOpen = playlistGroupEntity.getIsOpen();
 
-            List<PlaylistTagResponseDTO> playlistTagResponseDTOList = new ArrayList<>();
+            List<String> playlistTagList = new ArrayList<>();
             for (PlaylistTagEntity playlistTagEntity : playlistGroupEntity.getPlaylistTagEntities()) {
-                PlaylistTagResponseDTO playlistTagResponseDTO = new PlaylistTagResponseDTO(playlistTagEntity);
-                playlistTagResponseDTOList.add(playlistTagResponseDTO);
+                String playlistTag = playlistTagEntity.getTagEntity().getTagName();
+                playlistTagList.add(playlistTag + ", ");
             }
-            this.tag = playlistTagResponseDTOList;
+            this.tagList = playlistTagList;
 
             List<PlaylistTrackResponseDTO> playlistTrackResponseDTOList = new ArrayList<>();
             for (PlaylistTrackEntity playlistTrackEntity : playlistGroupEntity.getPlaylistTrackEntities()) {
@@ -56,16 +58,6 @@ public class PlaylistDTO {
                     .sorted(Comparator.comparing(PlaylistTrackResponseDTO::getRegDate)).collect(Collectors.toList());
 
             this.playlistImage = playlistTrackResponseDTOList.get(0).getSong().getAlbumImage();
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class PlaylistTagResponseDTO {
-        private String tag;
-
-        public PlaylistTagResponseDTO(PlaylistTagEntity playlistTagEntity) {
-            this.tag = playlistTagEntity.getTagEntity().getTagName();
         }
     }
 
@@ -88,30 +80,22 @@ public class PlaylistDTO {
     public static class SongResponseDTO {
         private Long songId;
         private String albumImage;
+        private String soundSource;
         private String songName;
-        private List<SongSingerResponseDTO> artist;
+        private List<String> artist;
 
         public SongResponseDTO(SongEntity songEntity) {
             this.songId = songEntity.getSongSeq();
             this.songName = songEntity.getSongTitle();
             this.albumImage = songEntity.getAlbumEntity().getAlbumImage();
+            this.soundSource = songEntity.getSoundSourceName();
 
-            List<SongSingerResponseDTO> songSingerResponseDTOList = new ArrayList<>();
+            List<String> artistList = new ArrayList<>();
             for (SongSingerEntity songSingerEntity : songEntity.getSongSingerEntities()) {
-                SongSingerResponseDTO songSingerResponseDTO = new SongSingerResponseDTO(songSingerEntity);
-                songSingerResponseDTOList.add(songSingerResponseDTO);
+                String singer = songSingerEntity.getSongSingerName();
+                artistList.add(singer + ", ");
             }
-            this.artist = songSingerResponseDTOList;
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class SongSingerResponseDTO {
-        private String singer;
-
-        public SongSingerResponseDTO(SongSingerEntity songSingerEntity) {
-            this.singer = songSingerEntity.getSongSingerName();
+            this.artist = artistList;
         }
     }
 
